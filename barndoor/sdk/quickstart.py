@@ -1,0 +1,202 @@
+"""Quick-start helpers that remove the boiler-plate required in the
+examples/sample_agent.py script.
+
+The three public async helpers cover the parts that tend to repeat in every
+prototype:
+
+    1. ``login_interactive`` – obtain a user JWT (cached) **and** a ready
+       ``BarndoorSDK`` instance in one go.
+    2. ``ensure_server_connected`` – wrapper around
+       :pymeth:`barndoor.sdk.client.BarndoorSDK.ensure_server_connected` with a
+       sensible progress / timeout default.
+    3. ``get_mcp_adapter`` – construct a ``crewai_tools.MCPServerAdapter`` (or
+       any other framework-agnostic adapter) that already carries the correct
+       proxy URL, streaming transport and *provider* access token in the
+       ``Authorization`` header.
+
+The helpers are intentionally dependency-free – they import optional packages
+only when necessary.  They can therefore be used both inside the Barndoor SDK
+repo and by downstream projects that vendor-copy the file.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import os
+
+from pathlib import Path
+from typing import List, Tuple
+from uuid import uuid4
+
+# Import required auth helpers explicitly so type checkers can resolve them
+from barndoor.sdk.auth import (
+    build_authorization_url,
+    exchange_code_for_token_backend,
+    start_local_callback_server,
+)
+
+from .auth_store import (
+    clear_cached_token,
+    is_token_active,
+    load_user_token,
+    save_user_token,
+)
+
+# Internal imports -----------------------------------------------------------
+from .client import BarndoorSDK
+from .utils import external_mcp_url
+
+
+# ---------------------------------------------------------------------------
+# Public helpers
+# ---------------------------------------------------------------------------
+
+
+a_sync = asyncio.run  # tiny alias for examples
+
+
+async def login_interactive(
+    *,
+    auth_domain: str | None = None,
+    client_id: str | None = None,
+    client_secret: str | None = None,
+    audience: str = "https://barndoor.api/",
+    api_base_url: str | None = None,
+    port: int = 52765,
+) -> BarndoorSDK:
+    """Return an *initialized* :class:`BarndoorSDK` after making sure a valid
+    user JWT is available.
+
+    The helper will first look for a cached token (``~/.barndoor/token.json``),
+    validate it against the ``/identity/token`` endpoint and – if necessary –
+    run the interactive Auth0 login flow.  The resulting JWT is persisted so
+    the next invocation is instant.
+
+    Parameters
+    ----------
+    auth_domain
+        Your Auth0 tenant domain (without the ``https://``).
+        Defaults to the ``AUTH0_DOMAIN`` environment variable or the SDK's
+        built-in localhost tenant.
+    client_id / client_secret
+        The OAuth Client configured for *Agent* access.  Pulled from
+        ``AGENT_CLIENT_ID`` / ``AGENT_CLIENT_SECRET`` env vars when omitted.
+    audience
+        The audience for which we request the token.
+    api_base_url
+        Base URL of the Registry/Identity API.  Defaults to the
+        ``BARNDOOR_API`` environment variable or ``http://localhost:8003``.
+    port
+        Callback port for the temporary local HTTP server.
+    """
+
+    auth_domain = auth_domain or os.getenv(
+        "AUTH0_DOMAIN", "barndoor-local.us.auth0.com"
+    )
+    client_id = client_id or os.getenv("AGENT_CLIENT_ID")
+    client_secret = client_secret or os.getenv("AGENT_CLIENT_SECRET")
+    api_base_url = api_base_url or os.getenv("BARNDOOR_API", "http://localhost:8003")
+
+    if not client_id or not client_secret:
+        raise RuntimeError(
+            "AGENT_CLIENT_ID / AGENT_CLIENT_SECRET not set – create a .env file or export in the shell",
+        )
+
+    # 1. try cached token --------------------------------------------------
+    token = load_user_token()
+    if token and not await is_token_active(api_base_url):
+        # expired or revoked → drop it
+        clear_cached_token()
+        token = None
+
+    # 2. if none – run interactive PKCE flow ------------------------------
+    if not token:
+        redirect_uri, waiter = start_local_callback_server(port=port)
+        auth_url = build_authorization_url(
+            domain=auth_domain,
+            client_id=client_id,
+            redirect_uri=redirect_uri,
+            audience=audience,
+        )
+        import webbrowser
+
+        webbrowser.open(auth_url)
+        print("Please complete login in your browser…")
+        code, _state = await waiter
+        token = exchange_code_for_token_backend(
+            domain=auth_domain,
+            client_id=client_id,
+            client_secret=client_secret,
+            code=code,
+            redirect_uri=redirect_uri,
+        )
+        save_user_token(token)
+
+    # 3. create SDK --------------------------------------------------------
+    sdk = BarndoorSDK(api_base_url, barndoor_token=token, validate_token_on_init=False)
+    return sdk
+
+
+async def ensure_server_connected(
+    sdk: BarndoorSDK,
+    server_identifier: str,
+    *,
+    timeout: int = 90,
+) -> None:
+    """Guarantee that *server_identifier* (slug or provider) is connected.
+
+    If the server is already connected the coroutine is a no-op, otherwise it
+    launches the browser OAuth flow and waits (up to *timeout* seconds) until
+    the connection is live.
+    """
+    await sdk.ensure_server_connected(server_identifier, poll_seconds=timeout)
+
+
+async def make_mcp_connection_params(
+    sdk: BarndoorSDK,
+    server_slug: str,
+    *,
+    proxy_base_url: str = "http://proxy-ingress:8080",
+    transport: str = "streamable-http",
+):
+    """Return ``(params_dict, public_url)`` where *params_dict* has the keys
+
+    ``url``, ``headers`` and (optionally) ``transport`` so that it can be fed
+    directly to whatever framework you’re using (CrewAI, LangChain, custom).
+
+    The helper hides the rules:
+      • If BARNDOOR_ENV is "prod" → build public MCP URL
+        otherwise ("dev" or "local") → route through the local proxy.
+      • Inject JWT + session-id headers
+    """
+    # 1. ensure server exists
+    servers = await sdk.list_servers()
+    if server_slug not in {s.slug for s in servers}:
+        raise ValueError(f"Server '{server_slug}' not found for current user")
+
+    # 2. decide proxy vs public based on env (default 'prod')
+    env = os.getenv("BARNDOOR_ENV", "prod").lower()
+
+    # proxy_base_url is fixed for local runs (can be overridden via parameter)
+
+    if env == "local":
+        # For local dev, use localhost:8080 instead of proxy-ingress:8080
+        url = f"http://localhost:8080/mcp/{server_slug}"
+    else:
+        url = external_mcp_url(
+            server_slug=server_slug,
+            jwt_token=str(sdk.token),
+            env=env,
+        )
+
+    params = {
+        "url": url,
+        "transport": transport,
+        "headers": {
+            "Accept": "application/json, text/event-stream",
+            "Authorization": f"Bearer {sdk.token}",
+            "x-barndoor-session-id": str(uuid4()),
+        },
+    }
+
+    return params, url
