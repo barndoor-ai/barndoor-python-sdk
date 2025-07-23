@@ -38,3 +38,6 @@ coverage.xml
 # OS / misc
 .DS_Store
 Thumbs.db 
+
+# uv lockfile (regenerate locally)
+uv.lock 

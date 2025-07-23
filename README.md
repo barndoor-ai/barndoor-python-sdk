@@ -35,13 +35,25 @@ uv venv .venv
 source .venv/bin/activate
 
 # 3) install the SDK in editable mode plus the example extras
-uv pip install -e .[examples]
+uv pip install -e '.[examples]'
 
-# 4) run the interactive login utility once (opens browser)
+# 4) install MCP support for CrewAI examples
+uv pip install 'crewai-tools[mcp]'
+
+# 5) copy the environment template and add your credentials
+cp env.example .env
+# Edit .env to add AGENT_CLIENT_ID, AGENT_CLIENT_SECRET, and OPENAI_API_KEY
+
+# 6) run the interactive login utility once (opens browser)
 uv run python -m barndoor.sdk.cli_login
 
-# 5) kick off the Notion sample agent
+# 7) kick off the Notion sample agent
 uv run python examples/sample_notion_agent.py
+```
+
+**Note:** The OAuth callback uses port 52765. Make sure this is registered in your Auth0 app as:
+```
+http://localhost:52765/cb
 ```
 
 The examples expect a `.env` file next to each script containing:
@@ -83,6 +95,22 @@ BARNDOOR_API=http://localhost:8003
 ```
 
 The cached token is auto-refreshed on every run; if it is expired or revoked a new browser flow is launched.
+
+---
+
+## Auth0 Application Setup
+
+When configuring your Auth0 "Agent" application, make sure to:
+
+1. Add the following to **Allowed Callback URLs**:
+   ```
+   http://localhost:52765/cb
+   http://127.0.0.1:52765/cb
+   ```
+
+2. Set the **Application Type** to "Native" or "Single Page Application"
+
+3. Enable the **Authorization Code** flow with PKCE
 
 ---
 
@@ -148,8 +176,8 @@ target environment entirely via **environment variables** (usually in a local
 | Scenario | Required variables | Typical values |
 |----------|-------------------|----------------|
 | **Production** (public) | *(none – everything defaults to prod)* | – |
-| **Staging / dev cluster** | `BARNDOOR_ENV`, `BARNDOOR_API` | `dev`, `https://barndoor.api` |
-| **Local docker-compose stack** | `BARNDOOR_ENV`, `BARNDOOR_API`, `AUTH0_DOMAIN` | `local`, `http://localhost:8003`, `barndoor-local.us.auth0.com` |
+| **Dev cluster** | `BARNDOOR_ENV`, `BARNDOOR_API` | `dev`, `https://barndoor.api` |
+| **Local docker-compose** | `BARNDOOR_ENV`, `BARNDOOR_API` | `local`, `http://localhost:8003` |
 
 Example `.env` for a **local** stack:
 

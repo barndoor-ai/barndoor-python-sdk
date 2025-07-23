@@ -49,11 +49,6 @@ async def main() -> None:
     # ---------------------------------------------------------------------
     # 2. Make sure the target server is connected (will launch OAuth if not)
     # ---------------------------------------------------------------------
-    print(f"\nChecking connection for {SERVER_SLUG}...")
-    target_server = next((s for s in servers if s.slug == SERVER_SLUG), None)
-    if target_server:
-        print(f"  Current status: {target_server.connection_status}")
-    
     await bd.ensure_server_connected(sdk, SERVER_SLUG)
 
     # ---------------------------------------------------------------------
