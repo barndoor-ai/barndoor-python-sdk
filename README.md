@@ -95,11 +95,15 @@ The SDK will spin up the local callback server on that port and embed the new UR
 The examples expect a `.env` file next to each script containing:
 
 ```bash
+# Minimal .env (local or dev)
+AUTH0_DOMAIN=barndoor-local.us.auth0.com      # or your dev tenant
 AGENT_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxx
 AGENT_CLIENT_SECRET=yyyyyyyyyyyyyyyyyyyy
-# optional overrides
-AUTH0_DOMAIN=barndoor-local.us.auth0.com
-BARNDOOR_API=http://localhost:8003
+
+# Optional – only when you need to override the defaults
+# MODE=development          # localdev | development | production
+# BARNDOOR_API=…            # custom registry host
+# BARNDOOR_URL=…            # custom MCP host
 ```
 
 ---

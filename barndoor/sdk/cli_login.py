@@ -9,6 +9,7 @@ import asyncio
 import os
 import sys
 import webbrowser
+import logging
 
 # Centralized static configuration
 from barndoor.sdk.config import get_static_config
@@ -138,7 +139,7 @@ async def main():
     api_base_url = cfg.BARNDOOR_API
 
     if await is_token_active(api_base_url):
-        print("✓ Valid token already exists in ~/.barndoor/token.json")
+        logging.getLogger(__name__).info("✓ Valid token already exists in ~/.barndoor/token.json")
         return
 
     # Get configuration from environment
@@ -148,10 +149,8 @@ async def main():
     audience = "https://barndoor.api/"
 
     if not client_id or not client_secret:
-        print("Error: AGENT_CLIENT_ID and AGENT_CLIENT_SECRET must be set")
-        print("\nCreate a .env file with:")
-        print("AGENT_CLIENT_ID=your_client_id")
-        print("AGENT_CLIENT_SECRET=your_client_secret")
+        logging.error(
+            "AGENT_CLIENT_ID and AGENT_CLIENT_SECRET must be set – create a .env file with those keys.")
         sys.exit(1)
 
     # Clear any existing invalid token
@@ -169,10 +168,10 @@ async def main():
 
         # Save the token
         save_user_token(token)
-        print("\n✓ Login successful! Token saved to ~/.barndoor/token.json")
+        logging.getLogger(__name__).info("Login successful – token saved to ~/.barndoor/token.json")
 
     except Exception as e:
-        print(f"\n✗ Login failed: {e}")
+        logging.error("Login failed: %s", e)
         sys.exit(1)
 
 

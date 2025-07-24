@@ -3,12 +3,15 @@
 This script mirrors `sample_agent.py` but targets a Notion MCP server.
 It demonstrates how to:
 
-1. Load credentials from a local `.env` file (expects `AGENT_CLIENT_ID` and `AGENT_CLIENT_SECRET`).
+1. Load credentials from the repo-root `.env` file (expects `AUTH0_DOMAIN`, `AGENT_CLIENT_ID`, and `AGENT_CLIENT_SECRET`).
 2. Use the Barndoor SDK helpers to:
    • log in interactively
    • ensure the Notion server connection is established (launches OAuth if needed)
    • obtain connection parameters (proxy URL + headers)
 3. Feed those params to **any** AI framework – here we show a tiny CrewAI demo.
+
+Environment:
+    export MODE=development  # or production / localdev
 
 Run with:
     python sample_notion_agent.py
@@ -37,8 +40,8 @@ async def main() -> None:  # noqa: D401 (simple function description)
     # ------------------------------------------------------------------
     # 0. Environment / login
     # ------------------------------------------------------------------
-    # loads AGENT_CLIENT_ID/SECRET
-    load_dotenv(Path(__file__).with_name(".env"))
+    # Load Auth0 creds from repo-root .env
+    load_dotenv(Path(__file__).parent.parent / ".env")
 
     sdk = await bd.login_interactive()  # handles cached JWT, PKCE flow, etc.
 

@@ -14,10 +14,14 @@ Environment / prerequisites
 1. Ensure both Salesforce and Notion MCP servers exist for your org and that your
    user has *connected* them.  If not, the helper below will launch the OAuth
    flows.
-2. Optionally create `.env` alongside this file with:
+2. Make sure the repo-root `.env` contains:
+       AUTH0_DOMAIN=…
        AGENT_CLIENT_ID=…
        AGENT_CLIENT_SECRET=…
-   (These are only needed if you’re not already logged in.)
+   and export the desired ``MODE`` (localdev | development | production) –
+   for shared DEV simply:
+
+       export MODE=development
 """
 
 from __future__ import annotations
@@ -39,7 +43,8 @@ NOTION_SLUG = "notion"
 
 
 async def main() -> None:  # noqa: D401
-    load_dotenv(Path(__file__).with_name(".env"))
+    # Load Auth0 creds from repo-root .env so all samples share the same file
+    load_dotenv(Path(__file__).parent.parent / ".env")
 
     sdk = await bd.login_interactive()
 

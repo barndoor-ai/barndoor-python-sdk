@@ -8,6 +8,15 @@ The only responsibilities left here are:
    • make sure the chosen server is connected
    • prepare the MCP connection params (proxy URL + headers)
 3. Feed those params to **any** AI framework.
+
+Environment
+-----------
+The helper automatically chooses the right hosts based on ``MODE``
+(localdev, development, production).  For the shared DEV environment run:
+
+```
+export MODE=development   # or: python sample_salesforce_agent_dev.py
+```
 """
 
 from __future__ import annotations
@@ -70,8 +79,19 @@ async def main() -> None:
         )
 
         task = Task(
-            description="Pipeline Report",
-            expected_output="Give me a report of the sales pipeline with some insights",
+            description=(
+                "Fetch the latest Salesforce pipeline metrics (total value, open opportunities per stage) "
+                "and return a concise *written* report – 3-5 bullet points – analysing any noteworthy changes "
+                "since yesterday."
+            ),
+            expected_output=(
+                "A markdown-formatted report, for example:\n"
+                "### Sales Pipeline – {today}\n"
+                "* **Total pipeline:** $123 k (+8 %)\n"
+                "* **Open opps:** 42 (↔)\n"
+                "* **Stages:** 22 % Prospect / 55 % Proposal / 23 % Negotiation\n"
+                "* **Insight:** Spike in Proposal stage driven by ACME deal…"
+            ),
             agent=agent,
         )
 

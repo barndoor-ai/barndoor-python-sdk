@@ -215,7 +215,7 @@ def _apply_token_overrides(cfg: AppConfig, token: str) -> AppConfig:
     # 2) API audience – honour custom aud claim if present
     audience = claims.get("aud", cfg.API_AUDIENCE)
 
-    return cfg.copy(update={"BARNDOOR_URL": barn_url, "BARNDOOR_API": api_base, "API_AUDIENCE": audience})
+    return cfg.model_copy(update={"BARNDOOR_URL": barn_url, "BARNDOOR_API": api_base, "API_AUDIENCE": audience})
 
 
 def get_dynamic_config(token: str | None = None) -> AppConfig:

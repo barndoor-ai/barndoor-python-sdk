@@ -24,6 +24,7 @@ from __future__ import annotations
 # Standard library
 import asyncio
 import os
+import logging
 
 from pathlib import Path
 from typing import List, Tuple
@@ -114,10 +115,11 @@ async def login_interactive(
 
     # 1. try cached token --------------------------------------------------
     token = load_user_token()
-    if token and not await is_token_active(api_base_url):
-        # expired or revoked → drop it
-        clear_cached_token()
-        token = None
+
+    env_mode = (os.getenv("BARNDOOR_ENV") or os.getenv("MODE", "prod")).lower()
+
+    # Always trust the cached token; if it is expired the first API call will
+    # return 401 and the application can decide how to handle re-login.
 
     # 2. if none – run interactive PKCE flow ------------------------------
     if not token:
@@ -128,10 +130,9 @@ async def login_interactive(
             redirect_uri=redirect_uri,
             audience=audience,
         )
-        import webbrowser
-
+        import webbrowser  # local import to avoid side-effects when not needed
         webbrowser.open(auth_url)
-        print("Please complete login in your browser…")
+        logging.getLogger(__name__).info("Please complete login in your browser…")
         code, _state = await waiter
         token = exchange_code_for_token_backend(
             domain=auth_domain,

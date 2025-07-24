@@ -91,6 +91,13 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["barndoor"]
 
+# Exclude non-package artefacts from all build targets
+[tool.hatch.build]
+exclude = [
+    "examples/**",
+    "env.*.example",
+]
+
 # Enable editable install
 [tool.hatch.metadata]
 allow-direct-references = true
