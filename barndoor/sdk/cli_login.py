@@ -10,7 +10,12 @@ import os
 import sys
 import webbrowser
 
+# Centralized static configuration
+from barndoor.sdk.config import get_static_config
+
 from typing import Optional
+from pathlib import Path
+from dotenv import load_dotenv
 
 from .auth import (
     build_authorization_url,
@@ -122,17 +127,24 @@ async def main():
     0 : Success
     1 : Configuration error or login failure
     """
+    # Load .env from current working directory if present.  This is kept for
+    # backwards-compatibility – the real heavy lifting now happens inside
+    # barndoor.sdk.config which already ran at import-time.
+    load_dotenv(Path.cwd() / ".env")
+
     # Check for existing valid token
-    api_base_url = os.getenv("BARNDOOR_API", "http://localhost:8003")
+    cfg = get_static_config()
+
+    api_base_url = cfg.BARNDOOR_API
 
     if await is_token_active(api_base_url):
         print("✓ Valid token already exists in ~/.barndoor/token.json")
         return
 
     # Get configuration from environment
-    auth_domain = os.getenv("AUTH0_DOMAIN", "barndoor-local.us.auth0.com")
-    client_id = os.getenv("AGENT_CLIENT_ID")
-    client_secret = os.getenv("AGENT_CLIENT_SECRET")
+    auth_domain = cfg.AUTH0_DOMAIN
+    client_id = cfg.AGENT_CLIENT_ID
+    client_secret = cfg.AGENT_CLIENT_SECRET
     audience = "https://barndoor.api/"
 
     if not client_id or not client_secret:

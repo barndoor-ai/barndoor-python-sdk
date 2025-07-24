@@ -21,6 +21,7 @@ repo and by downstream projects that vendor-copy the file.
 
 from __future__ import annotations
 
+# Standard library
 import asyncio
 import os
 
@@ -41,6 +42,12 @@ from .auth_store import (
     load_user_token,
     save_user_token,
 )
+
+# Automatically load .env if not done yet
+from barndoor.sdk.config import get_static_config, load_dotenv_for_sdk
+
+# Load default .env file exactly once – safe no-op if already loaded by caller
+load_dotenv_for_sdk()
 
 # Internal imports -----------------------------------------------------------
 from .client import BarndoorSDK
@@ -90,12 +97,15 @@ async def login_interactive(
         Callback port for the temporary local HTTP server.
     """
 
-    auth_domain = auth_domain or os.getenv(
-        "AUTH0_DOMAIN", "barndoor-local.us.auth0.com"
-    )
-    client_id = client_id or os.getenv("AGENT_CLIENT_ID")
-    client_secret = client_secret or os.getenv("AGENT_CLIENT_SECRET")
-    api_base_url = api_base_url or os.getenv("BARNDOOR_API", "http://localhost:8003")
+    cfg = get_static_config()
+
+    auth_domain = auth_domain or cfg.AUTH0_DOMAIN
+    client_id = client_id or cfg.AGENT_CLIENT_ID
+    client_secret = client_secret or cfg.AGENT_CLIENT_SECRET
+
+    # We can only substitute {organization_id} once we have a JWT.  Therefore
+    # we defer choosing the final API base until after *token* is available
+    # (either loaded from cache or freshly obtained).
 
     if not client_id or not client_secret:
         raise RuntimeError(
@@ -132,7 +142,14 @@ async def login_interactive(
         )
         save_user_token(token)
 
-    # 3. create SDK --------------------------------------------------------
+    # 3. build dynamic configuration (replaces {organization_id})
+    from barndoor.sdk.config import get_dynamic_config
+
+    cfg_dyn = get_dynamic_config(token)
+
+    api_base_url = api_base_url or cfg_dyn.BARNDOOR_API
+
+    # 4. create SDK --------------------------------------------------------
     sdk = BarndoorSDK(api_base_url, barndoor_token=token, validate_token_on_init=False)
     return sdk
 
@@ -174,19 +191,24 @@ async def make_mcp_connection_params(
     if server_slug not in {s.slug for s in servers}:
         raise ValueError(f"Server '{server_slug}' not found for current user")
 
-    # 2. decide proxy vs public based on env (default 'prod')
-    env = os.getenv("BARNDOOR_ENV", "prod").lower()
+    # 2. decide proxy vs public based on env (default taken from MODE / BARNDO_ENV)
+    env = (os.getenv("BARNDO_ENV") or os.getenv("MODE", "localdev")).lower()
 
-    # proxy_base_url is fixed for local runs (can be overridden via parameter)
+    # Build dynamic configuration (slug already substituted)
+    from barndoor.sdk.config import get_dynamic_config
 
-    if env == "local":
-        # For local dev, use localhost:8080 instead of proxy-ingress:8080
+    cfg_dyn = get_dynamic_config(str(sdk.token))
+
+    if env in {"localdev", "local"}:
         url = f"http://localhost:8080/mcp/{server_slug}"
-    else:
+    elif env in {"development", "dev"}:
+        # Use org-aware MCP host from config
+        url = f"{cfg_dyn.BARNDOOR_URL}/mcp/{server_slug}"
+    else:  # production (or any other value)
         url = external_mcp_url(
             server_slug=server_slug,
             jwt_token=str(sdk.token),
-            env=env,
+            env="prod",
         )
 
     params = {

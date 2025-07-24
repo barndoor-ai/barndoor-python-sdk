@@ -34,7 +34,7 @@ async def main() -> None:
     # 0. Environment / login
     # ---------------------------------------------------------------------
     # loads AGENT_CLIENT_ID/SECRET
-    load_dotenv(Path(__file__).with_name(".env"))
+    load_dotenv(Path(__file__).parent.parent / ".env")  # Load from repo root
 
     sdk = await bd.login_interactive()  # handles cached JWT, PKCE flow, etc.
 

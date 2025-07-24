@@ -10,6 +10,23 @@ The SDK removes boiler-plate around:
 
 ---
 
+## How it works
+
+The SDK orchestrates a multi-step flow to connect your code to third-party services:
+
+```
+You → Auth0 (get JWT) → Registry API (with JWT) → MCP Proxy (with JWT) → Third-party service
+```
+
+1. **Authentication**: You log in via Auth0 to get a JWT token
+2. **Registry API**: Using the JWT, query available MCP servers and manage OAuth connections
+3. **MCP Proxy**: Stream requests through Barndoor's proxy with the JWT for authorization
+4. **Third-party service**: The proxy forwards your requests to Salesforce, Notion, etc.
+
+This architecture provides secure, managed access to external services without handling OAuth flows or storing third-party credentials in your code.
+
+---
+
 ## Installation
 
 ```bash
@@ -51,10 +68,29 @@ uv run python -m barndoor.sdk.cli_login
 uv run python examples/sample_notion_agent.py
 ```
 
-**Note:** The OAuth callback uses port 52765. Make sure this is registered in your Auth0 app as:
+**Note:** The OAuth default callback uses port 52765. Make sure this is registered in your Auth0 app as:
 ```
 http://localhost:52765/cb
 ```
+
+### Using a custom OAuth callback port
+
+If port `52765` is blocked (or you prefer another), you can:
+
+1. **Register the new callback URL** in your Auth0 application, e.g.
+   ```
+   http://localhost:60000/cb
+   ```
+2. **Run the login helper with the matching port**
+   ```bash
+   # CLI
+   uv run python -m barndoor.sdk.cli_login --port 60000
+
+   # In code
+   sdk = await bd.login_interactive(port=60000)
+   ```
+
+The SDK will spin up the local callback server on that port and embed the new URL in the Auth0 request. Just make sure the same URL is whitelisted in Auth0.
 
 The examples expect a `.env` file next to each script containing:
 
@@ -157,84 +193,3 @@ params, public_url = await bd.make_mcp_connection_params(sdk, "notion")
 print(params["url"])         # http(s)://…/mcp/notion
 print(params["headers"])     # {'Authorization': 'Bearer ey…', 'x-barndoor-session-id': …}
 ```
-
-The helper automatically decides whether to use a local proxy or a regional CloudFront URL based on `BARNDOOR_ENV`:
-
-* `prod` (default) → `https://api.barndoor.ai/mcp/{slug}`
-* `dev`  → `https://barndoor.api/mcp/{slug}`
-* `local` → `http://proxy-ingress:8080/mcp/{slug}`
-
----
-
-## Environment overrides (local & dev testing)
-
-By **default** the SDK talks to the production Barndoor cloud.  When you are
-hacking on your own infrastructure or a staging cluster you can switch the
-target environment entirely via **environment variables** (usually in a local
-`.env` file):
-
-| Scenario | Required variables | Typical values |
-|----------|-------------------|----------------|
-| **Production** (public) | *(none – everything defaults to prod)* | – |
-| **Dev cluster** | `BARNDOOR_ENV`, `BARNDOOR_API` | `dev`, `https://barndoor.api` |
-| **Local docker-compose** | `BARNDOOR_ENV`, `BARNDOOR_API` | `local`, `http://localhost:8003` |
-
-Example `.env` for a **local** stack:
-
-```bash
-BARNDOOR_ENV=local          # makes helpers build http://proxy-ingress:8080/… URLs
-BARNDOOR_API=http://localhost:8003
-AUTH0_DOMAIN=barndoor-local.us.auth0.com  # sample tenant baked into docker-compose
-AGENT_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxx
-AGENT_CLIENT_SECRET=yyyyyyyyyyyyyyyyyyyy
-```
-
-With this file present the four-line quick-start from above will log in against
-your local Auth0 tenant and route MCP traffic through the local proxy ingress –
-no code changes required.
-
----
-
-## End-to-end examples
-
-### 1. Salesforce Assistant (CrewAI)
-
-```bash
-cd libs/barndoor/examples
-python sample_salesforce_agent.py     # local env / proxy
-python sample_salesforce_agent_dev.py # staging env
-```
-
-Both scripts demonstrate:
-
-* interactive login + caching
-* automatic connection check (OAuth if needed)
-* building MCP params → `MCPServerAdapter` (CrewAI)
-
-### 2. Multi-provider Pipeline Report
-
-`sample_pipeline_report_agent.py` shows how to combine **two** MCP adapters (Salesforce **read** + Notion **write**) inside a single agent.
-
-Run with:
-
-```bash
-python sample_pipeline_report_agent.py
-```
-
-### 3. Token utilities
-
-* `token_cli.py` – small CLI to inspect / clear the cached JWT.
-* `token_validation_example.py` – async snippet calling `/identity/token` directly.
-
----
-
-## Minimal API reference
-
-| Method | Purpose |
-|--------|---------|
-| `BarndoorSDK.validate_cached_token()` | Validate the cached JWT against `/identity/token` |
-| `BarndoorSDK.list_servers()` | Return `List[ServerSummary]` |
-| `BarndoorSDK.get_server(server_id)` | Full `ServerDetail` |
-| `BarndoorSDK.initiate_connection()` | Start OAuth flow (returns URL) |
-| `BarndoorSDK.get_connection_status()` | `connected` / `pending` / `error` |
-| `BarndoorSDK.ensure_server_connected()` | High-level helper combining the above |

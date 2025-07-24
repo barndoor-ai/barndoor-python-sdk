@@ -96,9 +96,14 @@ class BarndoorSDK:
         This method is called before each API request to ensure
         the token hasn't been revoked or expired.
         """
-        # Skip validation in local env (endpoint might not exist)
         import os
         if os.getenv("BARNDOOR_ENV", "prod").lower() == "local":
+            # will be handled by generic non-prod branch below
+            pass
+
+        # Skip validation for all non-production environments where the
+        # /identity/token endpoint might be unreachable (dev, local, staging…)
+        if os.getenv("BARNDOOR_ENV", "prod").lower() != "prod":
             self._token_validated = True
             return
             
