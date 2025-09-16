@@ -121,12 +121,6 @@ class ServerNotFoundError(BarndoorError):
         super().__init__(message)
 
 
-class OAuthError(AuthenticationError):
-    """Raised when OAuth flow fails."""
-
-    pass
-
-
 class ConfigurationError(BarndoorError):
     """Raised when there's an issue with SDK configuration.
 
