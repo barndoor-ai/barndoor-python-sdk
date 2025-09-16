@@ -1,7 +1,9 @@
 """Pytest configuration and fixtures."""
 
+from unittest.mock import AsyncMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock
+
 from barndoor.sdk.client import BarndoorSDK
 
 
@@ -28,7 +30,7 @@ def sdk_client(mock_token):
     return BarndoorSDK(
         api_base_url="https://test.barndoor.ai",
         barndoor_token=mock_token,
-        validate_token_on_init=False
+        validate_token_on_init=False,
     )
 
 
@@ -51,14 +53,14 @@ def sdk_with_mocked_http(mock_token):
     )
 
 
-
 @pytest.fixture
 def temp_token_dir(monkeypatch, tmp_path):
     """Temporary token storage path made available to auth_store."""
     token_file = tmp_path / "token.json"
     # Patch TOKEN_FILE used by auth_store to point into tmp path
     monkeypatch.setenv("BARNDOOR_TOKEN_FILE", str(token_file))
-    # Some auth_store implementations read a module-level TOKEN_FILE; if needed we could patch it here
+    # Some auth_store implementations read a module-level TOKEN_FILE;
+    # if needed we could patch it here
     return tmp_path
 
 
