@@ -79,7 +79,7 @@ def validate_port(port: int, name: str = "Port") -> int:
 
 def validate_timeout(timeout: float, name: str = "Timeout") -> float:
     """Validate timeout value."""
-    if not isinstance(timeout, (int, float)):
+    if not isinstance(timeout, int | float):
         raise ConfigurationError(f"{name} must be a number")
 
     if timeout <= 0:

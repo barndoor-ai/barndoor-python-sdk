@@ -59,7 +59,10 @@ def mock_config():
 def sample_token_data():
     """Sample token data for testing."""
     return {
-        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0LXVzZXIiLCJleHAiOjk5OTk5OTk5OTl9.test",
+        "access_token": (
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9"
+            ".eyJzdWIiOiJ0ZXN0LXVzZXIiLCJleHAiOjk5OTk5OTk5OTl9.test"
+        ),
         "refresh_token": "refresh_token_123",
         "token_type": "Bearer",
         "expires_in": 3600,
@@ -70,7 +73,10 @@ def sample_token_data():
 def expired_token_data():
     """Expired token data for testing."""
     return {
-        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0LXVzZXIiLCJleHAiOjE2MDAwMDAwMDB9.test",
+        "access_token": (
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9"
+            ".eyJzdWIiOiJ0ZXN0LXVzZXIiLCJleHAiOjE2MDAwMDAwMDB9.test"
+        ),
         "refresh_token": "refresh_token_123",
         "token_type": "Bearer",
         "expires_in": 3600,

@@ -10,7 +10,10 @@ from barndoor.sdk.client import BarndoorSDK
 @pytest.fixture
 def mock_token():
     """Valid JWT token for testing."""
-    return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0LXVzZXIiLCJvcmciOiJ0ZXN0LW9yZyIsImV4cCI6OTk5OTk5OTk5OX0.test"
+    return (
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0"
+        "ZXN0LXVzZXIiLCJvcmciOiJ0ZXN0LW9yZyIsImV4cCI6OTk5OTk5OTk5OX0.test"
+    )
 
 
 @pytest.fixture

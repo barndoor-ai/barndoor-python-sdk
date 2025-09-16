@@ -109,6 +109,13 @@ select = [
 ]
 ignore = []
 
+[tool.ruff.lint.per-file-ignores]
+"barndoor/sdk/quickstart.py" = ["E402"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["barndoor"]
+split-on-trailing-comma = true
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"

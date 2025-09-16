@@ -39,8 +39,6 @@ class TestLoginInteractive:
     @pytest.mark.asyncio
     async def test_login_interactive_flow(self, temp_token_dir):
         """Test interactive login flow."""
-        mock_token = "new-token"
-
         with (
             patch(
                 "barndoor.sdk.auth_store.is_token_active_with_refresh",
