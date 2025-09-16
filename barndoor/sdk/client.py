@@ -261,17 +261,6 @@ class BarndoorSDK:
 
         return ServerDetail.model_validate(response)
 
-    # ---------------- internal -----------------
-
-    async def aclose(self) -> None:
-        """Close the underlying HTTP client.
-
-        Should be called when done with the SDK to properly clean up
-        connections. Can also be used as an async context manager to
-        handle this automatically.
-        """
-        await self._http.aclose()
-
     # ---------- Convenience helpers -----------------
 
     @classmethod
