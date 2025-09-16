@@ -50,6 +50,7 @@ brew install uv        # or follow the install script on Linux/Windows
 # 2) create an isolated virtual environment in the repo
 uv venv .venv
 source .venv/bin/activate
+uv sync --frozen --all-extras --dev --python 3.13
 
 # 3) install the SDK in editable mode plus the example extras
 uv pip install -e '.[examples]'
