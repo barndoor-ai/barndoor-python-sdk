@@ -15,6 +15,19 @@ dependencies = [
 [project.scripts]
 barndoor-login = "barndoor.sdk.cli_login:main"
 
+[project.optional-dependencies]
+examples = [
+    "crewai>=0.30.0",
+    "crewai_tools>=0.1.0",
+    "langchain-openai",
+    "langchain-mcp-adapters",
+    "langgraph>=0.5.3",
+    "llama-index",
+    "llama-index-tools-mcp",
+    "openai>=1.61.1",
+]
+
+
 
 [tool.uv]
 dev-dependencies = [
