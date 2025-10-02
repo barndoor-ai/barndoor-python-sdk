@@ -15,11 +15,6 @@ dependencies = [
 [project.scripts]
 barndoor-login = "barndoor.sdk.cli_login:main"
 
-[project.optional-dependencies]
-examples = [
-    "crewai>=0.30.0",
-    "crewai_tools>=0.1.0",
-]
 
 [tool.uv]
 dev-dependencies = [
