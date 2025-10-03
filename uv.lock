@@ -254,7 +254,7 @@ wheels = [
 
 [[package]]
 name = "barndoor"
-version = "0.0.0.post56.dev0+18c86fc"
+version = "0.0.0.post58.dev0+4ac2ae0"
 source = { editable = "." }
 dependencies = [
     { name = "httpx", extra = ["http2"] },
