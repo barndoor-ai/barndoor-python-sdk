@@ -30,7 +30,7 @@ This architecture provides secure, managed access to external services without h
 ## Installation
 
 ```bash
-pip install barndoor  # coming soon – for now use an editable install
+pip install barndoor
 # or, inside this repo
 pip install -e barndoor[dev]
 ```
