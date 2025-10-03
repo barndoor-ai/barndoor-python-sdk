@@ -30,8 +30,8 @@ from uuid import uuid4
 from barndoor.sdk.auth import (
     build_authorization_url,
     exchange_code_for_token_backend,
-    start_local_callback_server,
     get_pending_oauth_state,
+    start_local_callback_server,
 )
 
 # Automatically load .env if not done yet

@@ -18,8 +18,8 @@ from barndoor.sdk.config import get_static_config
 from .auth import (
     build_authorization_url,
     exchange_code_for_token_backend,
-    start_local_callback_server,
     get_pending_oauth_state,
+    start_local_callback_server,
 )
 from .auth_store import clear_cached_token, is_token_active, save_user_token
 
