@@ -69,15 +69,6 @@ uv run python -m barndoor.sdk.cli_login
 uv run python examples/sample_notion_agent.py
 ```
 
-### Install pre-commit hooks
-
-Install the git hooks once and run them locally (CI runs the same hooks):
-
-```bash
-uv run pre-commit install
-uv run pre-commit run --all-files
-```
-
 **Note:** The OAuth default callback uses port 52765. Make sure this is registered in your Barndoor Agent as:
 ```
 http://localhost:52765/cb
