@@ -114,7 +114,7 @@ class TestEnsureServerConnected:
         mock_error = HTTPError(
             status_code=404,
             message="Server not found",
-            response={"detail": "MCP server with slug 'nonexistent' not found"}
+            response_body='{"detail": "MCP server with slug \'nonexistent\' not found"}'
         )
         sdk_with_mocked_http.get_server_by_slug = AsyncMock(side_effect=mock_error)
         
@@ -139,6 +139,10 @@ class TestEnsureServerConnected:
                 {"status": "connected"},  # get_connection_status call
             ]
         )
+        
+        # Mock list_servers for the internal ensure_server_connected call
+        servers = [ServerSummary.model_validate(s) for s in mock_server_list]
+        sdk_with_mocked_http.list_servers = AsyncMock(return_value=servers)
 
         with patch("webbrowser.open") as mock_browser:
             await ensure_server_connected(sdk_with_mocked_http, "notion")
@@ -178,7 +182,7 @@ class TestMakeMCPConnectionParams:
         mock_error = HTTPError(
             status_code=404,
             message="Server not found",
-            response={"detail": "MCP server with slug 'nonexistent' not found"}
+            response_body='{"detail": "MCP server with slug \'nonexistent\' not found"}'
         )
         sdk_with_mocked_http.get_server_by_slug = AsyncMock(side_effect=mock_error)
 
