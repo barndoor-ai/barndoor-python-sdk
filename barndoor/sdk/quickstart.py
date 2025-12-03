@@ -205,6 +205,7 @@ async def make_mcp_connection_params(
     except Exception as e:
         # Re-raise with a clearer error message
         from .exceptions import HTTPError
+
         if isinstance(e, HTTPError) and e.status_code == 404:
             raise ValueError(f"Server '{server_slug}' not found for current user") from e
         raise

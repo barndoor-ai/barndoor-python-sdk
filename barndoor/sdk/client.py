@@ -277,22 +277,22 @@ class BarndoorSDK:
 
     async def get_server_by_slug(self, slug: str) -> ServerDetail:
         """Get detailed information about a specific server by its slug.
-        
+
         This method uses the registry service's /by-slug/{slug} endpoint,
         which is more efficient than searching through paginated list results.
         This is especially useful when you know the slug but the server might
         not be in the first page of results.
-        
+
         Parameters
         ----------
         slug : str
             Server slug (e.g., "dummy-1bd17262", "salesforce")
-            
+
         Returns
         -------
         ServerDetail
             Detailed server information including proxy_url
-            
+
         Raises
         ------
         HTTPError
@@ -300,7 +300,7 @@ class BarndoorSDK:
         """
         if not slug or not isinstance(slug, str):
             raise ConfigurationError("Server slug must be a non-empty string")
-        
+
         slug = slug.strip()
         if not slug:
             raise ConfigurationError("Server slug cannot be empty or whitespace")

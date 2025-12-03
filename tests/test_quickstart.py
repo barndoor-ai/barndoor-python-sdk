@@ -114,10 +114,10 @@ class TestEnsureServerConnected:
         mock_error = HTTPError(
             status_code=404,
             message="Server not found",
-            response_body='{"detail": "MCP server with slug \'nonexistent\' not found"}'
+            response_body='{"detail": "MCP server with slug \'nonexistent\' not found"}',
         )
         sdk_with_mocked_http.get_server_by_slug = AsyncMock(side_effect=mock_error)
-        
+
         # Fallback to list_servers
         servers = [ServerSummary.model_validate(s) for s in mock_server_list]
         sdk_with_mocked_http.list_servers = AsyncMock(return_value=servers)
@@ -129,9 +129,11 @@ class TestEnsureServerConnected:
     async def test_server_needs_connection(self, sdk_with_mocked_http, mock_server_list):
         """Test with server that needs connection."""
         # Mock get_server_by_slug to return a server that needs connection
-        mock_server = ServerDetail.model_validate(mock_server_list[1])  # notion (available, not connected)
+        mock_server = ServerDetail.model_validate(
+            mock_server_list[1]
+        )  # notion (available, not connected)
         sdk_with_mocked_http.get_server_by_slug = AsyncMock(return_value=mock_server)
-        
+
         # Mock subsequent HTTP calls for connection flow
         sdk_with_mocked_http._http.request = AsyncMock(
             side_effect=[
@@ -139,7 +141,7 @@ class TestEnsureServerConnected:
                 {"status": "connected"},  # get_connection_status call
             ]
         )
-        
+
         # Mock list_servers for the internal ensure_server_connected call
         servers = [ServerSummary.model_validate(s) for s in mock_server_list]
         sdk_with_mocked_http.list_servers = AsyncMock(return_value=servers)
@@ -157,14 +159,16 @@ class TestMakeMCPConnectionParams:
     @pytest.mark.asyncio
     async def test_make_connection_params_uses_proxy_url(self, sdk_with_mocked_http):
         """make_mcp_connection_params should use proxy_url provided by registry."""
-        mock_server = ServerDetail.model_validate({
-            "id": "server-1",
-            "name": "Salesforce",
-            "slug": "salesforce",
-            "provider": "salesforce",
-            "connection_status": "connected",
-            "proxy_url": "https://acme.mcp.barndoor.ai/mcp/salesforce",
-        })
+        mock_server = ServerDetail.model_validate(
+            {
+                "id": "server-1",
+                "name": "Salesforce",
+                "slug": "salesforce",
+                "provider": "salesforce",
+                "connection_status": "connected",
+                "proxy_url": "https://acme.mcp.barndoor.ai/mcp/salesforce",
+            }
+        )
 
         sdk_with_mocked_http.get_server_by_slug = AsyncMock(return_value=mock_server)
 
@@ -182,7 +186,7 @@ class TestMakeMCPConnectionParams:
         mock_error = HTTPError(
             status_code=404,
             message="Server not found",
-            response_body='{"detail": "MCP server with slug \'nonexistent\' not found"}'
+            response_body='{"detail": "MCP server with slug \'nonexistent\' not found"}',
         )
         sdk_with_mocked_http.get_server_by_slug = AsyncMock(side_effect=mock_error)
 
