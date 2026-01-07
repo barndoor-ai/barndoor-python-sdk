@@ -62,7 +62,7 @@ a_sync = asyncio.run  # tiny alias for examples
 
 async def login_interactive(
     *,
-    auth_domain: str | None = None,
+    auth_issuer: str | None = None,
     client_id: str | None = None,
     client_secret: str | None = None,
     audience: str | None = None,
@@ -76,7 +76,7 @@ async def login_interactive(
 
     cfg = get_static_config()
 
-    auth_domain = auth_domain or cfg.auth_domain
+    auth_issuer = auth_issuer or cfg.auth_issuer
     client_id = client_id or cfg.client_id
     client_secret = client_secret or cfg.client_secret
     audience = audience or cfg.api_audience  # Use config value
@@ -99,10 +99,11 @@ async def login_interactive(
         # 2. if none – run interactive PKCE flow --------------------------
         redirect_uri, waiter = start_local_callback_server(port=port)
         auth_url = build_authorization_url(
-            domain=auth_domain,
+            domain="",  # Not used when issuer is provided
             client_id=client_id,
             redirect_uri=redirect_uri,
             audience=audience,
+            issuer=auth_issuer,
         )
         import webbrowser
 
@@ -114,11 +115,12 @@ async def login_interactive(
         if expected_state is not None and returned_state != expected_state:
             raise RuntimeError("OAuth state mismatch; possible CSRF attempt")
         token_data = exchange_code_for_token_backend(
-            domain=auth_domain,
+            domain="",  # Not used when issuer is provided
             client_id=client_id,
             client_secret=client_secret,
             code=code,
             redirect_uri=redirect_uri,
+            issuer=auth_issuer,
         )
         save_user_token(token_data)
 
