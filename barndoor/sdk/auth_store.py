@@ -275,7 +275,7 @@ class TokenManager:
 
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.post(token_endpoint, json=payload, timeout=15.0)
+                response = await client.post(token_endpoint, data=payload, timeout=15.0)
 
                 if response.status_code == 400:
                     # Bad request - likely invalid refresh token

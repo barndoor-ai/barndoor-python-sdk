@@ -104,7 +104,7 @@ def get_client_credentials_token(
 
     resp = httpx.post(
         token_endpoint,
-        json={
+        data={
             "grant_type": "client_credentials",
             "client_id": client_id,
             "client_secret": client_secret,
@@ -295,7 +295,7 @@ def exchange_code_for_token(
     else:
         token_endpoint = f"https://{domain}/oauth/token"
 
-    resp = httpx.post(token_endpoint, json=payload, timeout=15)
+    resp = httpx.post(token_endpoint, data=payload, timeout=15)
     resp.raise_for_status()
     return resp.json()  # Return full response with refresh_token
 
@@ -345,6 +345,6 @@ def refresh_access_token(
     else:
         raise ValueError("Either issuer or domain must be provided")
 
-    resp = httpx.post(token_endpoint, json=payload, timeout=15)
+    resp = httpx.post(token_endpoint, data=payload, timeout=15)
     resp.raise_for_status()
     return resp.json()  # Contains fresh access_token and possibly new refresh_token
