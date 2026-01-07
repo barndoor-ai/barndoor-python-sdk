@@ -19,33 +19,33 @@ AUTH_CONFIG = {
     "production": {
         "issuer": "https://auth.trial.barndoor.ai/realms/barndoor-local",
         "audience": "https://barndoor.ai/",
-        "base_url": "https://{organization_id}.mcp.barndoor.ai",
+        "base_url": "https://{org_slug}.mcp.barndoor.ai",
     },
     "uat": {
         "issuer": "https://auth.trial.barndooruat.com/realms/barndoor-local",
         "audience": "https://barndoor.ai/",
-        "base_url": "https://{organization_id}.platform.barndooruat.com",
+        "base_url": "https://{org_slug}.platform.barndooruat.com",
     },
     "dev": {
         "issuer": "https://auth.trial.barndoordev.com/realms/barndoor-local",
         "audience": "https://barndoor.ai/",
-        "base_url": "https://{organization_id}.platform.barndoordev.com",
+        "base_url": "https://{org_slug}.platform.barndoordev.com",
     },
     # === Enterprise environments (Auth0) ===
     "enterprise-production": {
         "issuer": "https://auth.barndoor.ai",
         "audience": "https://barndoor.ai/",
-        "base_url": "https://{organization_id}.mcp.barndoor.ai",
+        "base_url": "https://{org_slug}.mcp.barndoor.ai",
     },
     "enterprise-uat": {
         "issuer": "https://auth.barndooruat.com",
         "audience": "https://barndoor.ai/",
-        "base_url": "https://{organization_id}.platform.barndooruat.com",
+        "base_url": "https://{org_slug}.platform.barndooruat.com",
     },
     "enterprise-dev": {
         "issuer": "https://auth.barndoordev.com",
         "audience": "https://barndoor.ai/",
-        "base_url": "https://{organization_id}.platform.barndoordev.com",
+        "base_url": "https://{org_slug}.platform.barndoordev.com",
     },
     # === Local development (Keycloak) ===
     "localdev": {
@@ -65,8 +65,8 @@ class BarndoorConfig(BaseModel):
     client_secret: str = Field(default="")
     api_audience: str = Field(default="https://barndoor.ai/")
 
-    # API endpoints (templates support {organization_id})
-    base_url: str = Field(default="https://{organization_id}.mcp.barndoor.ai")
+    # API endpoints (templates support {org_slug})
+    base_url: str = Field(default="https://{org_slug}.mcp.barndoor.ai")
 
     # Runtime settings
     environment: str = Field(default="production")
@@ -189,9 +189,7 @@ class BarndoorConfig(BaseModel):
                 if org_name:
                     config_data["organization_id"] = org_name
                     # Resolve URL templates
-                    config_data["base_url"] = config_data["base_url"].format(
-                        organization_id=org_name
-                    )
+                    config_data["base_url"] = config_data["base_url"].format(org_slug=org_name)
             except Exception:
                 # Ignore JWT parsing errors - use defaults
                 pass
