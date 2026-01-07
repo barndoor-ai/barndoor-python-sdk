@@ -81,10 +81,14 @@ async def login_interactive(
     client_secret = client_secret or cfg.client_secret
     audience = audience or cfg.api_audience  # Use config value
 
+    # Track if user explicitly provided base_url
+    user_provided_base_url = base_url is not None
+
     # 1. try cached token with refresh first ----------------------------------
     token_data = None
-    base_url = base_url or getattr(cfg, "base_url", None)
-    if base_url and await is_token_active_with_refresh(base_url):
+    # Use a placeholder URL for token validation check (will be resolved later)
+    check_url = base_url or cfg.base_url
+    if check_url and await is_token_active_with_refresh(check_url):
         logger.info("Using cached/refreshed valid token")
         token_data = load_user_token()
     else:
@@ -127,14 +131,16 @@ async def login_interactive(
     # Extract access token for SDK
     access_token = token_data if isinstance(token_data, str) else token_data["access_token"]
 
-    # 3. build dynamic configuration
+    # 3. build dynamic configuration - extracts org from JWT and resolves URL
     from barndoor.sdk.config import get_dynamic_config
 
     cfg_dyn = get_dynamic_config(access_token)
-    base_url = base_url or cfg_dyn.base_url
+
+    # Use user-provided base_url if given, otherwise use the resolved URL from JWT
+    final_base_url = base_url if user_provided_base_url else cfg_dyn.base_url
 
     # 4. create SDK
-    sdk = BarndoorSDK(base_url, barndoor_token=access_token, validate_token_on_init=False)
+    sdk = BarndoorSDK(final_base_url, barndoor_token=access_token, validate_token_on_init=False)
     logger.info("Login completed successfully")
     return sdk
 
