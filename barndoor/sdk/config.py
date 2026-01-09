@@ -19,7 +19,7 @@ AUTH_CONFIG = {
     "production": {
         "issuer": "https://auth.trial.barndoor.ai/realms/barndoor-local",
         "audience": "https://barndoor.ai/",
-        "base_url": "https://{org_slug}.mcp.barndoor.ai",
+        "base_url": "https://{org_slug}.platform.barndoor.ai",
     },
     "uat": {
         "issuer": "https://auth.trial.barndooruat.com/realms/barndoor-local",
