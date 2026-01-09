@@ -40,12 +40,12 @@ AUTH_CONFIG = {
     "enterprise-uat": {
         "issuer": "https://auth.barndooruat.com",
         "audience": "https://barndoor.ai/",
-        "base_url": "https://{org_slug}.platform.barndooruat.com",
+        "base_url": "https://{org_slug}.mcp.barndooruat.com",
     },
     "enterprise-dev": {
         "issuer": "https://auth.barndoordev.com",
         "audience": "https://barndoor.ai/",
-        "base_url": "https://{org_slug}.platform.barndoordev.com",
+        "base_url": "https://{org_slug}.mcp.barndoordev.com",
     },
     # === Local development (Keycloak) ===
     "localdev": {
