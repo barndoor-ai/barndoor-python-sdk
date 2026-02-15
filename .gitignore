@@ -44,3 +44,6 @@ Thumbs.db
 # Local utility scripts / dumps
 sdk_dump.txt
 dump_sdk_files.py
+
+# Local dev scratch (may contain credentials)
+.dev/

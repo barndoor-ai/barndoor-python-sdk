@@ -17,7 +17,8 @@ dependencies = [
 ]
 
 [project.scripts]
-barndoor-login = "barndoor.sdk.cli_login:main"
+barndoor-login = "barndoor.sdk.cli_login:cli_main"
+barndoor-doctor = "barndoor.sdk.cli_doctor:cli_main"
 
 [project.optional-dependencies]
 examples = [
