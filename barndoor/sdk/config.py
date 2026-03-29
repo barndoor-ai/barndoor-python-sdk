@@ -9,6 +9,10 @@ from dotenv import load_dotenv
 from jose import jwt
 from pydantic import BaseModel, Field
 
+from .logging import get_logger
+
+logger = get_logger("config")
+
 # Baked-in auth configuration per environment
 # Users should NOT need to configure these - just set BARNDOOR_ENV
 #
@@ -157,6 +161,16 @@ class BarndoorConfig(BaseModel):
 
         # Get baked-in auth config for this environment
         auth_cfg = AUTH_CONFIG.get(env_mode, AUTH_CONFIG["production"])
+
+        # Warn when environment was explicitly overridden away from the default
+        if env_mode != "production" and (be or md):
+            source = "BARNDOOR_ENV" if be else "MODE"
+            logger.info(
+                "Using %s environment (from %s). Auth: %s",
+                env_mode,
+                source,
+                auth_cfg["issuer"],
+            )
 
         # Base configuration - auth is baked in, with optional override via AUTH_URL
         config_data = {

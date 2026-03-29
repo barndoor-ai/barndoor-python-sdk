@@ -381,7 +381,11 @@ class TokenManager:
 
 # Legacy functions for backward compatibility
 def load_user_token() -> str | None:
-    """Load user token from cache."""
+    """Load user token from cache.
+
+    If the cached token's ``iss`` claim doesn't match the current config's
+    ``auth_issuer``, the stale token is cleared automatically.
+    """
     token_file = Path.home() / ".barndoor" / "token.json"
     if not token_file.exists():
         return None
@@ -389,9 +393,37 @@ def load_user_token() -> str | None:
     try:
         with open(token_file) as f:
             data = json.load(f)
-            return data.get("access_token")
+            access_token = data.get("access_token")
     except Exception:
         return None
+
+    if not access_token:
+        return None
+
+    # Check for issuer mismatch (stale token from a different environment)
+    try:
+        claims = jwt.get_unverified_claims(access_token)
+        token_issuer = (claims.get("iss") or "").rstrip("/")
+
+        from .config import get_static_config
+
+        cfg = get_static_config()
+        config_issuer = cfg.auth_issuer.rstrip("/")
+
+        if token_issuer and config_issuer and token_issuer != config_issuer:
+            logger.warning(
+                "Cached token was issued by %s but current config points to %s. "
+                "Clearing stale token.",
+                token_issuer,
+                config_issuer,
+            )
+            clear_cached_token()
+            return None
+    except Exception:
+        # If we can't decode the token claims, let downstream validation handle it
+        pass
+
+    return access_token
 
 
 def save_user_token(token: str | dict) -> None:
