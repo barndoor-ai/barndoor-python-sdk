@@ -21,6 +21,9 @@ from .validation import (
 
 logger = get_logger("client")
 
+# API key prefix for validation
+_API_KEY_PREFIX = "bdai_"
+
 
 class BarndoorSDK:
     """Async client for interacting with the Barndoor Platform API.
@@ -30,8 +33,14 @@ class BarndoorSDK:
     - List available MCP servers
     - Validate user tokens
 
-    The client handles authentication automatically by including the user's
-    JWT token in all requests.
+    The client handles authentication automatically. Three auth methods are
+    supported (in order of simplicity):
+
+    1. **API key** (simplest) — pass ``api_key`` or set ``BARNDOOR_API_KEY``.
+       Keys start with ``bdai_``.  No OIDC/token refresh needed.
+    2. **JWT token** — pass ``barndoor_token`` or let the SDK load from cache.
+    3. **Interactive OIDC login** — use :pyfunc:`login_interactive` to open a
+       browser-based OAuth flow.
 
     Parameters
     ----------
@@ -39,19 +48,23 @@ class BarndoorSDK:
         Base URL of the Barndoor API (e.g., "https://api.barndoor.host")
     barndoor_token : str, optional
         User JWT token. If not provided, will attempt to load from local cache
+    api_key : str, optional
+        Barndoor API key (starts with ``bdai_``).  When provided (or
+        ``BARNDOOR_API_KEY`` env var is set) all OIDC logic is skipped.
     validate_token_on_init : bool, optional
         Whether to validate the token when creating the client. Default is True
 
     Raises
     ------
     ValueError
-        If no token is provided and none found in local cache
+        If no credential (api_key, token, or cached token) is available
     """
 
     def __init__(
         self,
         base_url: str,
         barndoor_token: str | None = None,
+        api_key: str | None = None,
         validate_token_on_init: bool = True,
         timeout: float = 30.0,
         max_retries: int = 3,
@@ -61,12 +74,30 @@ class BarndoorSDK:
         # Validate inputs
         self.base = validate_url(base_url, "API base URL").rstrip("/")
 
-        token = barndoor_token or load_user_token()
-        if not token:
-            raise ValueError(
-                "Barndoor user token not provided and none found in store. Run `barndoor-login`."
-            )
-        self.token = validate_token(token)
+        # --- Resolve credential (API key > explicit token > cached token) ---
+        resolved_api_key = api_key or os.getenv("BARNDOOR_API_KEY")
+        self._using_api_key = False
+
+        if resolved_api_key:
+            resolved_api_key = resolved_api_key.strip()
+            if not resolved_api_key.startswith(_API_KEY_PREFIX):
+                raise ConfigurationError(
+                    f"API key must start with '{_API_KEY_PREFIX}'. "
+                    "Check your BARNDOOR_API_KEY value."
+                )
+            self.token = resolved_api_key
+            self._using_api_key = True
+            logger.info("Using API key authentication")
+        else:
+            token = barndoor_token or load_user_token()
+            if not token:
+                raise ValueError(
+                    "No valid credential found. Options:\n"
+                    "  1. Set BARNDOOR_API_KEY for API key auth (simplest)\n"
+                    "  2. Pass barndoor_token= to BarndoorSDK()\n"
+                    "  3. Run 'barndoor-login' to authenticate via OIDC"
+                )
+            self.token = validate_token(token)
 
         timeout = validate_timeout(timeout, "Timeout")
         if not isinstance(max_retries, int) or max_retries < 0:
@@ -139,8 +170,11 @@ class BarndoorSDK:
         return result["valid"]
 
     async def ensure_valid_token(self) -> None:
-        """Ensure token is valid, validating if necessary."""
-        if self._token_validated:
+        """Ensure token is valid, validating if necessary.
+
+        API-key authenticated clients skip validation entirely.
+        """
+        if self._using_api_key or self._token_validated:
             return
 
         # Skip validation in non-production environments

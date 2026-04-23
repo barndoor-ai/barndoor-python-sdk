@@ -1,13 +1,18 @@
 """Minimal Barndoor → MCP demo using the SDK quick-start helpers.
 
-The only responsibilities left here are:
+Authentication
+--------------
+**Simplest (recommended for scripts/agents):**
+    export BARNDOOR_API_KEY="bdai_..."
+    See ``examples/api_key_auth.py`` for a standalone example.
 
-1. Load a local ``.env`` so we get *AGENT_CLIENT_ID / AGENT_CLIENT_SECRET*.
-2. Call the SDK helpers to
-   • login & obtain a ready ``BarndoorSDK``
-   • make sure the chosen server is connected
-   • prepare the MCP connection params (proxy URL + headers)
-3. Feed those params to **any** AI framework.
+**OIDC / interactive login (this example):**
+    Load a local ``.env`` with *AGENT_CLIENT_ID / AGENT_CLIENT_SECRET*.
+    The SDK helpers handle cached JWT, PKCE flow, and refresh automatically.
+
+This example uses the interactive OIDC path so it can initiate per-server
+OAuth connections (e.g. Salesforce). If you only need to call list_servers()
+or hit APIs that don't require per-server OAuth, API key auth is simpler.
 
 Environment
 -----------

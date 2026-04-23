@@ -27,7 +27,10 @@ class TokenError(AuthenticationError):
         if help_text:
             full_message += f" {help_text}"
         else:
-            full_message += " Run 'barndoor-login' to authenticate."
+            full_message += (
+                " Either set BARNDOOR_API_KEY for API key auth, "
+                "or run 'barndoor-login' to authenticate via OIDC."
+            )
 
         super().__init__(full_message)
 
