@@ -23,312 +23,312 @@ class RegistryServiceStub(object):
                 '/barndoor.registry.v1.RegistryService/ListMcpServers',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ListMcpServersRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ListMcpServersResponse.FromString,
-                _registered_method=True)
+                )
         self.GetMcpServer = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetMcpServer',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetMcpServerRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetMcpServerResponse.FromString,
-                _registered_method=True)
+                )
         self.GetMcpServerBySlug = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetMcpServerBySlug',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetMcpServerBySlugRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetMcpServerBySlugResponse.FromString,
-                _registered_method=True)
+                )
         self.CreateMcpServer = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/CreateMcpServer',
                 request_serializer=registry_dot_v1_dot_registry__pb2.CreateMcpServerRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.CreateMcpServerResponse.FromString,
-                _registered_method=True)
+                )
         self.UpdateMcpServer = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/UpdateMcpServer',
                 request_serializer=registry_dot_v1_dot_registry__pb2.UpdateMcpServerRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.UpdateMcpServerResponse.FromString,
-                _registered_method=True)
+                )
         self.DeleteMcpServer = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/DeleteMcpServer',
                 request_serializer=registry_dot_v1_dot_registry__pb2.DeleteMcpServerRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.DeleteMcpServerResponse.FromString,
-                _registered_method=True)
+                )
         self.GetMcpServerMetadata = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetMcpServerMetadata',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetMcpServerMetadataRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetMcpServerMetadataResponse.FromString,
-                _registered_method=True)
+                )
         self.GenerateUniqueSlug = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GenerateUniqueSlug',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GenerateUniqueSlugRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GenerateUniqueSlugResponse.FromString,
-                _registered_method=True)
+                )
         self.GetServersSummary = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetServersSummary',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetServersSummaryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetServersSummaryResponse.FromString,
-                _registered_method=True)
+                )
         self.ListServerDirectories = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ListServerDirectories',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ListServerDirectoriesRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ListServerDirectoriesResponse.FromString,
-                _registered_method=True)
+                )
         self.GetServerDirectory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetServerDirectory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetServerDirectoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetServerDirectoryResponse.FromString,
-                _registered_method=True)
+                )
         self.CreateServerDirectory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/CreateServerDirectory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.CreateServerDirectoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.CreateServerDirectoryResponse.FromString,
-                _registered_method=True)
+                )
         self.UpdateServerDirectory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/UpdateServerDirectory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.UpdateServerDirectoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.UpdateServerDirectoryResponse.FromString,
-                _registered_method=True)
+                )
         self.DeleteServerDirectory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/DeleteServerDirectory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.DeleteServerDirectoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.DeleteServerDirectoryResponse.FromString,
-                _registered_method=True)
+                )
         self.DiscoverServerDirectory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/DiscoverServerDirectory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.DiscoverServerDirectoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.DiscoverServerDirectoryResponse.FromString,
-                _registered_method=True)
+                )
         self.RegisterClient = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/RegisterClient',
                 request_serializer=registry_dot_v1_dot_registry__pb2.RegisterClientRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.RegisterClientResponse.FromString,
-                _registered_method=True)
+                )
         self.ListCategories = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ListCategories',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ListCategoriesRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ListCategoriesResponse.FromString,
-                _registered_method=True)
+                )
         self.ListDirectoryCategories = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ListDirectoryCategories',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ListDirectoryCategoriesRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ListDirectoryCategoriesResponse.FromString,
-                _registered_method=True)
+                )
         self.GetCategory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetCategory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetCategoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetCategoryResponse.FromString,
-                _registered_method=True)
+                )
         self.CreateCategory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/CreateCategory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.CreateCategoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.CreateCategoryResponse.FromString,
-                _registered_method=True)
+                )
         self.UpdateCategory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/UpdateCategory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.UpdateCategoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.UpdateCategoryResponse.FromString,
-                _registered_method=True)
+                )
         self.DeleteCategory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/DeleteCategory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.DeleteCategoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.DeleteCategoryResponse.FromString,
-                _registered_method=True)
+                )
         self.InitiateConnection = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/InitiateConnection',
                 request_serializer=registry_dot_v1_dot_registry__pb2.InitiateConnectionRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.InitiateConnectionResponse.FromString,
-                _registered_method=True)
+                )
         self.GetServerConnection = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetServerConnection',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetServerConnectionRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetServerConnectionResponse.FromString,
-                _registered_method=True)
+                )
         self.DeleteServerConnection = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/DeleteServerConnection',
                 request_serializer=registry_dot_v1_dot_registry__pb2.DeleteServerConnectionRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.DeleteServerConnectionResponse.FromString,
-                _registered_method=True)
+                )
         self.ListConnections = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ListConnections',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ListConnectionsRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ListConnectionsResponse.FromString,
-                _registered_method=True)
+                )
         self.GetConnection = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetConnection',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetConnectionRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetConnectionResponse.FromString,
-                _registered_method=True)
+                )
         self.GetConnectionByMcpId = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetConnectionByMcpId',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetConnectionByMcpIdRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetConnectionByMcpIdResponse.FromString,
-                _registered_method=True)
+                )
         self.DeleteConnection = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/DeleteConnection',
                 request_serializer=registry_dot_v1_dot_registry__pb2.DeleteConnectionRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.DeleteConnectionResponse.FromString,
-                _registered_method=True)
+                )
         self.GetToken = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetToken',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetTokenRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetTokenResponse.FromString,
-                _registered_method=True)
+                )
         self.GetTokenByConnection = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetTokenByConnection',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetTokenByConnectionRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetTokenByConnectionResponse.FromString,
-                _registered_method=True)
+                )
         self.GetTokenByUserContext = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetTokenByUserContext',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetTokenByUserContextRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetTokenByUserContextResponse.FromString,
-                _registered_method=True)
+                )
         self.GetTokenByAgentContext = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetTokenByAgentContext',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetTokenByAgentContextRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetTokenByAgentContextResponse.FromString,
-                _registered_method=True)
+                )
         self.OAuthCallback = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/OAuthCallback',
                 request_serializer=registry_dot_v1_dot_registry__pb2.OAuthCallbackRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.OAuthCallbackResponse.FromString,
-                _registered_method=True)
+                )
         self.ListApplications = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ListApplications',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ListApplicationsRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ListApplicationsResponse.FromString,
-                _registered_method=True)
+                )
         self.GetApplication = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetApplication',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetApplicationRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetApplicationResponse.FromString,
-                _registered_method=True)
+                )
         self.RegisterApplication = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/RegisterApplication',
                 request_serializer=registry_dot_v1_dot_registry__pb2.RegisterApplicationRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.RegisterApplicationResponse.FromString,
-                _registered_method=True)
+                )
         self.UnregisterApplication = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/UnregisterApplication',
                 request_serializer=registry_dot_v1_dot_registry__pb2.UnregisterApplicationRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.UnregisterApplicationResponse.FromString,
-                _registered_method=True)
+                )
         self.GetApplicationCounts = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetApplicationCounts',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetApplicationCountsRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetApplicationCountsResponse.FromString,
-                _registered_method=True)
+                )
         self.ListApplicationDirectories = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ListApplicationDirectories',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ListApplicationDirectoriesRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ListApplicationDirectoriesResponse.FromString,
-                _registered_method=True)
+                )
         self.GetApplicationDirectory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetApplicationDirectory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetApplicationDirectoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetApplicationDirectoryResponse.FromString,
-                _registered_method=True)
+                )
         self.CreateApplicationDirectory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/CreateApplicationDirectory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.CreateApplicationDirectoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.CreateApplicationDirectoryResponse.FromString,
-                _registered_method=True)
+                )
         self.UpdateApplicationDirectory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/UpdateApplicationDirectory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.UpdateApplicationDirectoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.UpdateApplicationDirectoryResponse.FromString,
-                _registered_method=True)
+                )
         self.DeleteApplicationDirectory = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/DeleteApplicationDirectory',
                 request_serializer=registry_dot_v1_dot_registry__pb2.DeleteApplicationDirectoryRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.DeleteApplicationDirectoryResponse.FromString,
-                _registered_method=True)
+                )
         self.ListImages = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ListImages',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ListImagesRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ListImagesResponse.FromString,
-                _registered_method=True)
+                )
         self.ServeImage = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ServeImage',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ServeImageRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ServeImageResponse.FromString,
-                _registered_method=True)
+                )
         self.OverwriteImage = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/OverwriteImage',
                 request_serializer=registry_dot_v1_dot_registry__pb2.OverwriteImageRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.OverwriteImageResponse.FromString,
-                _registered_method=True)
+                )
         self.DeleteImage = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/DeleteImage',
                 request_serializer=registry_dot_v1_dot_registry__pb2.DeleteImageRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.DeleteImageResponse.FromString,
-                _registered_method=True)
+                )
         self.UploadImage = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/UploadImage',
                 request_serializer=registry_dot_v1_dot_registry__pb2.UploadImageRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.UploadImageResponse.FromString,
-                _registered_method=True)
+                )
         self.ValidateImage = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ValidateImage',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ValidateImageRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ValidateImageResponse.FromString,
-                _registered_method=True)
+                )
         self.GetServerIcon = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetServerIcon',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetServerIconRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetServerIconResponse.FromString,
-                _registered_method=True)
+                )
         self.GetAgentIcon = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetAgentIcon',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetAgentIconRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetAgentIconResponse.FromString,
-                _registered_method=True)
+                )
         self.GetTooliqIcon = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetTooliqIcon',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetTooliqIconRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetTooliqIconResponse.FromString,
-                _registered_method=True)
+                )
         self.CreatePlaidLinkToken = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/CreatePlaidLinkToken',
                 request_serializer=registry_dot_v1_dot_registry__pb2.CreatePlaidLinkTokenRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.CreatePlaidLinkTokenResponse.FromString,
-                _registered_method=True)
+                )
         self.ExchangePlaidPublicToken = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/ExchangePlaidPublicToken',
                 request_serializer=registry_dot_v1_dot_registry__pb2.ExchangePlaidPublicTokenRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.ExchangePlaidPublicTokenResponse.FromString,
-                _registered_method=True)
+                )
         self.PlaidCallbackGet = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/PlaidCallbackGet',
                 request_serializer=registry_dot_v1_dot_registry__pb2.PlaidCallbackGetRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.PlaidCallbackGetResponse.FromString,
-                _registered_method=True)
+                )
         self.PlaidCallbackPost = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/PlaidCallbackPost',
                 request_serializer=registry_dot_v1_dot_registry__pb2.PlaidCallbackPostRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.PlaidCallbackPostResponse.FromString,
-                _registered_method=True)
+                )
         self.GetPlaidCountries = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetPlaidCountries',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetPlaidCountriesRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetPlaidCountriesResponse.FromString,
-                _registered_method=True)
+                )
         self.BootstrapTenantOAuth = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/BootstrapTenantOAuth',
                 request_serializer=registry_dot_v1_dot_registry__pb2.BootstrapTenantOAuthRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.BootstrapTenantOAuthResponse.FromString,
-                _registered_method=True)
+                )
         self.CheckOAuthStatus = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/CheckOAuthStatus',
                 request_serializer=registry_dot_v1_dot_registry__pb2.CheckOAuthStatusRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.CheckOAuthStatusResponse.FromString,
-                _registered_method=True)
+                )
         self.GetCliConfig = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/GetCliConfig',
                 request_serializer=registry_dot_v1_dot_registry__pb2.GetCliConfigRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.GetCliConfigResponse.FromString,
-                _registered_method=True)
+                )
         self.HealthCheck = channel.unary_unary(
                 '/barndoor.registry.v1.RegistryService/HealthCheck',
                 request_serializer=registry_dot_v1_dot_registry__pb2.HealthCheckRequest.SerializeToString,
                 response_deserializer=registry_dot_v1_dot_registry__pb2.HealthCheckResponse.FromString,
-                _registered_method=True)
+                )
 
 
 class RegistryServiceServicer(object):
@@ -1116,7 +1116,6 @@ def add_RegistryServiceServicer_to_server(servicer, server):
     generic_handler = grpc.method_handlers_generic_handler(
             'barndoor.registry.v1.RegistryService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('barndoor.registry.v1.RegistryService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -1139,21 +1138,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ListMcpServers',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ListMcpServers',
             registry_dot_v1_dot_registry__pb2.ListMcpServersRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ListMcpServersResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetMcpServer(request,
@@ -1166,21 +1155,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetMcpServer',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetMcpServer',
             registry_dot_v1_dot_registry__pb2.GetMcpServerRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetMcpServerResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetMcpServerBySlug(request,
@@ -1193,21 +1172,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetMcpServerBySlug',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetMcpServerBySlug',
             registry_dot_v1_dot_registry__pb2.GetMcpServerBySlugRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetMcpServerBySlugResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def CreateMcpServer(request,
@@ -1220,21 +1189,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/CreateMcpServer',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/CreateMcpServer',
             registry_dot_v1_dot_registry__pb2.CreateMcpServerRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.CreateMcpServerResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def UpdateMcpServer(request,
@@ -1247,21 +1206,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/UpdateMcpServer',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/UpdateMcpServer',
             registry_dot_v1_dot_registry__pb2.UpdateMcpServerRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.UpdateMcpServerResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DeleteMcpServer(request,
@@ -1274,21 +1223,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/DeleteMcpServer',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/DeleteMcpServer',
             registry_dot_v1_dot_registry__pb2.DeleteMcpServerRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.DeleteMcpServerResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetMcpServerMetadata(request,
@@ -1301,21 +1240,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetMcpServerMetadata',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetMcpServerMetadata',
             registry_dot_v1_dot_registry__pb2.GetMcpServerMetadataRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetMcpServerMetadataResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GenerateUniqueSlug(request,
@@ -1328,21 +1257,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GenerateUniqueSlug',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GenerateUniqueSlug',
             registry_dot_v1_dot_registry__pb2.GenerateUniqueSlugRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GenerateUniqueSlugResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetServersSummary(request,
@@ -1355,21 +1274,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetServersSummary',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetServersSummary',
             registry_dot_v1_dot_registry__pb2.GetServersSummaryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetServersSummaryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListServerDirectories(request,
@@ -1382,21 +1291,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ListServerDirectories',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ListServerDirectories',
             registry_dot_v1_dot_registry__pb2.ListServerDirectoriesRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ListServerDirectoriesResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetServerDirectory(request,
@@ -1409,21 +1308,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetServerDirectory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetServerDirectory',
             registry_dot_v1_dot_registry__pb2.GetServerDirectoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetServerDirectoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def CreateServerDirectory(request,
@@ -1436,21 +1325,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/CreateServerDirectory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/CreateServerDirectory',
             registry_dot_v1_dot_registry__pb2.CreateServerDirectoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.CreateServerDirectoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def UpdateServerDirectory(request,
@@ -1463,21 +1342,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/UpdateServerDirectory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/UpdateServerDirectory',
             registry_dot_v1_dot_registry__pb2.UpdateServerDirectoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.UpdateServerDirectoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DeleteServerDirectory(request,
@@ -1490,21 +1359,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/DeleteServerDirectory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/DeleteServerDirectory',
             registry_dot_v1_dot_registry__pb2.DeleteServerDirectoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.DeleteServerDirectoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DiscoverServerDirectory(request,
@@ -1517,21 +1376,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/DiscoverServerDirectory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/DiscoverServerDirectory',
             registry_dot_v1_dot_registry__pb2.DiscoverServerDirectoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.DiscoverServerDirectoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def RegisterClient(request,
@@ -1544,21 +1393,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/RegisterClient',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/RegisterClient',
             registry_dot_v1_dot_registry__pb2.RegisterClientRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.RegisterClientResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListCategories(request,
@@ -1571,21 +1410,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ListCategories',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ListCategories',
             registry_dot_v1_dot_registry__pb2.ListCategoriesRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ListCategoriesResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListDirectoryCategories(request,
@@ -1598,21 +1427,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ListDirectoryCategories',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ListDirectoryCategories',
             registry_dot_v1_dot_registry__pb2.ListDirectoryCategoriesRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ListDirectoryCategoriesResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetCategory(request,
@@ -1625,21 +1444,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetCategory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetCategory',
             registry_dot_v1_dot_registry__pb2.GetCategoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetCategoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def CreateCategory(request,
@@ -1652,21 +1461,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/CreateCategory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/CreateCategory',
             registry_dot_v1_dot_registry__pb2.CreateCategoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.CreateCategoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def UpdateCategory(request,
@@ -1679,21 +1478,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/UpdateCategory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/UpdateCategory',
             registry_dot_v1_dot_registry__pb2.UpdateCategoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.UpdateCategoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DeleteCategory(request,
@@ -1706,21 +1495,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/DeleteCategory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/DeleteCategory',
             registry_dot_v1_dot_registry__pb2.DeleteCategoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.DeleteCategoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def InitiateConnection(request,
@@ -1733,21 +1512,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/InitiateConnection',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/InitiateConnection',
             registry_dot_v1_dot_registry__pb2.InitiateConnectionRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.InitiateConnectionResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetServerConnection(request,
@@ -1760,21 +1529,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetServerConnection',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetServerConnection',
             registry_dot_v1_dot_registry__pb2.GetServerConnectionRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetServerConnectionResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DeleteServerConnection(request,
@@ -1787,21 +1546,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/DeleteServerConnection',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/DeleteServerConnection',
             registry_dot_v1_dot_registry__pb2.DeleteServerConnectionRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.DeleteServerConnectionResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListConnections(request,
@@ -1814,21 +1563,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ListConnections',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ListConnections',
             registry_dot_v1_dot_registry__pb2.ListConnectionsRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ListConnectionsResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetConnection(request,
@@ -1841,21 +1580,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetConnection',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetConnection',
             registry_dot_v1_dot_registry__pb2.GetConnectionRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetConnectionResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetConnectionByMcpId(request,
@@ -1868,21 +1597,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetConnectionByMcpId',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetConnectionByMcpId',
             registry_dot_v1_dot_registry__pb2.GetConnectionByMcpIdRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetConnectionByMcpIdResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DeleteConnection(request,
@@ -1895,21 +1614,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/DeleteConnection',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/DeleteConnection',
             registry_dot_v1_dot_registry__pb2.DeleteConnectionRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.DeleteConnectionResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetToken(request,
@@ -1922,21 +1631,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetToken',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetToken',
             registry_dot_v1_dot_registry__pb2.GetTokenRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetTokenResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetTokenByConnection(request,
@@ -1949,21 +1648,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetTokenByConnection',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetTokenByConnection',
             registry_dot_v1_dot_registry__pb2.GetTokenByConnectionRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetTokenByConnectionResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetTokenByUserContext(request,
@@ -1976,21 +1665,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetTokenByUserContext',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetTokenByUserContext',
             registry_dot_v1_dot_registry__pb2.GetTokenByUserContextRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetTokenByUserContextResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetTokenByAgentContext(request,
@@ -2003,21 +1682,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetTokenByAgentContext',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetTokenByAgentContext',
             registry_dot_v1_dot_registry__pb2.GetTokenByAgentContextRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetTokenByAgentContextResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def OAuthCallback(request,
@@ -2030,21 +1699,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/OAuthCallback',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/OAuthCallback',
             registry_dot_v1_dot_registry__pb2.OAuthCallbackRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.OAuthCallbackResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListApplications(request,
@@ -2057,21 +1716,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ListApplications',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ListApplications',
             registry_dot_v1_dot_registry__pb2.ListApplicationsRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ListApplicationsResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetApplication(request,
@@ -2084,21 +1733,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetApplication',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetApplication',
             registry_dot_v1_dot_registry__pb2.GetApplicationRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetApplicationResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def RegisterApplication(request,
@@ -2111,21 +1750,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/RegisterApplication',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/RegisterApplication',
             registry_dot_v1_dot_registry__pb2.RegisterApplicationRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.RegisterApplicationResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def UnregisterApplication(request,
@@ -2138,21 +1767,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/UnregisterApplication',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/UnregisterApplication',
             registry_dot_v1_dot_registry__pb2.UnregisterApplicationRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.UnregisterApplicationResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetApplicationCounts(request,
@@ -2165,21 +1784,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetApplicationCounts',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetApplicationCounts',
             registry_dot_v1_dot_registry__pb2.GetApplicationCountsRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetApplicationCountsResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListApplicationDirectories(request,
@@ -2192,21 +1801,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ListApplicationDirectories',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ListApplicationDirectories',
             registry_dot_v1_dot_registry__pb2.ListApplicationDirectoriesRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ListApplicationDirectoriesResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetApplicationDirectory(request,
@@ -2219,21 +1818,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetApplicationDirectory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetApplicationDirectory',
             registry_dot_v1_dot_registry__pb2.GetApplicationDirectoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetApplicationDirectoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def CreateApplicationDirectory(request,
@@ -2246,21 +1835,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/CreateApplicationDirectory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/CreateApplicationDirectory',
             registry_dot_v1_dot_registry__pb2.CreateApplicationDirectoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.CreateApplicationDirectoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def UpdateApplicationDirectory(request,
@@ -2273,21 +1852,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/UpdateApplicationDirectory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/UpdateApplicationDirectory',
             registry_dot_v1_dot_registry__pb2.UpdateApplicationDirectoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.UpdateApplicationDirectoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DeleteApplicationDirectory(request,
@@ -2300,21 +1869,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/DeleteApplicationDirectory',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/DeleteApplicationDirectory',
             registry_dot_v1_dot_registry__pb2.DeleteApplicationDirectoryRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.DeleteApplicationDirectoryResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListImages(request,
@@ -2327,21 +1886,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ListImages',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ListImages',
             registry_dot_v1_dot_registry__pb2.ListImagesRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ListImagesResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ServeImage(request,
@@ -2354,21 +1903,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ServeImage',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ServeImage',
             registry_dot_v1_dot_registry__pb2.ServeImageRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ServeImageResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def OverwriteImage(request,
@@ -2381,21 +1920,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/OverwriteImage',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/OverwriteImage',
             registry_dot_v1_dot_registry__pb2.OverwriteImageRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.OverwriteImageResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DeleteImage(request,
@@ -2408,21 +1937,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/DeleteImage',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/DeleteImage',
             registry_dot_v1_dot_registry__pb2.DeleteImageRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.DeleteImageResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def UploadImage(request,
@@ -2435,21 +1954,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/UploadImage',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/UploadImage',
             registry_dot_v1_dot_registry__pb2.UploadImageRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.UploadImageResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ValidateImage(request,
@@ -2462,21 +1971,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ValidateImage',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ValidateImage',
             registry_dot_v1_dot_registry__pb2.ValidateImageRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ValidateImageResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetServerIcon(request,
@@ -2489,21 +1988,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetServerIcon',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetServerIcon',
             registry_dot_v1_dot_registry__pb2.GetServerIconRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetServerIconResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetAgentIcon(request,
@@ -2516,21 +2005,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetAgentIcon',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetAgentIcon',
             registry_dot_v1_dot_registry__pb2.GetAgentIconRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetAgentIconResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetTooliqIcon(request,
@@ -2543,21 +2022,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetTooliqIcon',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetTooliqIcon',
             registry_dot_v1_dot_registry__pb2.GetTooliqIconRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetTooliqIconResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def CreatePlaidLinkToken(request,
@@ -2570,21 +2039,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/CreatePlaidLinkToken',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/CreatePlaidLinkToken',
             registry_dot_v1_dot_registry__pb2.CreatePlaidLinkTokenRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.CreatePlaidLinkTokenResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ExchangePlaidPublicToken(request,
@@ -2597,21 +2056,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/ExchangePlaidPublicToken',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/ExchangePlaidPublicToken',
             registry_dot_v1_dot_registry__pb2.ExchangePlaidPublicTokenRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.ExchangePlaidPublicTokenResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def PlaidCallbackGet(request,
@@ -2624,21 +2073,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/PlaidCallbackGet',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/PlaidCallbackGet',
             registry_dot_v1_dot_registry__pb2.PlaidCallbackGetRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.PlaidCallbackGetResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def PlaidCallbackPost(request,
@@ -2651,21 +2090,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/PlaidCallbackPost',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/PlaidCallbackPost',
             registry_dot_v1_dot_registry__pb2.PlaidCallbackPostRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.PlaidCallbackPostResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetPlaidCountries(request,
@@ -2678,21 +2107,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetPlaidCountries',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetPlaidCountries',
             registry_dot_v1_dot_registry__pb2.GetPlaidCountriesRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetPlaidCountriesResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def BootstrapTenantOAuth(request,
@@ -2705,21 +2124,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/BootstrapTenantOAuth',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/BootstrapTenantOAuth',
             registry_dot_v1_dot_registry__pb2.BootstrapTenantOAuthRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.BootstrapTenantOAuthResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def CheckOAuthStatus(request,
@@ -2732,21 +2141,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/CheckOAuthStatus',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/CheckOAuthStatus',
             registry_dot_v1_dot_registry__pb2.CheckOAuthStatusRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.CheckOAuthStatusResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetCliConfig(request,
@@ -2759,21 +2158,11 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/GetCliConfig',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/GetCliConfig',
             registry_dot_v1_dot_registry__pb2.GetCliConfigRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.GetCliConfigResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def HealthCheck(request,
@@ -2786,18 +2175,8 @@ class RegistryService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.registry.v1.RegistryService/HealthCheck',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.registry.v1.RegistryService/HealthCheck',
             registry_dot_v1_dot_registry__pb2.HealthCheckRequest.SerializeToString,
             registry_dot_v1_dot_registry__pb2.HealthCheckResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
