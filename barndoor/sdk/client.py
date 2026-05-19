@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 import os
+from dataclasses import dataclass
+from typing import Any
+
+from jose import jwt
 
 from ._http import HTTPClient, TimeoutConfig
 from .exceptions import ConfigurationError, HTTPError
@@ -20,6 +24,39 @@ from .validation import (
 )
 
 logger = get_logger("client")
+
+# Refresh M2M tokens this many seconds before their `exp` claim.
+_M2M_REFRESH_SKEW_SECONDS = 60
+
+
+@dataclass(frozen=True)
+class _ClientCredentials:
+    """Cached OAuth client-credentials parameters for token refresh."""
+
+    client_id: str
+    client_secret: str
+    audience: str
+    issuer: str | None = None
+    domain: str = ""
+
+
+def _token_near_expiry(token: str, skew_seconds: int) -> bool:
+    """Return True if *token*'s ``exp`` claim is within ``skew_seconds`` of now.
+
+    Returns True when the token cannot be parsed or has no ``exp`` claim so
+    that callers err on the side of refreshing rather than using a stale
+    credential.
+    """
+    import time
+
+    try:
+        claims = jwt.get_unverified_claims(token)
+    except Exception:
+        return True
+    exp = claims.get("exp")
+    if not isinstance(exp, (int, float)):
+        return True
+    return exp - time.time() <= skew_seconds
 
 
 class BarndoorSDK:
@@ -76,8 +113,80 @@ class BarndoorSDK:
         self._http = HTTPClient(timeout_config=timeout_config, max_retries=max_retries)
         self._token_validated = False
         self._closed = False
+        self._credentials: _ClientCredentials | None = None
 
         logger.info(f"Initialized BarndoorSDK for {self.base}")
+
+    @classmethod
+    async def from_client_credentials(
+        cls,
+        base_url: str,
+        *,
+        client_id: str,
+        client_secret: str,
+        audience: str,
+        issuer: str | None = None,
+        domain: str = "",
+        timeout: float = 30.0,
+        max_retries: int = 3,
+    ) -> BarndoorSDK:
+        """Build a :class:`BarndoorSDK` authenticated via OAuth client credentials.
+
+        Performs the OAuth 2.0 client-credentials grant against the Barndoor
+        auth server and returns a ready-to-use SDK instance. The credentials
+        are retained on the instance so the token can be refreshed
+        automatically when it nears expiry or when the API returns 401.
+
+        Parameters
+        ----------
+        base_url : str
+            Base URL of the Barndoor API (e.g., ``https://api.barndoor.host``).
+        client_id, client_secret : str
+            OAuth client credentials for a Barndoor M2M application.
+        audience : str
+            API audience identifier (e.g., ``https://barndoor.ai/``).
+        issuer : str, optional
+            OIDC issuer URL. Preferred over ``domain``; uses OIDC discovery
+            to locate the token endpoint.
+        domain : str, optional
+            Legacy auth domain (POSTs directly to ``https://{domain}/oauth/token``).
+            Provide either ``issuer`` or ``domain``.
+        timeout, max_retries
+            Forwarded to the underlying HTTP client.
+
+        Returns
+        -------
+        BarndoorSDK
+            An SDK instance whose ``token`` is a freshly issued M2M JWT.
+        """
+        from .auth import get_client_credentials_token_async
+
+        creds = _ClientCredentials(
+            client_id=client_id,
+            client_secret=client_secret,
+            audience=audience,
+            issuer=issuer,
+            domain=domain,
+        )
+        token = await get_client_credentials_token_async(
+            client_id=creds.client_id,
+            client_secret=creds.client_secret,
+            audience=creds.audience,
+            issuer=creds.issuer,
+            domain=creds.domain,
+        )
+        sdk = cls(
+            base_url,
+            barndoor_token=token,
+            validate_token_on_init=False,
+            timeout=timeout,
+            max_retries=max_retries,
+        )
+        sdk._credentials = creds
+        # M2M tokens come from the auth server we just called — no need to
+        # re-validate via the API on every request.
+        sdk._token_validated = True
+        return sdk
 
     async def __aenter__(self) -> BarndoorSDK:
         """Async context manager entry."""
@@ -104,12 +213,24 @@ class BarndoorSDK:
         """Make authenticated request with automatic token validation."""
         self._ensure_not_closed()
         await self.ensure_valid_token()
-
-        headers = kwargs.setdefault("headers", {})
-        headers["Authorization"] = f"Bearer {self.token}"
+        await self._maybe_refresh_m2m_token()
 
         url = f"{self.base}{path}"
-        return await self._http.request(method, url, **kwargs)
+
+        def _with_auth(kw: dict[str, Any]) -> dict[str, Any]:
+            headers = dict(kw.get("headers") or {})
+            headers["Authorization"] = f"Bearer {self.token}"
+            return {**kw, "headers": headers}
+
+        try:
+            return await self._http.request(method, url, **_with_auth(kwargs))
+        except HTTPError as exc:
+            # For M2M sessions, transparently refresh once on 401 and retry.
+            if exc.status_code == 401 and self._credentials is not None:
+                logger.info("M2M token rejected (401); refreshing and retrying once")
+                await self._refresh_m2m_token()
+                return await self._http.request(method, url, **_with_auth(kwargs))
+            raise
 
     # ---------------- Token validation -----------------
 
@@ -154,6 +275,37 @@ class BarndoorSDK:
         if not is_valid:
             raise ValueError("Token validation failed. Please re-authenticate.")
 
+        self._token_validated = True
+
+    async def _maybe_refresh_m2m_token(self) -> None:
+        """Refresh the M2M access token if it is near expiry.
+
+        No-op for SDK instances not created via :meth:`from_client_credentials`.
+        """
+        if self._credentials is None:
+            return
+        if not _token_near_expiry(self.token, _M2M_REFRESH_SKEW_SECONDS):
+            return
+        logger.debug("M2M token near expiry; refreshing")
+        await self._refresh_m2m_token()
+
+    async def _refresh_m2m_token(self) -> None:
+        """Unconditionally fetch a fresh M2M token using stored credentials."""
+        if self._credentials is None:
+            raise RuntimeError(
+                "refresh_m2m_token() called on an SDK not created via "
+                "BarndoorSDK.from_client_credentials()"
+            )
+        from .auth import get_client_credentials_token_async
+
+        creds = self._credentials
+        self.token = await get_client_credentials_token_async(
+            client_id=creds.client_id,
+            client_secret=creds.client_secret,
+            audience=creds.audience,
+            issuer=creds.issuer,
+            domain=creds.domain,
+        )
         self._token_validated = True
 
     # ---------------- Registry -----------------

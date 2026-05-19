@@ -26,6 +26,7 @@ from .auth_store import get_oidc_config
 
 __all__ = [
     "get_client_credentials_token",
+    "get_client_credentials_token_async",
     "build_authorization_url",
     "create_authorization_request",
     "start_local_callback_server",
@@ -106,26 +107,78 @@ def get_client_credentials_token(
     -----
     The token is returned directly without any caching. For user tokens
     that should be cached, use the interactive login flow instead.
+
+    This is a synchronous call (blocking httpx). For use inside an async
+    application or alongside :class:`barndoor.sdk.BarndoorSDK`, prefer
+    :func:`get_client_credentials_token_async`.
     """
-    # Use OIDC discovery if issuer provided, otherwise fall back to domain
+    token_endpoint, data = _client_credentials_request(
+        domain=domain,
+        client_id=client_id,
+        client_secret=client_secret,
+        audience=audience,
+        issuer=issuer,
+    )
+    resp = httpx.post(token_endpoint, data=data, timeout=15)
+    resp.raise_for_status()
+    return resp.json()["access_token"]
+
+
+async def get_client_credentials_token_async(
+    *,
+    client_id: str,
+    client_secret: str,
+    audience: str,
+    issuer: str | None = None,
+    domain: str = "",
+    timeout: float = 15.0,
+) -> str:
+    """Async variant of :func:`get_client_credentials_token`.
+
+    Performs the OAuth 2.0 client-credentials grant using ``httpx.AsyncClient``
+    so it does not block the event loop. Prefer this inside async code such as
+    :class:`barndoor.sdk.BarndoorSDK` integrations.
+
+    Parameters mirror the sync helper; ``issuer`` is the OIDC issuer URL
+    (OIDC discovery resolves the token endpoint) and ``domain`` is retained
+    only for backwards compatibility.
+    """
+    token_endpoint, data = _client_credentials_request(
+        domain=domain,
+        client_id=client_id,
+        client_secret=client_secret,
+        audience=audience,
+        issuer=issuer,
+    )
+    async with httpx.AsyncClient(timeout=timeout) as client:
+        resp = await client.post(token_endpoint, data=data)
+        resp.raise_for_status()
+        return resp.json()["access_token"]
+
+
+def _client_credentials_request(
+    *,
+    domain: str,
+    client_id: str,
+    client_secret: str,
+    audience: str,
+    issuer: str | None,
+) -> tuple[str, dict[str, str]]:
+    """Resolve the token endpoint and build the form body for the grant."""
     if issuer:
         oidc_config = get_oidc_config(issuer)
         token_endpoint = oidc_config.get("token_endpoint", f"{issuer}/oauth/token")
-    else:
+    elif domain:
         token_endpoint = f"https://{domain}/oauth/token"
+    else:
+        raise ValueError("Either 'issuer' or 'domain' must be provided")
 
-    resp = httpx.post(
-        token_endpoint,
-        data={
-            "grant_type": "client_credentials",
-            "client_id": client_id,
-            "client_secret": client_secret,
-            "audience": audience,
-        },
-        timeout=15,
-    )
-    resp.raise_for_status()
-    return resp.json()["access_token"]
+    return token_endpoint, {
+        "grant_type": "client_credentials",
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "audience": audience,
+    }
 
 
 def build_authorization_url(
