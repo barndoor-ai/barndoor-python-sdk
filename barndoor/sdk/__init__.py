@@ -26,6 +26,10 @@ Main Components
 - models: Pydantic models for API data structures
 """
 
+from .auth import (
+    get_client_credentials_token,
+    get_client_credentials_token_async,
+)
 from .client import BarndoorSDK
 from .exceptions import BarndoorError, ConnectionError, HTTPError
 from .models import AgentToken, ServerDetail, ServerSummary
@@ -47,6 +51,9 @@ __all__ = [
     "login_interactive",
     "ensure_server_connected",
     "make_mcp_connection_params",
+    # M2M / client-credentials helpers
+    "get_client_credentials_token",
+    "get_client_credentials_token_async",
 ]
 
 __version__ = "0.1.0"
