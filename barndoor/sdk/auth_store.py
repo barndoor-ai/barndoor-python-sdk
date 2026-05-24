@@ -6,8 +6,9 @@ import time
 from functools import lru_cache
 from pathlib import Path
 
+import jwt
 import httpx
-from jose import jwt
+from jwt import PyJWK
 
 from .exceptions import TokenError, TokenExpiredError
 from .logging import get_logger
@@ -182,19 +183,35 @@ def verify_jwt_local(token: str, issuer: str, audience: str) -> bool | None:
             logger.debug("No JWKS keys available, falling back to remote validation")
             return None
 
-        # Normalize issuer for comparison (with trailing slash)
         expected_issuer = issuer.rstrip("/") + "/"
 
-        # Verify the token
-        jwt.decode(
-            token,
-            keys,  # jose will pick the right key by 'kid'
-            audience=audience,
-            issuer=expected_issuer,
-            options={"verify_aud": True},
-        )
-        logger.debug("Token verified locally using JWKS")
-        return True
+        header = jwt.get_unverified_header(token)
+        token_kid = header.get("kid")
+
+        # Find matching key by kid, or try all keys
+        candidates = [k for k in keys if not token_kid or k.get("kid") == token_kid] or keys
+
+        last_err: Exception = ValueError("No matching JWKS key found")
+        for key_data in candidates:
+            try:
+                jwk = PyJWK(key_data)
+                jwt.decode(
+                    token,
+                    jwk.key,
+                    algorithms=[jwk.algorithm_name],
+                    audience=audience,
+                    issuer=expected_issuer,
+                )
+                logger.debug("Token verified locally using JWKS")
+                return True
+            except jwt.ExpiredSignatureError:
+                raise
+            except Exception as e:
+                last_err = e
+                continue
+
+        raise last_err
+
     except jwt.ExpiredSignatureError:
         logger.debug("Token expired (verified locally)")
         return False  # expired - let refresh path handle it
@@ -253,7 +270,13 @@ class TokenManager:
     def _should_refresh_token(self, token_data: dict) -> bool:
         """Check if token should be refreshed."""
         try:
-            claims = jwt.get_unverified_claims(token_data["access_token"])
+            token = token_data["access_token"]
+            header = jwt.get_unverified_header(token)
+            claims = jwt.decode(
+                token,
+                options={"verify_signature": False},
+                algorithms=[header.get("alg", "RS256")],
+            )
             exp = claims.get("exp", 0)
 
             # Refresh if token expires within 5 minutes

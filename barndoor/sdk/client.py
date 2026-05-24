@@ -6,7 +6,7 @@ import os
 from dataclasses import dataclass
 from typing import Any
 
-from jose import jwt
+import jwt
 
 from ._http import HTTPClient, TimeoutConfig
 from .exceptions import ConfigurationError, HTTPError
@@ -50,7 +50,12 @@ def _token_near_expiry(token: str, skew_seconds: int) -> bool:
     import time
 
     try:
-        claims = jwt.get_unverified_claims(token)
+        header = jwt.get_unverified_header(token)
+        claims = jwt.decode(
+            token,
+            options={"verify_signature": False},
+            algorithms=[header.get("alg", "RS256")],
+        )
     except Exception:
         return True
     exp = claims.get("exp")

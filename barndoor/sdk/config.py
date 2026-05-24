@@ -5,8 +5,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+import jwt
 from dotenv import load_dotenv
-from jose import jwt
 from pydantic import BaseModel, Field
 
 # Baked-in auth configuration per environment
@@ -138,7 +138,12 @@ class BarndoorConfig(BaseModel):
         # Apply JWT-based overrides if token provided
         if token:
             try:
-                claims = jwt.get_unverified_claims(token)
+                header = jwt.get_unverified_header(token)
+                claims = jwt.decode(
+                    token,
+                    options={"verify_signature": False},
+                    algorithms=[header.get("alg", "RS256")],
+                )
 
                 # Look for organization name in user claims first,
                 # then at top level, then fallback to org_id
