@@ -6,8 +6,8 @@ import time
 from functools import lru_cache
 from pathlib import Path
 
-import jwt
 import httpx
+import jwt
 from jwt import PyJWK
 
 from .exceptions import TokenError, TokenExpiredError
