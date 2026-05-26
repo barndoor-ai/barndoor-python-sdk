@@ -342,8 +342,15 @@ class TestJWTVerification:
         """Test successful local JWT verification."""
         with (
             patch("barndoor.sdk.auth_store._get_jwks", return_value=mock_jwks_keys),
+            patch(
+                "barndoor.sdk.auth_store.jwt.get_unverified_header",
+                return_value={"kid": "test-key-id", "alg": "RS256"},
+            ),
+            patch("barndoor.sdk.auth_store.PyJWK") as mock_pyjwk,
             patch("barndoor.sdk.auth_store.jwt.decode") as mock_decode,
         ):
+            mock_pyjwk.return_value.key = "mock-key"
+            mock_pyjwk.return_value.algorithm_name = "RS256"
             mock_decode.return_value = {"sub": "test-user"}
 
             result = verify_jwt_local("token", "test.auth0.com", "audience")
@@ -351,13 +358,20 @@ class TestJWTVerification:
 
     def test_verify_jwt_local_expired(self, mock_jwks_keys):
         """Test local JWT verification with expired token."""
-        from jose import jwt as jose_jwt
+        import jwt
 
         with (
             patch("barndoor.sdk.auth_store._get_jwks", return_value=mock_jwks_keys),
+            patch(
+                "barndoor.sdk.auth_store.jwt.get_unverified_header",
+                return_value={"kid": "test-key-id", "alg": "RS256"},
+            ),
+            patch("barndoor.sdk.auth_store.PyJWK") as mock_pyjwk,
             patch("barndoor.sdk.auth_store.jwt.decode") as mock_decode,
         ):
-            mock_decode.side_effect = jose_jwt.ExpiredSignatureError("Token expired")
+            mock_pyjwk.return_value.key = "mock-key"
+            mock_pyjwk.return_value.algorithm_name = "RS256"
+            mock_decode.side_effect = jwt.ExpiredSignatureError("Token expired")
 
             result = verify_jwt_local("token", "test.auth0.com", "audience")
             assert result is False
