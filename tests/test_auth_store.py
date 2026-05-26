@@ -342,7 +342,10 @@ class TestJWTVerification:
         """Test successful local JWT verification."""
         with (
             patch("barndoor.sdk.auth_store._get_jwks", return_value=mock_jwks_keys),
-            patch("barndoor.sdk.auth_store.jwt.get_unverified_header", return_value={"kid": "test-key-id", "alg": "RS256"}),
+            patch(
+                "barndoor.sdk.auth_store.jwt.get_unverified_header",
+                return_value={"kid": "test-key-id", "alg": "RS256"},
+            ),
             patch("barndoor.sdk.auth_store.PyJWK") as mock_pyjwk,
             patch("barndoor.sdk.auth_store.jwt.decode") as mock_decode,
         ):
@@ -359,7 +362,10 @@ class TestJWTVerification:
 
         with (
             patch("barndoor.sdk.auth_store._get_jwks", return_value=mock_jwks_keys),
-            patch("barndoor.sdk.auth_store.jwt.get_unverified_header", return_value={"kid": "test-key-id", "alg": "RS256"}),
+            patch(
+                "barndoor.sdk.auth_store.jwt.get_unverified_header",
+                return_value={"kid": "test-key-id", "alg": "RS256"},
+            ),
             patch("barndoor.sdk.auth_store.PyJWK") as mock_pyjwk,
             patch("barndoor.sdk.auth_store.jwt.decode") as mock_decode,
         ):
