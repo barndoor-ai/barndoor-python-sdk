@@ -87,6 +87,13 @@ constraint-dependencies = [
     "banks>2.4.1",
     "langchain-core>1.3.2",
     "langsmith>=0.8.0",
+    # CVE-2026-45829 ("ChromaToast", CVSS 10.0): pre-auth RCE in chromadb's
+    # FastAPI server, affecting >=1.0.0,<=1.5.9. No patched release exists yet
+    # (latest published is 1.5.9). chromadb reaches this project only
+    # transitively via crewai (examples/dev only) and the vulnerable FastAPI
+    # server is never run here, so it is not exploitable. Enable the constraint
+    # below once a fixed chromadb (>1.5.9) ships. See SECURITY.md.
+    # "chromadb>1.5.9",
 ]
 
 [build-system]
