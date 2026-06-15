@@ -23,52 +23,52 @@ class PolicyServiceStub(object):
                 '/barndoor.policy.v1.PolicyService/PublishCerbosPolicy',
                 request_serializer=policy_dot_v1_dot_policy__pb2.PublishCerbosPolicyRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.PublishCerbosPolicyResponse.FromString,
-                _registered_method=True)
+                )
         self.GetCerbosPolicy = channel.unary_unary(
                 '/barndoor.policy.v1.PolicyService/GetCerbosPolicy',
                 request_serializer=policy_dot_v1_dot_policy__pb2.GetCerbosPolicyRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.GetCerbosPolicyResponse.FromString,
-                _registered_method=True)
+                )
         self.ListCerbosPolicies = channel.unary_unary(
                 '/barndoor.policy.v1.PolicyService/ListCerbosPolicies',
                 request_serializer=policy_dot_v1_dot_policy__pb2.ListCerbosPoliciesRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.ListCerbosPoliciesResponse.FromString,
-                _registered_method=True)
+                )
         self.EnableCerbosPolicy = channel.unary_unary(
                 '/barndoor.policy.v1.PolicyService/EnableCerbosPolicy',
                 request_serializer=policy_dot_v1_dot_policy__pb2.EnableCerbosPolicyRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.EnableCerbosPolicyResponse.FromString,
-                _registered_method=True)
+                )
         self.DisableCerbosPolicy = channel.unary_unary(
                 '/barndoor.policy.v1.PolicyService/DisableCerbosPolicy',
                 request_serializer=policy_dot_v1_dot_policy__pb2.DisableCerbosPolicyRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.DisableCerbosPolicyResponse.FromString,
-                _registered_method=True)
+                )
         self.EnableRestriction = channel.unary_unary(
                 '/barndoor.policy.v1.PolicyService/EnableRestriction',
                 request_serializer=policy_dot_v1_dot_policy__pb2.EnableRestrictionRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.EnableRestrictionResponse.FromString,
-                _registered_method=True)
+                )
         self.DisableRestriction = channel.unary_unary(
                 '/barndoor.policy.v1.PolicyService/DisableRestriction',
                 request_serializer=policy_dot_v1_dot_policy__pb2.DisableRestrictionRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.DisableRestrictionResponse.FromString,
-                _registered_method=True)
+                )
         self.ReloadCerbosCache = channel.unary_unary(
                 '/barndoor.policy.v1.PolicyService/ReloadCerbosCache',
                 request_serializer=policy_dot_v1_dot_policy__pb2.ReloadCerbosCacheRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.ReloadCerbosCacheResponse.FromString,
-                _registered_method=True)
+                )
         self.CheckToolAccess = channel.unary_unary(
                 '/barndoor.policy.v1.PolicyService/CheckToolAccess',
                 request_serializer=policy_dot_v1_dot_policy__pb2.CheckToolAccessRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.CheckToolAccessResponse.FromString,
-                _registered_method=True)
+                )
         self.HealthCheck = channel.unary_unary(
                 '/barndoor.policy.v1.PolicyService/HealthCheck',
                 request_serializer=policy_dot_v1_dot_policy__pb2.HealthCheckRequest.SerializeToString,
                 response_deserializer=policy_dot_v1_dot_policy__pb2.HealthCheckResponse.FromString,
-                _registered_method=True)
+                )
 
 
 class PolicyServiceServicer(object):
@@ -210,7 +210,6 @@ def add_PolicyServiceServicer_to_server(servicer, server):
     generic_handler = grpc.method_handlers_generic_handler(
             'barndoor.policy.v1.PolicyService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('barndoor.policy.v1.PolicyService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -233,21 +232,11 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/PublishCerbosPolicy',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/PublishCerbosPolicy',
             policy_dot_v1_dot_policy__pb2.PublishCerbosPolicyRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.PublishCerbosPolicyResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetCerbosPolicy(request,
@@ -260,21 +249,11 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/GetCerbosPolicy',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/GetCerbosPolicy',
             policy_dot_v1_dot_policy__pb2.GetCerbosPolicyRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.GetCerbosPolicyResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ListCerbosPolicies(request,
@@ -287,21 +266,11 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/ListCerbosPolicies',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/ListCerbosPolicies',
             policy_dot_v1_dot_policy__pb2.ListCerbosPoliciesRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.ListCerbosPoliciesResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def EnableCerbosPolicy(request,
@@ -314,21 +283,11 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/EnableCerbosPolicy',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/EnableCerbosPolicy',
             policy_dot_v1_dot_policy__pb2.EnableCerbosPolicyRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.EnableCerbosPolicyResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DisableCerbosPolicy(request,
@@ -341,21 +300,11 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/DisableCerbosPolicy',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/DisableCerbosPolicy',
             policy_dot_v1_dot_policy__pb2.DisableCerbosPolicyRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.DisableCerbosPolicyResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def EnableRestriction(request,
@@ -368,21 +317,11 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/EnableRestriction',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/EnableRestriction',
             policy_dot_v1_dot_policy__pb2.EnableRestrictionRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.EnableRestrictionResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def DisableRestriction(request,
@@ -395,21 +334,11 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/DisableRestriction',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/DisableRestriction',
             policy_dot_v1_dot_policy__pb2.DisableRestrictionRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.DisableRestrictionResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def ReloadCerbosCache(request,
@@ -422,21 +351,11 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/ReloadCerbosCache',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/ReloadCerbosCache',
             policy_dot_v1_dot_policy__pb2.ReloadCerbosCacheRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.ReloadCerbosCacheResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def CheckToolAccess(request,
@@ -449,21 +368,11 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/CheckToolAccess',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/CheckToolAccess',
             policy_dot_v1_dot_policy__pb2.CheckToolAccessRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.CheckToolAccessResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def HealthCheck(request,
@@ -476,18 +385,8 @@ class PolicyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/barndoor.policy.v1.PolicyService/HealthCheck',
+        return grpc.experimental.unary_unary(request, target, '/barndoor.policy.v1.PolicyService/HealthCheck',
             policy_dot_v1_dot_policy__pb2.HealthCheckRequest.SerializeToString,
             policy_dot_v1_dot_policy__pb2.HealthCheckResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
