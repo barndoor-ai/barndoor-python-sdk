@@ -87,6 +87,9 @@ constraint-dependencies = [
     "banks>2.4.1",
     "langchain-core>1.3.2",
     "langsmith>=0.8.0",
+    # CVE-2026-25087: arbitrary code execution via malicious IPC payloads in
+    # pyarrow, affecting >=15.0.0,<23.0.1. Fixed in 23.0.1. See SECURITY.md.
+    "pyarrow>=23.0.1",
     # CVE-2026-45829 ("ChromaToast", CVSS 10.0): pre-auth RCE in chromadb's
     # FastAPI server, affecting >=1.0.0,<=1.5.9. No patched release exists yet
     # (latest published is 1.5.9). chromadb reaches this project only

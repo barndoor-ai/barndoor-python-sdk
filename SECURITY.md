@@ -18,6 +18,18 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 
 ## Known Issues
 
+### CVE-2026-25087 — pyarrow arbitrary code execution via IPC (remediated)
+
+- **Package:** `pyarrow` (affected `>= 15.0.0, < 23.0.1`), see [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-25087).
+- **Status:** Fixed in `pyarrow >= 23.0.1`. This project now pins
+  `pyarrow>=23.0.1` via `[tool.uv] constraint-dependencies`; the lock resolves
+  to `24.0.0`.
+- **Exposure in this SDK:** `pyarrow` is a transitive dependency pulled in via
+  `llama-index` under the optional `examples` extra. It is not a runtime
+  dependency of the published `barndoor` package.
+- **Remediation:** constraint `pyarrow>=23.0.1` added to `pyproject.toml`;
+  lock file updated to `24.0.0`. Closes dependabot PR #92.
+
 ### CVE-2026-45829 — ChromaDB "ChromaToast" pre-auth RCE (transitive, not exploitable here)
 
 - **Package:** `chromadb` (affected `>= 1.0.0, <= 1.5.9`), CVSS v4.0 10.0.
