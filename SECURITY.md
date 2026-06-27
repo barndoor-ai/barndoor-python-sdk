@@ -28,6 +28,19 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 - **Remediation:** lower bound bumped from `>=1.0.0` to `>=1.2.2` in
   `pyproject.toml`; lock file updated to `1.2.2`.
 
+### CVE-2026-22701 — filelock path traversal / symlink attack (remediated)
+
+- **Package:** `filelock` (affected `< 3.20.3`), see [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-22701).
+- **Status:** Fixed in `filelock >= 3.20.3`. This project now pins
+  `filelock>=3.20.3` via `[tool.uv] constraint-dependencies`; the lock resolves
+  to `3.29.4`.
+- **Exposure in this SDK:** `filelock` is a transitive dependency pulled in via
+  `huggingface-hub` and `virtualenv`, both of which appear only under the
+  optional `examples` extra and the `dev` dependency group. It is not a runtime
+  dependency of the published `barndoor` package.
+- **Remediation:** constraint `filelock>=3.20.3` added to `pyproject.toml`;
+  lock file updated to `3.29.4`.
+
 ### CVE-2026-25087 — pyarrow arbitrary code execution via IPC (remediated)
 
 - **Package:** `pyarrow` (affected `>= 15.0.0, < 23.0.1`), see [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-25087).
