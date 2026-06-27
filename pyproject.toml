@@ -13,7 +13,7 @@ dependencies = [
     "httpx[http2]>=0.27.2",
     "protobuf>=5.29.5",
     "pydantic>=2.10.6",
-    "python-dotenv>=1.0.0",
+    "python-dotenv>=1.2.2",
     "PyJWT[crypto]>=2.9.0",
     "typing-extensions>=4.12.2",
 ]
@@ -90,6 +90,10 @@ constraint-dependencies = [
     # CVE-2026-25087: arbitrary code execution via malicious IPC payloads in
     # pyarrow, affecting >=15.0.0,<23.0.1. Fixed in 23.0.1. See SECURITY.md.
     "pyarrow>=23.0.1",
+    # CVE-2026-22701: filelock path traversal / symlink attack, affecting
+    # <3.20.3. Fixed in 3.20.3. filelock reaches this project transitively via
+    # huggingface-hub and virtualenv (examples/dev only). See SECURITY.md.
+    "filelock>=3.20.3",
     # CVE-2026-45829 ("ChromaToast", CVSS 10.0): pre-auth RCE in chromadb's
     # FastAPI server, affecting >=1.0.0,<=1.5.9. No patched release exists yet
     # (latest published is 1.5.9). chromadb reaches this project only
