@@ -18,6 +18,16 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 
 ## Known Issues
 
+### CVE-2026-28684 — python-dotenv environment variable injection (remediated)
+
+- **Package:** `python-dotenv` (affected `< 1.2.2`), see [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-28684).
+- **Status:** Fixed in `python-dotenv >= 1.2.2`. This project now requires
+  `python-dotenv>=1.2.2` in `[project] dependencies`; the lock resolves to `1.2.2`.
+- **Exposure in this SDK:** `python-dotenv` is a direct runtime dependency used
+  to load environment variables (API keys, configuration) from `.env` files.
+- **Remediation:** lower bound bumped from `>=1.0.0` to `>=1.2.2` in
+  `pyproject.toml`; lock file updated to `1.2.2`.
+
 ### CVE-2026-25087 — pyarrow arbitrary code execution via IPC (remediated)
 
 - **Package:** `pyarrow` (affected `>= 15.0.0, < 23.0.1`), see [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-25087).
