@@ -35,7 +35,7 @@ pip install barndoor
 pip install -e barndoor[dev]
 ```
 
-Python ≥ 3.10 is required.
+Python ≥ 3.11 is required.
 
 ---
 
