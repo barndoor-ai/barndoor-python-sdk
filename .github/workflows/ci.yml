@@ -24,9 +24,7 @@ jobs:
         run: uv sync --frozen --all-extras --dev --python 3.13
 
       - name: Run pre-commit on all files
-        uses: pre-commit/action@646c83fcd040023954eafda54b4db0192ce70507 # v3.0.0
-        with:
-          extra_args: --all-files --verbose
+        run: uv run --frozen --no-sync pre-commit run --all-files --verbose
         env:
           SKIP: no-commit-to-branch
 

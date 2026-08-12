@@ -18,6 +18,54 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 
 ## Known Issues
 
+### GHSA-xf7x-x43h-rpqh — json-repair circular `$ref` unbounded CPU DoS (remediated)
+
+- **Package:** `json-repair` (affected `< 0.60.1`), see
+  [GHSA-xf7x-x43h-rpqh](https://github.com/advisories/GHSA-xf7x-x43h-rpqh).
+- **Status:** Fixed in `json-repair >= 0.60.1`. This project now pins
+  `json-repair>=0.60.1` via `[tool.uv] constraint-dependencies`; the lock
+  resolves to `0.60.1`.
+- **Exposure in this SDK:** `json-repair` is a transitive dependency pulled in
+  via `crewai`, which appears only under the optional `examples` extra and the
+  `dev` dependency group. It is not a runtime dependency of the published
+  `barndoor` package.
+- **Remediation:** constraint `json-repair>=0.60.1` added to `pyproject.toml`;
+  lock file updated to `0.60.1`.
+
+### CVE-2026-52870 — MCP experimental tasks feature lacks session ownership check (remediated)
+
+- **Package:** `mcp` (affected `< 1.27.2`, CVSS 7.6), see
+  [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-52870).
+- **Status:** Fixed in `mcp >= 1.27.2`. This project now pins `mcp>=1.28.1` via
+  `[tool.uv] constraint-dependencies` (covers this CVE and two others below);
+  the lock resolves to `1.28.1`.
+- **Exposure in this SDK:** `mcp` is a transitive dependency pulled in via
+  `crewai`, `langchain-mcp-adapters`, and `llama-index-tools-mcp`, all under the
+  optional `examples` extra and/or the `dev` dependency group. It is not a
+  runtime dependency of the published `barndoor` package.
+- **Remediation:** constraint `mcp>=1.28.1` added to `pyproject.toml`; lock file
+  updated to `1.28.1`.
+
+### CVE-2026-52869 — MCP SSE/Streamable HTTP session hijack via ID-only lookup (remediated)
+
+- **Package:** `mcp` (affected `< 1.27.2`, CVSS 7.1), see
+  [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-52869).
+- **Status:** Fixed in `mcp >= 1.27.2`. Covered by the `mcp>=1.28.1` constraint
+  above; the lock resolves to `1.28.1`.
+- **Exposure in this SDK:** same as CVE-2026-52870 — transitive via examples/dev
+  only.
+- **Remediation:** see CVE-2026-52870 above.
+
+### CVE-2026-59950 — MCP deprecated WebSocket transport lacks Host/Origin validation (remediated)
+
+- **Package:** `mcp` (affected `< 1.28.1`), see
+  [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-59950).
+- **Status:** Fixed in `mcp >= 1.28.1`. Covered by the `mcp>=1.28.1` constraint
+  above; the lock resolves to `1.28.1`.
+- **Exposure in this SDK:** same as CVE-2026-52870 — transitive via examples/dev
+  only.
+- **Remediation:** see CVE-2026-52870 above.
+
 ### CVE-2026-28684 — python-dotenv environment variable injection (remediated)
 
 - **Package:** `python-dotenv` (affected `< 1.2.2`), see [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-28684).

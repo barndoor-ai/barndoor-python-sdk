@@ -101,6 +101,20 @@ constraint-dependencies = [
     # server is never run here, so it is not exploitable. Enable the constraint
     # below once a fixed chromadb (>1.5.9) ships. See SECURITY.md.
     # "chromadb>1.5.9",
+    # GHSA-xf7x-x43h-rpqh: circular $ref unbounded CPU DoS in json-repair,
+    # affecting <0.60.1. Fixed in 0.60.1. json-repair reaches this project
+    # transitively via crewai (examples/dev only). See SECURITY.md.
+    "json-repair>=0.60.1",
+    # CVE-2026-52870: MCP experimental tasks feature lacks session ownership
+    # check (CVSS 7.6), affecting <1.27.2.
+    # CVE-2026-52869: MCP SSE/Streamable HTTP session hijack via ID-only
+    # lookup (CVSS 7.1), affecting <1.27.2.
+    # CVE-2026-59950: MCP deprecated WebSocket transport lacks Host/Origin
+    # validation, affecting <1.28.1.
+    # Fixed in 1.28.1. mcp reaches this project transitively via crewai,
+    # langchain-mcp-adapters, and llama-index-tools-mcp (examples/dev only).
+    # See SECURITY.md.
+    "mcp>=1.28.1",
 ]
 
 [build-system]
