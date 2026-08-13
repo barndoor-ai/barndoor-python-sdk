@@ -18,6 +18,45 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 
 ## Known Issues
 
+### CVE-2026-54058 et al. — pillow memory-safety, decompression-bomb and DoS issues (remediated)
+
+- **Package:** `pillow` (affected `< 12.3.0`). Covers CVE-2026-54058,
+  CVE-2026-54059, CVE-2026-54060, CVE-2026-55379, CVE-2026-55380,
+  CVE-2026-55798, CVE-2026-59197, CVE-2026-59198, CVE-2026-59199,
+  CVE-2026-59200, CVE-2026-59203, CVE-2026-59204 and CVE-2026-59205 — a mix of
+  heap out-of-bounds reads/writes (`Image.paste()`/`Image.crop()`,
+  `ImageCmsTransform.apply()`, `ImageFilter.RankFilter`, McIdas AREA mmap
+  path), missing `_decompression_bomb_check()` calls in the BDF/PCF/GD font and
+  image loaders, OS command injection in `WindowsViewer.get_command()`, and
+  several parser DoS paths.
+- **Status:** All fixed in `pillow >= 12.3.0`. This project now pins
+  `pillow>=12.3.0` via `[tool.uv] constraint-dependencies`; the lock resolves
+  to `12.3.0`.
+- **Exposure in this SDK:** `pillow` is a transitive dependency, reached via
+  `llama-index-core` and via `pdfplumber` -> `crewai`, which appear only under
+  the optional `examples` extra and the `dev` dependency group. It is not a
+  runtime dependency of the published `barndoor` package.
+- **Remediation:** constraint `pillow>=12.3.0` added to `pyproject.toml`; lock
+  file updated `12.2.0` -> `12.3.0`. Tracked in BCP-3713.
+
+### CVE-2026-12061 et al. — nltk path traversal, ReDoS and SSRF bypass (remediated)
+
+- **Package:** `nltk` (affected `<= 3.9.4`). Covers CVE-2026-12061 (ReDoS in
+  the `ReviewsCorpusReader` FEATURES regex), CVE-2026-12072 and CVE-2026-12074
+  (path traversal in `NKJPCorpusReader` and `FramenetCorpusReader.frame()`
+  allowing arbitrary local file read), CVE-2026-12075 (DNS-rebinding SSRF
+  filter bypass in `nltk.pathsec.urlopen`), and CVE-2026-54293 /
+  CVE-2026-12243 (URL-encoded path traversal in `nltk.data.load()`, the latter
+  being an incomplete fix for the former).
+- **Status:** All fixed in `nltk >= 3.10.0` — there is no fixed release on the
+  `3.9.x` line. This project now pins `nltk>=3.10.0` via
+  `[tool.uv] constraint-dependencies`; the lock resolves to `3.10.3`.
+- **Exposure in this SDK:** `nltk` is a transitive dependency pulled in via
+  `llama-index` and `llama-index-core` under the optional `examples` extra. It
+  is not a runtime dependency of the published `barndoor` package.
+- **Remediation:** constraint `nltk>=3.10.0` added to `pyproject.toml`; lock
+  file updated `3.9.4` -> `3.10.3`. Tracked in BCP-3713.
+
 ### GHSA-xf7x-x43h-rpqh — json-repair circular `$ref` unbounded CPU DoS (remediated)
 
 - **Package:** `json-repair` (affected `< 0.60.1`), see
