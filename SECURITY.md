@@ -57,6 +57,22 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 - **Remediation:** constraint `nltk>=3.10.0` added to `pyproject.toml`; lock
   file updated `3.9.4` -> `3.10.3`. Tracked in BCP-3713.
 
+### CVE-2026-59884 et al. — pyasn1 ASN.1 parsing vulnerabilities (remediated)
+
+- **Package:** `pyasn1` (affected `< 0.6.4`). Covers CVE-2026-59884 (integer
+  overflow in tag decoding), CVE-2026-59885 (unbounded memory allocation via
+  crafted indefinite-length encodings), and CVE-2026-59886 (stack exhaustion
+  through deeply nested constructed types).
+- **Status:** All fixed in `pyasn1 >= 0.6.4`. This project pins `pyasn1>=0.6.4`
+  via `[tool.uv] constraint-dependencies` as a defensive measure.
+- **Exposure in this SDK:** `pyasn1` previously reached this project transitively
+  via `cryptography` (pulled in by `PyJWT[crypto]`) but is **no longer in the
+  resolved dependency tree** as of the current lock file. The constraint is
+  retained so that if a future dependency change reintroduces `pyasn1`, it will
+  resolve to a safe version.
+- **Remediation:** constraint `pyasn1>=0.6.4` added to `pyproject.toml`. No lock
+  file change required (package not in tree). Tracked in BCP-3713.
+
 ### GHSA-xf7x-x43h-rpqh — json-repair circular `$ref` unbounded CPU DoS (remediated)
 
 - **Package:** `json-repair` (affected `< 0.60.1`), see

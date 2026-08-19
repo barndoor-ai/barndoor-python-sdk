@@ -115,6 +115,14 @@ constraint-dependencies = [
     # langchain-mcp-adapters, and llama-index-tools-mcp (examples/dev only).
     # See SECURITY.md.
     "mcp>=1.28.1",
+    # CVE-2026-59884, CVE-2026-59885, CVE-2026-59886: ASN.1 parsing
+    # vulnerabilities in pyasn1 — integer overflow in tag decoding, unbounded
+    # memory allocation via crafted indefinite-length encodings, and stack
+    # exhaustion through deeply nested constructed types — affecting <0.6.4.
+    # Fixed in 0.6.4. pyasn1 previously reached this project transitively via
+    # cryptography (PyJWT[crypto]) but is no longer in the resolved dependency
+    # tree; this constraint is retained defensively. See SECURITY.md.
+    "pyasn1>=0.6.4",
     # CVE-2026-54058, CVE-2026-54059, CVE-2026-54060, CVE-2026-55379,
     # CVE-2026-55380, CVE-2026-55798, CVE-2026-59197, CVE-2026-59198,
     # CVE-2026-59199, CVE-2026-59200, CVE-2026-59203, CVE-2026-59204,

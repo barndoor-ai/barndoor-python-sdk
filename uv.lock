@@ -19,6 +19,7 @@ constraints = [
     { name = "nltk", specifier = ">=3.10.0" },
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "pyarrow", specifier = ">=23.0.1" },
+    { name = "pyasn1", specifier = ">=0.6.4" },
     { name = "python-multipart", specifier = ">=0.0.27" },
     { name = "urllib3", specifier = ">=2.7.0" },
 ]
