@@ -18,6 +18,36 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 
 ## Known Issues
 
+### CVE-2026-69247 — cryptography Bleichenbacher oracle in PKCS#7 decryption (remediated)
+
+- **Package:** `cryptography` (affected `>= 44.0.0, < 50.0.0`), see
+  [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-69247). CVSS 4.0 **8.2**
+  (HIGH). CWE-208 (Observable Timing Discrepancy).
+- **Status:** Fixed in `cryptography >= 50.0.0`. This project now pins
+  `cryptography>=50.0.0` via `[tool.uv] constraint-dependencies`.
+- **Exposure in this SDK:** `cryptography` is a transitive dependency pulled in
+  via `PyJWT[crypto]`, which is a direct runtime dependency of the published
+  `barndoor` package. However, the vulnerable PKCS#7 decryption functions
+  (`pkcs7_decrypt_der`, `pkcs7_decrypt_pem`, `pkcs7_decrypt_smime`) are never
+  called by this SDK — the SDK uses `cryptography` only for JWT signature
+  verification via PyJWT.
+- **Remediation:** constraint `cryptography>=50.0.0` added to `pyproject.toml`;
+  lock file updated. Tracked in BCP-3799.
+
+### CVE-2026-69244 — aiohttp out-of-bounds heap read in C HTTP response parser (remediated)
+
+- **Package:** `aiohttp` (affected `< 3.14.3`), see
+  [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-69244). CVSS 4.0 **7.1**
+  (HIGH). CWE-125 (Out-of-bounds Read).
+- **Status:** Fixed in `aiohttp >= 3.14.3`. This project now pins
+  `aiohttp>=3.14.3` via `[tool.uv] constraint-dependencies`.
+- **Exposure in this SDK:** `aiohttp` is a transitive dependency pulled in via
+  `crewai` and `langchain` dependencies, which appear only under the optional
+  `examples` extra and the `dev` dependency group. It is not a runtime
+  dependency of the published `barndoor` package.
+- **Remediation:** constraint `aiohttp>=3.14.3` added to `pyproject.toml`;
+  lock file updated. Tracked in BCP-3799.
+
 ### CVE-2026-54058 et al. — pillow memory-safety, decompression-bomb and DoS issues (remediated)
 
 - **Package:** `pillow` (affected `< 12.3.0`). Covers CVE-2026-54058,

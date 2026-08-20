@@ -115,6 +115,17 @@ constraint-dependencies = [
     # langchain-mcp-adapters, and llama-index-tools-mcp (examples/dev only).
     # See SECURITY.md.
     "mcp>=1.28.1",
+    # CVE-2026-69247: Bleichenbacher oracle in pyca/cryptography PKCS#7
+    # decryption — pkcs7_decrypt_{der,pem,smime} leak RSA padding outcome via
+    # distinguishable error paths and timing, affecting >=44.0.0,<50.0.0.
+    # Fixed in 50.0.0. cryptography reaches this project via PyJWT[crypto].
+    # See SECURITY.md.
+    "cryptography>=50.0.0",
+    # CVE-2026-69244: out-of-bounds heap read in aiohttp's C HTTP response
+    # parser error path (malformed chunked response), affecting <3.14.3.
+    # Fixed in 3.14.3. aiohttp reaches this project transitively via crewai
+    # and langchain dependencies (examples/dev only). See SECURITY.md.
+    "aiohttp>=3.14.3",
     # CVE-2026-59884, CVE-2026-59885, CVE-2026-59886: ASN.1 parsing
     # vulnerabilities in pyasn1 — integer overflow in tag decoding, unbounded
     # memory allocation via crafted indefinite-length encodings, and stack
