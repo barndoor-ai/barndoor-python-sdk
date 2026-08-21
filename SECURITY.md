@@ -186,6 +186,36 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 - **Remediation:** constraint `pyarrow>=23.0.1` added to `pyproject.toml`;
   lock file updated to `24.0.0`. Closes dependabot PR #92.
 
+### CVE-2026-59890 — setuptools MANIFEST.in Unicode normalization bypass (remediated)
+
+- **Package:** `setuptools` (affected `< 83.0.0`), see
+  [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-59890),
+  [GHSA-h35f-9h28-mq5c](https://github.com/advisories/GHSA-h35f-9h28-mq5c).
+  Severity: MEDIUM.
+- **Status:** Fixed in `setuptools >= 83.0.0`. This project now pins
+  `setuptools>=83.0.0` via `[tool.uv] constraint-dependencies`.
+- **Exposure in this SDK:** `setuptools` is a build-time dependency, referenced
+  under `[tool.setuptools]` for package discovery configuration. The MANIFEST.in
+  normalization bypass could cause excluded non-ASCII-named files to leak into
+  source distributions. This SDK does not rely on MANIFEST.in exclusion of
+  non-ASCII filenames, so the risk is low.
+- **Remediation:** constraint `setuptools>=83.0.0` added to `pyproject.toml`;
+  lock file updated `82.0.1` -> `83.0.0`. Tracked in BCP-3802.
+
+### CVE-2026-71554 — h2 duplicate Host header smuggling (remediated)
+
+- **Package:** `h2` (affected `<= 4.4.0`), see
+  [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-71554). Severity: MODERATE.
+- **Status:** Fixed in `h2 >= 4.4.1`. This project now pins `h2>=4.4.1` via
+  `[tool.uv] constraint-dependencies`.
+- **Exposure in this SDK:** `h2` is a transitive runtime dependency pulled in
+  via `httpx[http2]`, which is a direct dependency of the published `barndoor`
+  package. The vulnerability allows HTTP request smuggling via duplicate Host
+  headers in HTTP/2 requests. While the SDK uses `httpx` for API communication,
+  exploitation requires a malicious intermediary proxy.
+- **Remediation:** constraint `h2>=4.4.1` added to `pyproject.toml`; lock file
+  updated `4.3.0` -> `4.4.1`. Tracked in BCP-3802.
+
 ### CVE-2026-45829 — ChromaDB "ChromaToast" pre-auth RCE (transitive, not exploitable here)
 
 - **Package:** `chromadb` (affected `>= 1.0.0, <= 1.5.9`), CVSS v4.0 10.0.
