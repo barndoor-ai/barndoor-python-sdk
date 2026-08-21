@@ -134,6 +134,15 @@ constraint-dependencies = [
     # cryptography (PyJWT[crypto]) but is no longer in the resolved dependency
     # tree; this constraint is retained defensively. See SECURITY.md.
     "pyasn1>=0.6.4",
+    # CVE-2026-59890: MANIFEST.in Unicode normalization bypass in setuptools,
+    # allowing excluded non-ASCII-named files to leak into sdists, affecting
+    # <83.0.0. Fixed in 83.0.0. setuptools reaches this project as a build-time
+    # dependency (via hatchling). See SECURITY.md.
+    "setuptools>=83.0.0",
+    # CVE-2026-71554: duplicate Host header smuggling in h2, affecting <=4.4.0.
+    # Fixed in 4.4.1. h2 reaches this project via httpx[http2] (runtime
+    # dependency). See SECURITY.md.
+    "h2>=4.4.1",
     # CVE-2026-54058, CVE-2026-54059, CVE-2026-54060, CVE-2026-55379,
     # CVE-2026-55380, CVE-2026-55798, CVE-2026-59197, CVE-2026-59198,
     # CVE-2026-59199, CVE-2026-59200, CVE-2026-59203, CVE-2026-59204,
