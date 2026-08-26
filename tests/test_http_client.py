@@ -60,6 +60,66 @@ class TestHTTPClient:
             mock_client.request.assert_called_once_with("GET", "https://api.test.com/endpoint")
 
     @pytest.mark.asyncio
+    async def test_204_no_content_returns_empty_mapping(self):
+        """A 204 is a success with no body, not malformed JSON.
+
+        ``.json()`` raises on an empty body, and the broad handler in request() would
+        have re-raised that as an opaque RuntimeError("HTTP request failed") — reporting
+        a perfectly successful DELETE as a client bug. The notification-channel DELETE
+        (BCP-3758) is the first 204 endpoint this SDK calls.
+        """
+        mock_response = MagicMock()
+        mock_response.status_code = 204
+        mock_response.content = b""
+        mock_response.raise_for_status.return_value = None
+        # Belt-and-braces: if the guard regressed, .json() must not paper over it.
+        mock_response.json.side_effect = AssertionError("json() must not be called on a 204")
+
+        with patch("barndoor.sdk._http.httpx.AsyncClient") as mock_client_class:
+            mock_client = AsyncMock()
+            mock_client.request.return_value = mock_response
+            mock_client_class.return_value = mock_client
+
+            client = HTTPClient()
+            result = await client.request("DELETE", "https://api.test.com/thing/1")
+
+            assert result == {}
+
+    @pytest.mark.asyncio
+    async def test_empty_body_with_200_returns_empty_mapping(self):
+        """Same guard for a 200 that happens to carry no body."""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = b""
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.side_effect = AssertionError(
+            "json() must not be called on an empty body"
+        )
+
+        with patch("barndoor.sdk._http.httpx.AsyncClient") as mock_client_class:
+            mock_client = AsyncMock()
+            mock_client.request.return_value = mock_response
+            mock_client_class.return_value = mock_client
+
+            assert await HTTPClient().request("GET", "https://api.test.com/empty") == {}
+
+    @pytest.mark.asyncio
+    async def test_body_bearing_response_still_parses_json(self):
+        """The guard must not swallow real payloads."""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = b'{"a": 1}'
+        mock_response.json.return_value = {"a": 1}
+        mock_response.raise_for_status.return_value = None
+
+        with patch("barndoor.sdk._http.httpx.AsyncClient") as mock_client_class:
+            mock_client = AsyncMock()
+            mock_client.request.return_value = mock_response
+            mock_client_class.return_value = mock_client
+
+            assert await HTTPClient().request("GET", "https://api.test.com/thing") == {"a": 1}
+
+    @pytest.mark.asyncio
     async def test_http_error_handling(self):
         """Test HTTP error handling."""
         mock_response = MagicMock()

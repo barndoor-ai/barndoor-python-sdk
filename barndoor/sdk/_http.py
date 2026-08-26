@@ -61,6 +61,13 @@ class HTTPClient:
             try:
                 resp = await client.request(method, url, **kwargs)
                 resp.raise_for_status()
+                # A 204 (or any empty body) is a legitimate success, not JSON. Calling
+                # .json() on it raises, and the broad handler below would surface that as
+                # an opaque RuntimeError("HTTP request failed") — masking a successful
+                # call as a client bug. Return an empty mapping so callers whose endpoint
+                # has no response body (e.g. DELETE) just get {}.
+                if resp.status_code == 204 or not resp.content:
+                    return {}
                 return resp.json()
             except httpx.TimeoutException as exc:
                 # Map timeouts to our TimeoutError and do not retry

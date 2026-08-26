@@ -32,7 +32,18 @@ from .auth import (
 )
 from .client import BarndoorSDK
 from .exceptions import BarndoorError, ConnectionError, HTTPError
-from .models import AgentToken, ServerDetail, ServerSummary
+from .models import (
+    AgentToken,
+    AlertTypeOption,
+    Channel,
+    ChannelOptions,
+    ChannelSubscription,
+    ChannelTestResult,
+    LabeledOption,
+    ServerDetail,
+    ServerSummary,
+    WebhookSecret,
+)
 from .quickstart import (
     ensure_server_connected,
     login_interactive,
@@ -47,6 +58,14 @@ __all__ = [
     "ServerSummary",
     "ServerDetail",
     "AgentToken",
+    # notification channels (BCP-3758)
+    "Channel",
+    "ChannelSubscription",
+    "ChannelOptions",
+    "AlertTypeOption",
+    "LabeledOption",
+    "ChannelTestResult",
+    "WebhookSecret",
     # quick-start helpers
     "login_interactive",
     "ensure_server_connected",
