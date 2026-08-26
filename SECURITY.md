@@ -216,20 +216,47 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 - **Remediation:** constraint `h2>=4.4.1` added to `pyproject.toml`; lock file
   updated `4.3.0` -> `4.4.1`. Tracked in BCP-3802.
 
-### CVE-2026-45829 — ChromaDB "ChromaToast" pre-auth RCE (transitive, not exploitable here)
+### CVE-2026-45829 et al. — ChromaDB server RCE and authorization flaws (transitive, not exploitable here)
 
-- **Package:** `chromadb` (affected `>= 1.0.0, <= 1.5.9`), CVSS v4.0 10.0.
-- **Status:** No fixed release exists upstream as of 2026-06-07 — the latest
-  published version (`1.5.9`) is still vulnerable ([chroma-core/chroma#6717](https://github.com/chroma-core/chroma/issues/6717),
-  [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-45829)).
+- **Package:** `chromadb`. Covers four advisories, none of them patched
+  upstream:
+  - **CVE-2026-45829** ("ChromaToast", CVSS v4.0 10.0, affected
+    `>= 1.0.0, <= 1.5.9`) — pre-authentication code injection: an
+    unauthenticated request to the collections endpoint can point ChromaDB at a
+    malicious model repository with `trust_remote_code` set, running arbitrary
+    code on the server
+    ([NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-45829)).
+  - **CVE-2026-45833** (CVSS v4.0 critical, affected `>= 0.4.17, <= 1.5.9`) —
+    the same `trust_remote_code` injection reachable on the collection-update
+    endpoint by an authenticated caller holding `UPDATE_COLLECTION`
+    ([NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-45833)).
+  - **CVE-2026-45830** (affected `>= 0.4.17, <= 1.5.9`) — missing
+    authorization validation lets any authenticated user read, write, update or
+    delete data in any tenant's collection
+    ([NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-45830)).
+  - **CVE-2026-45831** (affected `>= 0.5.0, <= 1.5.9`) —
+    `SimpleRBACAuthorizationProvider` checks whether a user holds a permission
+    but never which tenant, database or collection it applies to
+    ([NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-45831)).
+- **Status:** No fixed release exists upstream as of 2026-08-26 — the latest
+  published version (`1.5.9`) is still vulnerable to all four
+  ([chroma-core/chroma#6717](https://github.com/chroma-core/chroma/issues/6717)).
+  There is also no upgrade path around it: every published `crewai` release
+  depends on `chromadb <= 1.5.9`, so enabling a `chromadb > 1.5.9` constraint
+  makes the dependency set unsatisfiable.
 - **Exposure in this SDK:** `chromadb` is **not** a runtime dependency of the
   `barndoor` package. It is pulled in transitively by `crewai`, which appears
   only under the optional `examples` extra and the `dev` dependency group.
-- **Why it is not exploitable here:** the vulnerability is reachable only when
-  running ChromaDB's Python FastAPI **server**
-  (`chromadb.server.fastapi.FastAPI`). This project never starts that server;
-  `crewai` uses `chromadb` purely as an embedded client. The published SDK
-  ships no `chromadb` attack surface.
+- **Why it is not exploitable here:** all four vulnerabilities live in
+  ChromaDB's Python FastAPI **server** (`chromadb.server.fastapi.FastAPI`) and
+  are reached over its HTTP API; the two authorization flaws additionally
+  presuppose a multi-tenant deployment with authentication configured. This
+  project never starts that server; `crewai` uses `chromadb` purely as an
+  embedded client. The published SDK ships no `chromadb` attack surface.
 - **Remediation plan:** a forward-looking constraint is staged (commented out)
   in `pyproject.toml` under `[tool.uv] constraint-dependencies` and will be
-  enabled as soon as a patched `chromadb` (`> 1.5.9`) is published.
+  enabled as soon as a patched `chromadb` (`> 1.5.9`) is published. Because no
+  dependency change can clear these findings today, the matching Dependabot
+  alerts should be dismissed as "vulnerable code is not actually used" and the
+  Vanta findings recorded as accepted risk. CVE-2026-45833 is tracked in
+  BCP-3921.
