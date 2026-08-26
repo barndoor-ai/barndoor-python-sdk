@@ -94,12 +94,23 @@ constraint-dependencies = [
     # <3.20.3. Fixed in 3.20.3. filelock reaches this project transitively via
     # huggingface-hub and virtualenv (examples/dev only). See SECURITY.md.
     "filelock>=3.20.3",
-    # CVE-2026-45829 ("ChromaToast", CVSS 10.0): pre-auth RCE in chromadb's
-    # FastAPI server, affecting >=1.0.0,<=1.5.9. No patched release exists yet
-    # (latest published is 1.5.9). chromadb reaches this project only
-    # transitively via crewai (examples/dev only) and the vulnerable FastAPI
-    # server is never run here, so it is not exploitable. Enable the constraint
-    # below once a fixed chromadb (>1.5.9) ships. See SECURITY.md.
+    # Four unpatched chromadb advisories, all of them in its FastAPI server:
+    #   CVE-2026-45829 ("ChromaToast", CVSS 10.0), pre-auth code injection via
+    #     trust_remote_code on the collections endpoint, >=1.0.0,<=1.5.9
+    #   CVE-2026-45833, the same injection on the collection-update endpoint,
+    #     reachable by an authenticated caller with UPDATE_COLLECTION,
+    #     >=0.4.17,<=1.5.9 (BCP-3921)
+    #   CVE-2026-45830, missing authorization check allows cross-tenant
+    #     read/write/delete, >=0.4.17,<=1.5.9
+    #   CVE-2026-45831, SimpleRBACAuthorizationProvider ignores which tenant,
+    #     database or collection a permission applies to, >=0.5.0,<=1.5.9
+    # No patched release exists (latest published is 1.5.9) and there is no
+    # upgrade path: every published crewai release depends on chromadb <=1.5.9,
+    # so enabling the constraint below today makes resolution unsatisfiable.
+    # chromadb reaches this project only transitively via crewai (examples/dev
+    # only) and that server is never started here, so none of these are
+    # exploitable. Enable the constraint below once a fixed chromadb (>1.5.9)
+    # ships. See SECURITY.md.
     # "chromadb>1.5.9",
     # GHSA-xf7x-x43h-rpqh: circular $ref unbounded CPU DoS in json-repair,
     # affecting <0.60.1. Fixed in 0.60.1. json-repair reaches this project
