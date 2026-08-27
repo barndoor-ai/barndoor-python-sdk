@@ -12,8 +12,12 @@ from ._http import HTTPClient, TimeoutConfig
 from .exceptions import ConfigurationError, HTTPError
 from .logging import get_logger
 from .models import (
-    ServerDetail,  # forward reference for type checking
+    Channel,  # forward reference for type checking
+    ChannelOptions,
+    ChannelTestResult,
+    ServerDetail,
     ServerSummary,
+    WebhookSecret,
 )
 from .validation import (
     validate_optional_string,
@@ -627,6 +631,241 @@ class BarndoorSDK:
         """
         logger.debug("Fetching policy filter definitions")
         return await self._req("GET", "/api/v2/policies/filter-definitions")
+
+    # ---------- Notification channels (public v1) -----------------
+    #
+    # Platform surface: /api/notification/public/v1/channels (BCP-3758). Every call is
+    # organization-scoped from the caller's token — there is no organization parameter.
+
+    _CHANNELS_PATH = "/api/notification/public/v1/channels"
+
+    async def get_channel_options(self) -> ChannelOptions:
+        """List the alert types this organization may subscribe a channel to.
+
+        Read this before building a subscription set: the alert-type vocabulary grows
+        over time and is gated per organization, so this endpoint — not a hardcoded
+        list — is the authoritative answer to what ``subscriptions`` accepts.
+        Subscribing to a type absent here is accepted but never delivers.
+
+        Returns
+        -------
+        ChannelOptions
+            The admitted alert types, plus the category and severity vocabularies.
+        """
+        logger.debug("Fetching notification channel options")
+        response = await self._req("GET", f"{self._CHANNELS_PATH}/options")
+
+        return ChannelOptions.model_validate(response)
+
+    async def list_channels(self) -> list[Channel]:
+        """List the organization's shared notification channels.
+
+        Returns the organization-wide channels — ``email``, ``webhook``, ``slack``,
+        ``teams`` — with their current subscription sets. Personal channels are not
+        included; use :meth:`list_user_channels` for those.
+
+        Secrets are never returned: a webhook's signing secret and a Teams workflow
+        URL surface only as the ``has_signing_secret`` / ``has_workflow_url`` flags.
+
+        Returns
+        -------
+        list of Channel
+            The organization's shared channels, in no guaranteed order.
+        """
+        logger.debug("Listing organization notification channels")
+        response = await self._req("GET", self._CHANNELS_PATH)
+
+        return [Channel.model_validate(item) for item in (response or {}).get("data", [])]
+
+    async def list_user_channels(self) -> list[Channel]:
+        """List the caller's own personal notification channels.
+
+        Returns the authenticated caller's ``in_app`` and ``user_email`` channels.
+        Always self-scoped — there is no way to read another user's personal channels.
+
+        Returns
+        -------
+        list of Channel
+            The caller's personal channels.
+        """
+        logger.debug("Listing caller's personal notification channels")
+        response = await self._req("GET", f"{self._CHANNELS_PATH}/user")
+
+        return [Channel.model_validate(item) for item in (response or {}).get("data", [])]
+
+    async def upsert_channel(
+        self,
+        *,
+        type: str,
+        channel_id: str | None = None,
+        enabled: bool = True,
+        email_address: str | None = None,
+        url: str | None = None,
+        label: str | None = None,
+        slack_channel_id: str | None = None,
+        teams_workflow_url: str | None = None,
+        subscriptions: list[str] | None = None,
+    ) -> Channel:
+        """Create or update a notification channel and replace its subscriptions.
+
+        This is a full upsert, not a patch: ``subscriptions`` **replaces** the
+        channel's existing set, so omitting it removes every subscription the channel
+        had. Send the complete desired set on every call.
+
+        Without ``channel_id`` the channel is keyed on its type's natural identity, so
+        repeating an identical call is idempotent rather than creating duplicates:
+        ``email`` by address, ``webhook`` by URL, ``slack`` by channel id, and the
+        personal types by (organization, type, caller). With ``channel_id`` it is an
+        authoritative edit of that row — the only way to update a ``teams`` channel,
+        whose natural identity is a secret URL.
+
+        Which destination fields are permitted depends on ``type``; sending one that
+        does not belong raises :class:`HTTPError` with status 422 rather than being
+        silently ignored. ``email`` needs ``email_address``; ``webhook`` needs ``url``;
+        ``slack`` needs ``slack_channel_id`` and ``label``; ``teams`` needs ``label``
+        plus ``teams_workflow_url`` on create; the personal types take none.
+
+        Parameters
+        ----------
+        type : str
+            One of "in_app", "user_email", "email", "webhook", "slack", "teams".
+        channel_id : str, optional
+            Existing channel to edit authoritatively. Omit to create-or-dedup on the
+            type's natural identity. When supplied and unknown — or owned by another
+            organization — the call raises :class:`HTTPError` with status 404.
+        enabled : bool, optional
+            Whether the channel delivers. ``False`` suspends delivery while keeping
+            the channel and its subscriptions intact. Default is True.
+        email_address : str, optional
+            Destination for ``type="email"``.
+        url : str, optional
+            Destination for ``type="webhook"``. Must be https and resolve to a public
+            address.
+        label : str, optional
+            Human-readable name. Required for ``slack`` and ``teams``.
+        slack_channel_id : str, optional
+            Slack channel id (not its name) for ``type="slack"``.
+        teams_workflow_url : str, optional
+            Teams Workflows URL for ``type="teams"``. Write-only: never returned by
+            any endpoint. Required on create, optional when editing by id.
+        subscriptions : list of str, optional
+            The complete set of alert types to deliver. At most one entry per type.
+
+        Returns
+        -------
+        Channel
+            The created or updated channel. When this call *creates* a ``webhook``
+            channel, ``signing_secret`` carries the one-time reveal — store it. A
+            retried create that lands after the first attempt already succeeded
+            returns ``signing_secret=None`` rather than a second secret; use
+            :meth:`regenerate_channel_secret` if you need one.
+        """
+        if not type or not isinstance(type, str):
+            raise ValueError("Channel type must be a non-empty string")
+
+        payload: dict[str, Any] = {"type": type.strip(), "enabled": bool(enabled)}
+        if channel_id is not None:
+            if not isinstance(channel_id, str) or not channel_id.strip():
+                raise ValueError("Channel ID must be a non-empty string when provided")
+            payload["id"] = channel_id.strip()
+        for key, value in (
+            ("email_address", email_address),
+            ("url", url),
+            ("label", label),
+            ("slack_channel_id", slack_channel_id),
+            ("teams_workflow_url", teams_workflow_url),
+        ):
+            if value is not None:
+                payload[key] = value
+        # Always send the key: an omitted list and an empty list mean the same thing to
+        # this endpoint (unsubscribe from everything), and being explicit makes that
+        # replace-not-merge semantic visible on the wire.
+        payload["subscriptions"] = [{"alert_type": t} for t in (subscriptions or [])]
+
+        logger.info(f"Upserting notification channel (type={payload['type']})")
+        response = await self._req("PUT", self._CHANNELS_PATH, json=payload)
+
+        return Channel.model_validate(response)
+
+    async def delete_channel(self, channel_id: str) -> None:
+        """Delete a notification channel.
+
+        Its subscriptions cascade and any stored secret is removed. Irreversible — to
+        stop delivery reversibly, call :meth:`upsert_channel` with ``enabled=False``.
+
+        Parameters
+        ----------
+        channel_id : str
+            Unique identifier of the channel to delete.
+
+        Raises
+        ------
+        HTTPError
+            With status 404 when no such channel exists in the caller's organization.
+        """
+        channel_id = self._require_channel_id(channel_id)
+        logger.info(f"Deleting notification channel {channel_id}")
+        await self._req("DELETE", f"{self._CHANNELS_PATH}/{channel_id}")
+
+    async def regenerate_channel_secret(self, channel_id: str) -> WebhookSecret:
+        """Rotate a webhook channel's signing secret.
+
+        Returns the new secret once, in this response. The previous secret stops
+        verifying immediately, so deploy the new one to your receiver before the next
+        alert fires. There is no endpoint that reads the current secret, so this is
+        also the recovery path when a secret from channel creation was lost.
+
+        Parameters
+        ----------
+        channel_id : str
+            Unique identifier of the webhook channel.
+
+        Returns
+        -------
+        WebhookSecret
+            The new signing secret.
+        """
+        channel_id = self._require_channel_id(channel_id)
+        logger.info(f"Rotating signing secret for notification channel {channel_id}")
+        response = await self._req("POST", f"{self._CHANNELS_PATH}/{channel_id}/regenerate-secret")
+
+        return WebhookSecret.model_validate(response)
+
+    async def test_channel(self, channel_id: str) -> ChannelTestResult:
+        """Send a connectivity-test message through a channel's real transport.
+
+        Lets you verify a webhook receiver, email address, Slack channel, or Teams
+        workflow actually works. It is not an alert: nothing is persisted, no other
+        channel is notified, and it ignores the channel's subscriptions.
+
+        A transport failure comes back as ``ok=False`` with a reason, not as an
+        exception — the request succeeded, the delivery did not.
+
+        Parameters
+        ----------
+        channel_id : str
+            Unique identifier of the channel to test.
+
+        Returns
+        -------
+        ChannelTestResult
+            Whether the message reached the transport, and why not if it did not.
+        """
+        channel_id = self._require_channel_id(channel_id)
+        logger.debug(f"Testing notification channel {channel_id}")
+        response = await self._req("POST", f"{self._CHANNELS_PATH}/{channel_id}/test")
+
+        return ChannelTestResult.model_validate(response)
+
+    @staticmethod
+    def _require_channel_id(channel_id: str) -> str:
+        """Validate and normalize a channel id shared by the by-id channel methods."""
+        if not channel_id or not isinstance(channel_id, str):
+            raise ValueError("Channel ID must be a non-empty string")
+        channel_id = channel_id.strip()
+        if not channel_id:
+            raise ValueError("Channel ID cannot be empty or whitespace")
+        return channel_id
 
     # ---------- Convenience helpers -----------------
 
