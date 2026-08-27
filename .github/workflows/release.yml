@@ -42,5 +42,9 @@ jobs:
           name: release-dists
           path: dist/
 
+      # Must be a full-length commit SHA: this org rejects branch/tag refs for
+      # actions, and the failure surfaces during "Set up job" before any step runs
+      # (so `build` goes green while `publish` never starts). That is what blocked
+      # the v1.3.0 release. dc37677 is the commit behind pypa's v1.14.2 tag.
       - name: Publish to PyPI (trusted publishing)
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
