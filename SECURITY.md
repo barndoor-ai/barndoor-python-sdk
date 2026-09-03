@@ -216,6 +216,23 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
 - **Remediation:** constraint `h2>=4.4.1` added to `pyproject.toml`; lock file
   updated `4.3.0` -> `4.4.1`. Tracked in BCP-3802.
 
+### CVE-2026-71492 — banks path traversal in `DirectoryPromptRegistry.set()` (remediated)
+
+- **Package:** `banks` (affected `< 2.4.5`), see
+  [GHSA-x8wg-4xgc-vr54](https://github.com/advisories/GHSA-x8wg-4xgc-vr54).
+  CVSS 4.0 **MODERATE**. A prompt name containing `..` segments is joined onto
+  the registry root without normalisation, so `DirectoryPromptRegistry.set()`
+  can write a prompt file to an arbitrary path outside that root.
+- **Status:** Fixed in `banks >= 2.4.5`. This project now pins `banks>=2.4.5`
+  via `[tool.uv] constraint-dependencies` (previously `banks>2.4.1`, added for
+  CVE-2026-44209); the lock resolves to `2.5.0`.
+- **Exposure in this SDK:** `banks` is a transitive dependency pulled in via
+  `llama-index-core` under the optional `examples` extra. It is not a runtime
+  dependency of the published `barndoor` package, and this SDK never
+  instantiates a `DirectoryPromptRegistry` or writes prompts through one.
+- **Remediation:** constraint `banks>=2.4.5` added to `pyproject.toml`; lock
+  file updated `2.4.4` -> `2.5.0`. Tracked in BCP-4129.
+
 ### CVE-2026-45829 et al. — ChromaDB server RCE and authorization flaws (transitive, not exploitable here)
 
 - **Package:** `chromadb`. Covers four advisories, none of them patched
@@ -238,12 +255,21 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
     `SimpleRBACAuthorizationProvider` checks whether a user holds a permission
     but never which tenant, database or collection it applies to
     ([NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-45831)).
-- **Status:** No fixed release exists upstream as of 2026-08-26 — the latest
+- **Status:** No fixed release exists upstream as of 2026-09-03 — the latest
   published version (`1.5.9`) is still vulnerable to all four
   ([chroma-core/chroma#6717](https://github.com/chroma-core/chroma/issues/6717)).
-  There is also no upgrade path around it: every published `crewai` release
-  depends on `chromadb <= 1.5.9`, so enabling a `chromadb > 1.5.9` constraint
-  makes the dependency set unsatisfiable.
+  There is also no upgrade path around it. The lock file holds `chromadb 1.1.1`
+  because the current `crewai` line requires `chromadb ~= 1.1.0` (still true of
+  the latest release, `crewai 1.15.18`), so:
+  - a `chromadb > 1.5.9` constraint is unsatisfiable today, there being no such
+    release; and
+  - once a patched `chromadb` does ship, enabling that constraint will not
+    resolve against `crewai 1.15.x` either. Verified with `uv lock`: a
+    `chromadb >= 1.2.0` floor resolves only by downgrading `crewai` from
+    `1.15.15` to `0.134.0` — a full major line back, which is a worse trade
+    than accepting a finding that is not exploitable here. Clearing these
+    advisories therefore needs `crewai` to relax its `chromadb` pin as well as
+    a `chromadb` fix.
 - **Exposure in this SDK:** `chromadb` is **not** a runtime dependency of the
   `barndoor` package. It is pulled in transitively by `crewai`, which appears
   only under the optional `examples` extra and the `dev` dependency group.
@@ -255,8 +281,8 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
   embedded client. The published SDK ships no `chromadb` attack surface.
 - **Remediation plan:** a forward-looking constraint is staged (commented out)
   in `pyproject.toml` under `[tool.uv] constraint-dependencies` and will be
-  enabled as soon as a patched `chromadb` (`> 1.5.9`) is published. Because no
-  dependency change can clear these findings today, the matching Dependabot
-  alerts should be dismissed as "vulnerable code is not actually used" and the
-  Vanta findings recorded as accepted risk. CVE-2026-45833 is tracked in
-  BCP-3921.
+  enabled as soon as a patched `chromadb` (`> 1.5.9`) is published and `crewai`
+  accepts it. Because no dependency change can clear these findings today, the
+  matching Dependabot alerts should be dismissed as "vulnerable code is not
+  actually used" and the Vanta findings recorded as accepted risk.
+  CVE-2026-45833 is tracked in BCP-3921 and BCP-4090.
