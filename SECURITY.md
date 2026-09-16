@@ -79,13 +79,88 @@ If you believe you have discovered a bug, defect, flaw or vulnerability in this 
   CVE-2026-12243 (URL-encoded path traversal in `nltk.data.load()`, the latter
   being an incomplete fix for the former).
 - **Status:** All fixed in `nltk >= 3.10.0` — there is no fixed release on the
-  `3.9.x` line. This project now pins `nltk>=3.10.0` via
-  `[tool.uv] constraint-dependencies`; the lock resolves to `3.10.3`.
+  `3.9.x` line. Superseded by the `nltk>=3.10.3` floor described below; the
+  lock resolves to `3.10.3`.
 - **Exposure in this SDK:** `nltk` is a transitive dependency pulled in via
   `llama-index` and `llama-index-core` under the optional `examples` extra. It
   is not a runtime dependency of the published `barndoor` package.
 - **Remediation:** constraint `nltk>=3.10.0` added to `pyproject.toml`; lock
   file updated `3.9.4` -> `3.10.3`. Tracked in BCP-3713.
+
+### CVE-2026-71513 et al. — nltk pickle RCE, sandbox escapes and DoS on the 3.10.x line (remediated)
+
+- **Package:** `nltk` (affected `< 3.10.3`). The `3.10.x` line accumulated a
+  further batch of advisories after the `>= 3.10.0` floor above was set:
+  - **CVE-2026-71513** ([GHSA-5gh2-94qg-qppq](https://github.com/advisories/GHSA-5gh2-94qg-qppq),
+    affected `>= 3.10.0, < 3.10.3`) — `AllowlistUnpickler` dotted-name
+    validation bypass allowing remote code execution; and **CVE-2026-79657**
+    ([GHSA-x99w-6fgc-pmfw](https://github.com/advisories/GHSA-x99w-6fgc-pmfw))
+    — allowlisted pickle loaders still permitting code execution.
+  - **CVE-2026-62383** and **CVE-2026-62384** (affected
+    `>= 3.10.0, < 3.10.2`) — symlink-based sandbox escapes in
+    `IPIPANCorpusReader` and `FramenetCorpusReader`; **CVE-2026-71514**,
+    **CVE-2026-79674** and **CVE-2026-79676** — `CrubadanCorpusReader` path
+    traversal and further corpus-reader symlink escapes past `pathsec`.
+  - **CVE-2026-78680** (uncontrolled search path when invoking the Graphviz
+    `dot` binary), **CVE-2026-78681** (entity-expansion "billion laughs" DoS in
+    raw `ElementTree` parses), **CVE-2026-78682** (`pathsec` SSRF protection
+    bypassed when a proxy is configured), **CVE-2026-79675** (JVM argument
+    injection in the Stanford wrappers) and **CVE-2026-81727**
+    (`Downloader.download` follows hardlinks and overwrites outside-root
+    files).
+  - **CVE-2026-72818** (affected `< 3.10.1`), plus **CVE-2026-12876**,
+    **CVE-2026-80206**, **CVE-2026-81722**, **CVE-2026-81723**,
+    **CVE-2026-81724** and **CVE-2026-81725** — ReDoS, quadratic-time and
+    uncontrolled-recursion denial of service in `TweetTokenizer`,
+    `RecursiveDescentParser`, `tgrep`, `PorterStemmer`, `XMLCorpusView`,
+    `FeatStructReader` and `Pl196xCorpusReader`.
+- **Status:** All fixed in `nltk >= 3.10.3`. This project now pins
+  `nltk>=3.10.3` via `[tool.uv] constraint-dependencies`; the lock already
+  resolved to `3.10.3`, so raising the floor is what stops a consumer resolving
+  this SDK's constraint set back down to a vulnerable `3.10.0`–`3.10.2`.
+- **Exposure in this SDK:** as above — transitive via `llama-index` /
+  `llama-index-core` under the optional `examples` extra only, and this SDK
+  loads no `nltk` pickles, corpora or Stanford/Graphviz tooling of its own.
+- **Remediation:** constraint raised `nltk>=3.10.0` -> `nltk>=3.10.3` in
+  `pyproject.toml`. No lock file change required (already `3.10.3`). Tracked in
+  BCP-4339.
+
+### CVE-2026-81726 — nltk model-artifact APIs bypass pathsec (transitive, unpatched upstream, not exploitable here)
+
+- **Package:** `nltk` (affected `<= 3.10.3`), see
+  [GHSA-8mgp-746c-j5xp](https://github.com/advisories/GHSA-8mgp-746c-j5xp).
+  CVSS 3.1 `AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:L`, GitHub severity **HIGH**.
+  `TransitionParser.train()` / `.parse()`, `AveragedPerceptron.save()` /
+  `.load()`, `PerceptronTagger.save_to_json()` and `save_maxent_params()` open
+  caller-supplied model paths with the built-in `open()` rather than the
+  `pathsec`-aware helpers, so an application that enables `nltk.pathsec`
+  enforcement and lets untrusted input choose a model import/export path can
+  still read or overwrite files outside the allowed roots.
+- **Status:** **No fixed release exists upstream as of 2026-09-15.** The
+  advisory records "Patched versions: Not yet patched", and the newest
+  published release (`3.10.3`) is the advisory's `last_affected` version, so no
+  version floor can clear this finding. Partial fixes are in flight upstream
+  ([nltk/nltk#3757](https://github.com/nltk/nltk/pull/3757),
+  [#3759](https://github.com/nltk/nltk/pull/3759),
+  [#3813](https://github.com/nltk/nltk/pull/3813)).
+- **Exposure in this SDK:** `nltk` is **not** a runtime dependency of the
+  published `barndoor` package. It is pulled in transitively by `llama-index`
+  and `llama-index-core`, which appear only under the optional `examples`
+  extra.
+- **Why it is not exploitable here:** the vulnerability is only reachable
+  through `nltk`'s model persistence and loading APIs. This SDK never imports
+  `nltk`, never constructs a `TransitionParser`, `AveragedPerceptron` or
+  `PerceptronTagger`, and never calls `save_maxent_params()`. The finding
+  further presupposes an application that has opted into `pathsec.ENFORCE` as a
+  containment boundary and routes untrusted input into model paths; this
+  project sets no `pathsec` policy and exposes no such path.
+- **Remediation plan:** the `nltk>=3.10.3` constraint in `pyproject.toml` keeps
+  this project on the newest release, and will be raised again as soon as a
+  patched `nltk` ships. Because no dependency change can clear this finding
+  today, the matching Dependabot alert
+  ([#136](https://github.com/barndoor-ai/barndoor-python-sdk/security/dependabot/136))
+  should be dismissed as "vulnerable code is not actually used" and the Vanta
+  finding recorded as accepted risk. Tracked in BCP-4339.
 
 ### CVE-2026-59884 et al. — pyasn1 ASN.1 parsing vulnerabilities (remediated)
 
