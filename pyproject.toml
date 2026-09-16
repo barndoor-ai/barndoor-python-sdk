@@ -175,10 +175,27 @@ constraint-dependencies = [
     # CVE-2026-12074 (path traversal in NKJP/FrameNet corpus readers),
     # CVE-2026-12075 (DNS-rebinding SSRF bypass), CVE-2026-54293 and
     # CVE-2026-12243 (URL-encoded path traversal in nltk.data.load): all
-    # affecting <=3.9.4. Fixed in 3.10.0. nltk reaches this project
-    # transitively via llama-index / llama-index-core (examples only).
-    # See SECURITY.md.
-    "nltk>=3.10.0",
+    # affecting <=3.9.4, fixed in 3.10.0.
+    # CVE-2026-72818 (ReDoS in TweetTokenizer), affecting <3.10.1.
+    # CVE-2026-62383 and CVE-2026-62384 (symlink sandbox escapes in the
+    # IPIPAN and FrameNet corpus readers), affecting >=3.10.0,<3.10.2.
+    # CVE-2026-71513 (AllowlistUnpickler dotted-name bypass -> RCE),
+    # CVE-2026-79657 (allowlisted pickle loaders still permit code execution),
+    # CVE-2026-71514 (CrubadanCorpusReader path traversal), CVE-2026-79674 and
+    # CVE-2026-79676 (corpus reader sandbox and symlink escapes),
+    # CVE-2026-78680 (uncontrolled search path for the Graphviz dot binary),
+    # CVE-2026-78681 (XML entity-expansion DoS), CVE-2026-78682 (pathsec SSRF
+    # bypass when a proxy is configured), CVE-2026-79675 (JVM argument
+    # injection in the Stanford wrappers), CVE-2026-81727 (Downloader hardlink
+    # overwrite), and CVE-2026-12876, CVE-2026-80206, CVE-2026-81722,
+    # CVE-2026-81723, CVE-2026-81724, CVE-2026-81725 (ReDoS, quadratic-time and
+    # recursion DoS): all affecting <3.10.3. Fixed in 3.10.3.
+    # CVE-2026-81726 (model-artifact APIs bypass pathsec) also applies but is
+    # unpatched upstream as of 2026-09-15 and affects <=3.10.3, so no floor can
+    # clear it; it is not exploitable here — see SECURITY.md.
+    # nltk reaches this project transitively via llama-index /
+    # llama-index-core (examples only). See SECURITY.md.
+    "nltk>=3.10.3",
 ]
 
 [build-system]
