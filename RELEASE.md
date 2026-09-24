@@ -1,258 +1,125 @@
 # Release Process
 
-This document is for maintainers and describes how to create and publish releases of the Barndoor Python SDK.
+For maintainers. Releasing a new version of `barndoor` on PyPI.
 
-## Overview
+## What changed
 
-This project uses:
-- **[uv-dynamic-versioning](https://github.com/ninoseki/uv-dynamic-versioning)** for automatic version management based on git tags
-- **Release branches** (`release/X.Y.x`) to allow patch releases without bringing in unreleased changes from `main`
-- **GitHub Releases** to trigger automated builds and PyPI publishing
-- **Trusted Publishing** to securely publish to PyPI without API tokens
+**This repository no longer holds the source of the SDK, and `pyproject.toml`
+is generated.** The client, its hand-written half, the README and the examples
+are maintained in Barndoor's platform monorepo and pushed here by CI; this
+repository is where the package is built, published and read by customers.
 
-## Version Strategy
+Two consequences for releasing:
 
-We follow [Semantic Versioning](https://semver.org/):
-- **Major** (X.0.0): Breaking changes
-- **Minor** (0.X.0): New features, backward compatible
-- **Patch** (0.0.X): Bug fixes, backward compatible
+- **Do not edit the version by hand.** It comes from `sdk/VERSION` in the
+  monorepo. An edit here is overwritten by the next regeneration, and the
+  version you published disappears.
+- **There is no release branch.** Every push to `main` is a regeneration, and
+  each one publishes a prerelease. A release is a tag and a GitHub Release on
+  `main` as it already stands.
 
-Version numbers are **automatically derived from git tags** by `uv-dynamic-versioning`. You don't manually edit version numbers in code.
+## How versions reach PyPI
 
-## Release Branches
+| Channel | Trigger | Version | Installed by |
+|---|---|---|---|
+| prerelease | every push to `main` | `<version>.dev<UTC-YYYYMMDDHHMM>` | `pip install --pre barndoor` |
+| release | a GitHub Release, by hand | `<version>` | `pip install barndoor` |
 
-Release branches allow us to maintain multiple versions and create patch releases without bringing in new features from `main`:
+`pyproject.toml` always carries the **clean** version. The `.devN` segment is
+stamped in the workflow at build time and never committed, so a release
+publishes exactly what is in the tree.
 
-- **`main`**: Active development branch
-- **`release/X.Y.x`**: Long-lived branches for each minor version (e.g., `release/1.0.x`, `release/1.1.x`)
+PEP 440 is why this differs from the TypeScript SDK, which encodes the commit
+sha. `2.0.0-dev.g1a2b3c4` is not a valid Python version, and PyPI rejects local
+identifiers (`+g1a2b3c4`) outright — the sha cannot appear in the version at
+all. A UTC timestamp is a valid `.devN`, sorts correctly, and does not reset the
+way a run number does. Traceability lives in the commit message, which records
+the monorepo commit that produced the tree.
 
-Once a minor version is released, its release branch remains available for future patch releases.
+Publishing authenticates via
+[trusted publishing](https://docs.pypi.org/trusted-publishers/) (OIDC). There is
+no API token and nothing to rotate. The binding is configured on PyPI and is
+scoped to this repository, the `release.yml` workflow, and the `release`
+environment — so **renaming that workflow file breaks publishing** until the
+binding is recreated. That is why both channels live in the one file.
 
----
+## The version number
 
-## Creating a New Release
+Set in `sdk/VERSION` in the monorepo. It is the version of the **API contract**,
+independent of the Barndoor platform's own release version.
 
-### 1. Major or Minor Release (from `main`)
+| Part | Driven by |
+|---|---|
+| MAJOR | a breaking API change |
+| MINOR | an additive API change |
+| PATCH | an SDK-only change |
 
-Use this process when releasing a new major or minor version (e.g., `1.0.0` or `1.1.0`).
+`make check-api-version` in the monorepo compares the spec against its state at
+the last bump and fails if the declared number is lower than the change
+requires.
 
-#### Step 1: Prepare the release branch
+## Releasing
 
-```bash
-# Ensure you're up to date
-git checkout main
-git pull origin main
-
-# Create a new release branch for this minor version
-# For version 1.2.0, create release/1.2.x
-git checkout -b release/1.2.x
-git push origin release/1.2.x
-```
-
-#### Step 2: Verify the version
-
-The version is automatically calculated from git tags. Preview it:
-
-```bash
-uvx uv-dynamic-versioning
-# Output example: 1.1.0.post5.dev0+abc1234 (before tagging)
-```
-
-#### Step 3: Create and push the version tag
-
-```bash
-# Create an annotated tag for the release
-git tag -a v1.2.0 -m "Release v1.2.0"
-
-# Push the tag
-git push origin v1.2.0
-```
-
-#### Step 4: Verify the version resolves correctly
+### 1. Make sure `main` here is what you want to ship
 
 ```bash
-uvx uv-dynamic-versioning
-# Output: 1.2.0 (exact version after tagging)
+git checkout main && git pull origin main
+python3 -c "import tomllib,pathlib;print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version'])"
 ```
 
-#### Step 5: Create a GitHub Release
+That version is what will be published. If it is not the number you want, bump
+`sdk/VERSION` in the monorepo, merge, and wait for the regeneration to arrive
+here as a `chore: regenerate the SDK at X.Y.Z` commit.
 
-Go to [GitHub Releases](../../releases) and create a new release:
+Check the last push published cleanly: the most recent `Release` run on `main`
+should be green, including its `Confirm the index serves it` step.
 
-1. Click **"Draft a new release"**
-2. **Tag**: Select `v1.2.0` (the tag you just pushed)
-3. **Target**: Select the `release/1.2.x` branch
-4. **Title**: `v1.2.0`
-5. **Description**: Add release notes (features, fixes, breaking changes)
-6. **Set as latest release**: ✅ (for major/minor releases)
-7. Click **"Publish release"**
-
-**This triggers the automated release workflow** which will:
-- Build the package using `uv build`
-- Publish to PyPI via trusted publishing
-
-#### Step 6: Verify the release
-
-Check that:
-- The [Release workflow](../../actions/workflows/release.yml) completed successfully
-- The package appears on [PyPI](https://pypi.org/project/barndoor/)
-- You can install it: `pip install barndoor==1.2.0`
-
-> **Note:** The release branch (`release/1.2.x`) remains available for future patch releases (e.g., `v1.2.1`, `v1.2.2`). You do not need to merge it back to `main` unless you make changes on the release branch that should be backported.
-
----
-
-### 2. Patch Release (from existing release branch)
-
-Use this process when creating a patch release (e.g., `1.2.1`) to fix bugs in an already-released minor version.
-
-#### Step 1: Create a feature branch from the release branch
+### 2. Tag it
 
 ```bash
-# Check out the appropriate release branch
-git checkout release/1.2.x
-git pull origin release/1.2.x
-
-# Create a feature branch for your fix
-git checkout -b fix/critical-bug-in-1.2
+git tag vX.Y.Z && git push origin vX.Y.Z
 ```
 
-#### Step 2: Make your changes and commit
+### 3. Cut the GitHub Release
+
+Choose that tag, title it `vX.Y.Z`, write the notes, mark it the latest release
+and publish. That is what triggers the `publish` job.
+
+### 4. Confirm it
+
+The workflow polls PyPI until the version is served and fails if it never is —
+a green publish step is not evidence the index serves anything. Then,
+independently:
 
 ```bash
-# Make your bug fix changes
-# ...
-
-# Commit the changes
-git add .
-git commit -m "fix: resolve critical bug in authentication"
+pip install barndoor==X.Y.Z
 ```
 
-#### Step 3: Create a PR targeting the release branch
+## Emergency rollback
 
-```bash
-# Push your feature branch
-git push origin fix/critical-bug-in-1.2
-```
+PyPI versions cannot be replaced, only superseded, and a yank hides a release
+without deleting it.
 
-Open a pull request on GitHub:
-- **Base branch**: `release/1.2.x` (the release branch, not `main`)
-- **Compare branch**: `fix/critical-bug-in-1.2`
-- **Title**: "Fix critical bug in authentication"
-- **Description**: "Fixes authentication issue discovered in v1.2.0"
+1. Fix the problem in the **monorepo** — that is where the source lives.
+2. Bump `sdk/VERSION` (a PATCH, unless the fix changes the API).
+3. Merge, let the regeneration land here, then tag and release.
+4. Yank the bad version on PyPI so new installs skip it while existing pins
+   keep resolving.
 
-Review and merge the PR through GitHub.
+## Contributing changes
 
-#### Step 4: Tag the patch release
+Not here. Pull requests against files this repository does not own cannot be
+merged — the next regeneration overwrites them. The inputs live in the monorepo
+under `sdk/python/`:
 
-After merging the fix PR:
+| To change | Edit |
+|---|---|
+| the API surface | the service that owns the endpoint; the spec is generated from it |
+| auth, retries, MCP, the CLI | `sdk/python/barndoor/lib/` |
+| the published README or examples | `sdk/python/README.md`, `sdk/python/examples/` |
+| the version | `sdk/VERSION` |
+| generation itself | `sdk/python/gen-config.yaml`, `sdk/python/templates/` |
 
-```bash
-# Pull the updated release branch
-git checkout release/1.2.x
-git pull origin release/1.2.x
-
-# Preview the version (should show development version)
-uvx uv-dynamic-versioning
-
-# Create and push the patch tag
-git tag -a v1.2.1 -m "Release v1.2.1"
-git push origin v1.2.1
-
-# Verify the version
-uvx uv-dynamic-versioning
-# Output: 1.2.1
-```
-
-#### Step 5: Create a GitHub Release
-
-Follow the same GitHub Release process as Step 6 in the major/minor release:
-
-1. Create a new release for tag `v1.2.1`
-2. Target branch: `release/1.2.x`
-3. Mark as latest if this is the newest stable version
-4. Publish
-
-#### Step 6: Backport to main (if needed)
-
-**Important:** Decide whether this fix should also be in `main`. If `main` has diverged significantly or already has a different fix, you may not need to backport.
-
-**Option A: Merge the entire release branch**
-
-Push the release branch and open a pull request on GitHub:
-- **Base branch**: `main`
-- **Compare branch**: `release/1.2.x`
-- **Title**: "Backport v1.2.1 fixes to main"
-- **Description**: "Backporting critical bug fixes from v1.2.1"
-
-**Option B: Cherry-pick specific commits**
-
-```bash
-git checkout main
-git pull origin main
-git checkout -b backport/critical-bug-fix
-git cherry-pick <commit-hash-from-release-branch>
-git push origin backport/critical-bug-fix
-```
-
-Open a pull request on GitHub:
-- **Base branch**: `main`
-- **Compare branch**: `backport/critical-bug-fix`
-- **Title**: "Backport: Fix critical bug in authentication"
-- **Description**: "Cherry-picked from release/1.2.x"
-
-**Option C: No backport needed**
-
-If the issue only affects the released version or has already been fixed differently in `main`, you can skip this step.
-
----
-
-## Understanding Version Calculation
-
-`uv-dynamic-versioning` automatically calculates versions using the [dunamai](https://github.com/mtkennerly/dunamai) library:
-
-### On a tagged commit:
-```bash
-git tag v1.2.0
-uvx uv-dynamic-versioning
-# Output: 1.2.0
-```
-
-### On a commit after a tag:
-```bash
-# 5 commits after v1.2.0
-uvx uv-dynamic-versioning
-# Output: 1.2.0.post5.dev0+abc1234
-```
-
-### On a branch with no tags:
-```bash
-uvx uv-dynamic-versioning
-# Output: 0.0.0.post52.dev0+abc1234
-```
-
-The version is derived at **build time**, so you never need to edit version numbers in the code.
-
----
-
-## Development Releases
-
-Every push to `main` automatically creates a development pre-release on GitHub (see [main.yml](../.github/workflows/main.yml)). These are not published to PyPI but are available for testing:
-
-```bash
-# Install a dev release from GitHub
-pip install https://github.com/barndoor-ai/barndoor-python-sdk/releases/download/barndoor-dev-0.1.0.dev20250103120000+abc1234/barndoor-0.1.0.dev20250103120000+abc1234-py3-none-any.whl
-```
-
----
-
-## Pre-release Checklist
-
-Before creating a release, ensure:
-
-- [ ] All CI checks pass on the release branch
-- [ ] Tests pass locally: `uv run pytest`
-- [ ] Pre-commit hooks pass: `uv run pre-commit run --all-files`
-- [ ] `uv.lock` is up to date: `uv lock` (should show no changes)
-- [ ] CHANGELOG or release notes are prepared
-- [ ] Breaking changes are clearly documented (for major releases)
+Files this repository **does** own, and which no regeneration touches:
+`.github/` (including the workflows), `.pre-commit-config.yaml`, `LICENSE`,
+`CONTRIBUTING.md`, `SECURITY.md`, and this document.

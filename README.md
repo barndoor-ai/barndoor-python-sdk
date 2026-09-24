@@ -1,185 +1,160 @@
-# Barndoor SDK
+# barndoor
 
-A lightweight, **framework-agnostic** Python client for the Barndoor Platform REST APIs and Model Context Protocol (MCP) servers.
-
-The SDK removes boiler-plate around:
-
-* Secure, offline-friendly **authentication to Barndoor** (interactive PKCE flow + token caching).
-* **Server registry** – list, inspect and connect third-party providers (Salesforce, Notion, Slack …).
-* **Managed Connector Proxy** – build ready-to-use connection parameters for any LLM/agent framework (CrewAI, LangChain, custom code …) without importing Barndoor-specific adapters.
-
----
-
-## How it works
-
-The SDK orchestrates a multi-step flow to connect your code to third-party services:
-
-```
-You → Barndoor Auth (get JWT) → Registry API (with JWT) → MCP Proxy (with JWT) → Third-party service
-```
-
-1. **Authentication**: You log in via Barndoor to get a JWT token
-2. **Registry API**: Using the JWT, query available MCP servers and manage OAuth connections
-3. **MCP Proxy**: Stream requests through Barndoor's proxy with the JWT for authorization
-4. **Third-party service**: The proxy forwards your requests to Salesforce, Notion, etc.
-
-This architecture provides secure, managed access to external services without handling OAuth flows or storing third-party credentials in your code.
-
----
-
-## Installation
+Official Python SDK for the [Barndoor AI](https://barndoor.ai) platform API.
 
 ```bash
 pip install barndoor
-# or, inside this repo
-pip install -e barndoor[dev]
 ```
 
-Python ≥ 3.11 is required.
+Python 3.11 or later. Async, fully typed.
 
----
-
-## Local development with uv
-
-For the fastest install and reproducible builds you can use [uv](https://github.com/astral-sh/uv) instead of `pip`.
-
-```bash
-# 1) (one-off) install uv
-brew install uv        # or follow the install script on Linux/Windows
-
-# 2) create an isolated virtual environment in the repo
-uv venv .venv
-source .venv/bin/activate
-uv sync --frozen --all-extras --dev --python 3.13
-
-# 3) install the SDK in editable mode plus the example extras
-uv pip install -e '.[examples]'
-
-# 4) install MCP support for CrewAI examples
-uv pip install 'crewai-tools[mcp]'
-
-# 5) copy the environment template and add your credentials
-cp env.example .env
-# Edit .env to add AGENT_CLIENT_ID, AGENT_CLIENT_SECRET, and OPENAI_API_KEY
-
-# 6) run the interactive login utility once (opens browser)
-uv run python -m barndoor.sdk.cli_login
-
-# 7) kick off the Notion sample agent
-uv run python examples/sample_notion_agent.py
-```
-
-**Note:** The OAuth default callback uses port 52765. Make sure to register this callback in your Barndoor Agent configuration. As some machines are configured to automatically resolve `localhost` to `127.0.0.1`, we recommend having two callback entries:
-```
-http://localhost:52765/cb
-http://127.0.0.1:52765/cb
-```
-
-### Using a custom OAuth callback port
-
-If port `52765` is blocked (or you prefer another), you can:
-
-1. **Register the new callback URL** in your Barndoor Agent application, e.g.
-   ```
-   http://localhost:60000/cb
-   http://127.0.0.1:60000/cb
-   ```
-2. **Run the login helper with the matching port**
-   ```bash
-   # CLI
-   uv run python -m barndoor.sdk.cli_login --port 60000
-
-   # In code
-   sdk = await bd.login_interactive(port=60000)
-   ```
-
-The SDK will spin up the local callback server on that port and embed the new URL in the request.
-
-The examples expect a `.env` file next to each script containing:
-
-```bash
-# Copy env.example → .env and add your credentials
-```
-
----
-
-## Authentication workflow
-
-Barndoor APIs expect a **user JWT** issued by your Barndoor tenant.  The SDK offers two ways to obtain & store such a token:
-
-| Option | Command | When to use |
-|--------|---------|-------------|
-| Interactive CLI | `python -m barndoor.sdk.cli_login` *(alias: `barndoor-login`)* | One-time setup on laptops / CI machines |
-| In-code helper | `await barndoor.sdk.login_interactive()` | Notebooks or scripts where you do not want a separate login step |
-
-Both variants:
-
-1. Spin up a tiny localhost callback server.
-2. Open the system browser to Barndoor.
-3. Exchange the returned *code* for a JWT.
-4. Persist the token to `~/.barndoor/token.json` (0600 permissions).
-
-Environment variables (or a neighbouring `.env` file) must define the Agent OAuth application:
-
-```
-AGENT_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxx
-AGENT_CLIENT_SECRET=yyyyyyyyyyyyyyyyyyyy
-# optional overrides
-# See `internal_dev_env_setup` guide for local/dev options
-```
-
-The cached token is auto-refreshed on every run; if it is expired or revoked a new browser flow is launched.
-
-## Quick-start in four lines
+## Quick start
 
 ```python
-import barndoor.sdk as bd
+import asyncio
+from barndoor import create_client
 
-sdk = await bd.login_interactive()         # 1️⃣ ensure valid token
-await bd.ensure_server_connected(sdk, "salesforce")  # 2️⃣ make sure OAuth is done
-params, _public_url = await bd.make_mcp_connection_params(sdk, "salesforce")
+async def main():
+    client = create_client(auth="bdai_…")
+    page = await client.registry.list_mcp_servers(limit=10)
+    for server in page.data:
+        print(server.name, server.slug)
+    await client.aclose()
+
+asyncio.run(main())
 ```
 
-`params` is a plain dict with `url`, `headers` and (optionally) `transport` – ready to plug into **any** HTTP / SSE / WebSocket client.  See the examples below for CrewAI & LangChain usage.
-
----
-
-## Using the Registry API
+`create_client` is synchronous and touches no network, so building a client
+cannot fail because an identity provider is briefly unreachable. Use it as an
+async context manager to close the connection pool for you:
 
 ```python
-# List all MCP servers available to the current user
-servers = await sdk.list_servers()
-print([s.slug for s in servers])  # ['salesforce', 'notion', ...]
-
-# Get detailed metadata
-details = await sdk.get_server(server_id=servers[0].id)
-print(details)
+async with create_client(auth="bdai_…") as client:
+    ...
 ```
 
-Additional helpers:
+## Authentication
 
-* `await sdk.initiate_connection(server_id)` – returns an OAuth URL the user must visit.
-* `await bd.ensure_server_connected(sdk, "notion")` – combines status polling + browser launch.
+`auth` takes one of three things.
 
----
-
-## Model Context Protocol Connection
-
-Once a server is **connected** you can stream requests through Barndoor’s proxy edge.
+**An API key**, or any token you already hold:
 
 ```python
-params, public_url = await bd.make_mcp_connection_params(sdk, "notion")
-
-print(params["url"])         # http(s)://…/mcp/notion
-print(params["headers"])     # {'Authorization': 'Bearer ey…', 'x-barndoor-session-id': …}
+create_client(auth="bdai_…")
 ```
 
-## API Documentation
+**Machine-to-machine credentials**, exchanged and refreshed for you:
 
-The complete API specification is available in [`barndoor/sdk/docs/openapi.yaml`](./barndoor/sdk/docs/openapi.yaml). This covers all endpoints currently used by the SDK including:
+```python
+from barndoor import ClientCredentialsOptions
 
-- Server listing and details
-- OAuth connection initiation
-- Connection status checking
+create_client(auth=ClientCredentialsOptions(
+    client_id=os.environ["BARNDOOR_CLIENT_ID"],
+    client_secret=os.environ["BARNDOOR_CLIENT_SECRET"],
+))
+```
 
-The spec can be viewed with tools like [Swagger UI](https://swagger.io/tools/swagger-ui/) or [Redoc](https://redocly.github.io/redoc/).
+**Your own provider**, an async callable asked on every request — for a token
+you source from a secrets manager or an inbound request:
+
+```python
+create_client(auth=lambda: fetch_token_from_vault())
+```
+
+For a user-facing login there is `start_authorization_code` /
+`complete_authorization_code` (PKCE), and `barndoor-login` runs the browser flow
+from a terminal.
+
+## API surface
+
+| Namespace | Covers |
+|---|---|
+| `client.registry` | MCP servers, agents, connections, the directory |
+| `client.policy` | Policies, rules, impact analysis |
+| `client.identity` | Organizations, users, groups, identity providers |
+| `client.notification` | Channels, alerts, subscriptions |
+| `client.dlp` | Detection rules, findings, redaction |
+| `client.llm_gateway` | Models, budgets, API keys, usage |
+| `client.system_management` | Operational endpoints |
+
+The full surface is the OpenAPI specification the client is generated from,
+published here as [openapi.yaml](./openapi.yaml). Types ship with the package,
+so your editor is usually the fastest reference.
+
+## Connecting to MCP
+
+The platform serves [MCP](https://modelcontextprotocol.io) as well as REST,
+authenticated with the same credentials:
+
+```python
+from barndoor import create_client, mcp_client
+
+async with create_client(auth="bdai_…") as client:
+    async with mcp_client(client, "acme") as session:
+        tools = await session.list_tools()
+```
+
+A context manager because the transport owns a connection — an `async with`
+cannot be forgotten on an early return. If you would rather hand connection
+details to another framework, `mcp_connection_params` returns the URL and
+headers without opening anything.
+
+## Reliability
+
+Requests are retried with jittered exponential backoff. Only idempotent methods
+are retried: a 502 does not say whether a write landed, so repeating a POST
+risks a duplicate.
+
+```python
+from barndoor import RetryOptions
+
+create_client(auth=key, retry=RetryOptions(retries=5, timeout=60.0))
+create_client(auth=key, retry=RetryOptions(retries=0))   # off
+```
+
+`Retry-After` is honoured, in both its seconds and HTTP-date forms.
+
+## Non-production environments
+
+Production is the default and needs no configuration.
+
+```python
+from barndoor import create_client, DEV, environment_from_env
+
+create_client(auth=key, env=DEV)
+create_client(auth=key, env=environment_from_env())   # reads BARNDOOR_ENV
+```
+
+Credentials inherit the environment's issuer, so pointing at dev cannot leave
+you calling dev with a production token. The SDK never reads the environment
+unless you ask it to.
+
+## Examples
+
+Runnable examples are in [examples/](./examples).
+
+## Versioning
+
+The version is the version of the **API contract**, so which SDK speaks to which
+API needs no lookup table. It is independent of the Barndoor platform's own
+release version.
+
+| Part | Changes when |
+|---|---|
+| MAJOR | the API breaks — an operation removed, a field made required |
+| MINOR | the API gains something — a new operation or optional field |
+| PATCH | the SDK changes on its own — a fix, a dependency bump |
+
+Versions carrying a `.devN` suffix are prereleases built from unreleased
+platform work. `pip install barndoor` gives you the latest formal release.
+
+## This repository is generated
+
+The client, this README and the examples are generated or maintained in
+Barndoor's platform monorepo and pushed here, which is where the package is
+published from. **Pull requests against generated files here will be
+overwritten.** Open an issue instead, or contact your Barndoor representative.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

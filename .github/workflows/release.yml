@@ -1,6 +1,27 @@
+# Two channels, ONE file on purpose. PyPI's trusted publisher for `barndoor` is
+# bound to this repository AND this workflow's filename, so a prerelease job in
+# a separate file would need its own binding. Keeping both here means the
+# binding that already works keeps working, untouched.
+#
+#   push to main   -> prerelease  <version>.dev<UTC-YYYYMMDDHHMM>
+#   GitHub Release -> release     <version>
+#
+# Pushes to main come from bdai-platform's sdk_publish.yml, which regenerates
+# the client whenever the OpenAPI spec or the SDK's own sources change there.
+# The formal release is unchanged and still manual: tag vX.Y.Z, cut a Release.
+#
+# PEP 440 forbids the scheme the TypeScript SDK uses. `2.0.0-dev.g1a2b3c4` is
+# not a valid Python version, and PyPI rejects local identifiers (`+g1a2b3c4`)
+# outright, so the commit sha cannot appear in the version at all. A UTC
+# timestamp is a valid `.devN` segment, sorts correctly, and does not reset the
+# way a workflow run number does. Traceability lives in the commit message,
+# which records the monorepo sha that produced the tree.
 name: Release
 
 on:
+  push:
+    branches:
+      - main
   release:
     types: [published]
 
@@ -9,8 +30,54 @@ permissions:
   id-token: write
 
 jobs:
+  # A push that cannot change the distribution must not burn a version number.
+  # Everything outside the package — CI, RELEASE.md, examples, the spec copy —
+  # is real content that belongs here but never reaches a `pip install`.
+  # Fails open: an unusable payload publishes, because a version wasted is
+  # cheaper than a fix that silently never shipped.
+  changed:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    outputs:
+      package: ${{ steps.check.outputs.package }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: check
+        env:
+          COMMITS: ${{ toJSON(github.event.commits) }}
+        run: |
+          set -euo pipefail
+          python3 - <<'EOF' >> "$GITHUB_OUTPUT"
+          import fnmatch, json, os
+          PATHS = ["barndoor/**", "pyproject.toml", "uv.lock", "README.md", "LICENSE"]
+          raw = os.environ.get("COMMITS", "")
+          try:
+              commits = json.loads(raw) if raw else []
+          except json.JSONDecodeError:
+              commits = None
+          if not commits:
+              print("package=true")
+          else:
+              files = set()
+              for c in commits:
+                  for k in ("added", "modified", "removed"):
+                      files.update(c.get(k) or [])
+              hit = any(
+                  fnmatch.fnmatch(f, p) or (p.endswith("/**") and f.startswith(p[:-2]))
+                  for f in files for p in PATHS
+              )
+              print(f"package={'true' if hit else 'false'}")
+          EOF
+          cat "$GITHUB_OUTPUT"
+
   build:
     runs-on: ubuntu-latest
+    needs: [changed]
+    # `always()` because `changed` is skipped on a release, and a skipped need
+    # fails this job's default success() guard too.
+    if: >-
+      always() &&
+      (github.event_name == 'release' || needs.changed.outputs.package == 'true')
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
@@ -21,6 +88,22 @@ jobs:
 
       - name: Set up Python 3.13
         run: uv python install 3.13
+
+      # The version committed to pyproject.toml is the CLEAN one, so a formal
+      # release publishes exactly what is in the tree. The .devN segment is
+      # applied here and never committed.
+      - name: Stamp a prerelease version
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          base="$(python3 -c "import tomllib,pathlib;print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version'])")"
+          stamped="${base}.dev$(date -u +%Y%m%d%H%M)"
+          python3 - "$stamped" <<'EOF'
+          import pathlib, re, sys
+          p = pathlib.Path("pyproject.toml")
+          p.write_text(re.sub(r'^version = ".*"$', f'version = "{sys.argv[1]}"', p.read_text(), count=1, flags=re.M))
+          EOF
+          echo "publishing $stamped"
 
       - name: Build distributions
         run: uv build
@@ -48,3 +131,22 @@ jobs:
       # the v1.3.0 release. dc37677 is the commit behind pypa's v1.14.2 tag.
       - name: Publish to PyPI (trusted publishing)
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+
+      # `pip install` returns success and PyPI serves asynchronously, so a green
+      # publish step is not evidence anything was published. This reads it back.
+      - name: Confirm the index serves it
+        run: |
+          set -euo pipefail
+          version="$(ls dist/*.tar.gz | head -1 | sed -E 's/.*barndoor-(.*)\.tar\.gz/\1/')"
+          echo "checking barndoor==${version}"
+          for attempt in $(seq 1 20); do
+            if curl -fsS "https://pypi.org/pypi/barndoor/${version}/json" >/dev/null 2>&1; then
+              echo "served after ${attempt} attempt(s)"
+              echo "### Published \`barndoor==${version}\`" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "attempt ${attempt}/20: not served yet"
+            sleep 15
+          done
+          echo "::error::publish reported success but PyPI does not serve barndoor==${version}"
+          exit 1

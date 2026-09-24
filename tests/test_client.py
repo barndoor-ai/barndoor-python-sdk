@@ -1,86 +1,58 @@
-"""Test the main SDK client."""
+"""Client assembly, and the seams that make an async provider work."""
 
-from unittest.mock import AsyncMock, patch
+from __future__ import annotations
+
+import uuid
 
 import pytest
 
-from barndoor.sdk.exceptions import HTTPError
-from barndoor.sdk.models import ServerSummary
+from barndoor.lib.client import _uuid_coercing
 
 
-class TestBarndoorSDK:
-    """Test the main SDK client class."""
+async def test_a_uuid_argument_becomes_a_string():
+    """The spec types 68 response properties as format: uuid but 11 path
+    parameters as plain string, so `get_policy(list_policies()[0].id)` — the
+    chain any user writes — raised ValidationError on the UUID it was just
+    handed.
+    """
+    seen = {}
 
-    @pytest.mark.asyncio
-    async def test_list_servers_success(self, sdk_client):
-        """Test successful server listing."""
-        mock_response = [
-            {
-                "id": "server-1",
-                "name": "Test Server",
-                "slug": "test-server",
-                "provider": "test",
-                "connection_status": "connected",
-            }
-        ]
+    async def method(policy_id, *, limit=None):
+        seen["positional"] = policy_id
+        seen["keyword"] = limit
+        return "ok"
 
-        with patch.object(sdk_client, "_req", new_callable=AsyncMock) as mock_req:
-            mock_req.return_value = mock_response
+    wrapped = _uuid_coercing(method)
+    uid = uuid.uuid4()
+    assert await wrapped(uid, limit=uid) == "ok"
+    assert seen["positional"] == str(uid)
+    assert seen["keyword"] == str(uid)
 
-            servers = await sdk_client.list_servers()
 
-            assert len(servers) == 1
-            assert isinstance(servers[0], ServerSummary)
-            assert servers[0].slug == "test-server"
-            mock_req.assert_called_once_with("GET", "/api/servers")
+async def test_nothing_else_is_coerced():
+    """One type is converted, not "whatever looks close".
 
-    @pytest.mark.asyncio
-    async def test_list_servers_http_error(self, sdk_client):
-        """Test server listing with HTTP error."""
-        with patch.object(sdk_client, "_req", new_callable=AsyncMock) as mock_req:
-            mock_req.side_effect = HTTPError(500, "Internal Server Error")
+    A stringified int or a None turning into "None" would be a far worse bug
+    than the one this fixes.
+    """
+    seen = []
 
-            with pytest.raises(HTTPError) as exc_info:
-                await sdk_client.list_servers()
+    async def method(*args, **kwargs):
+        seen.extend(args)
+        seen.extend(kwargs.values())
 
-            assert exc_info.value.status_code == 500
+    wrapped = _uuid_coercing(method)
+    await wrapped(1, None, "abc", [uuid.uuid4()], flag=True)
+    assert seen[:3] == [1, None, "abc"]
+    assert isinstance(seen[3], list) and isinstance(seen[3][0], uuid.UUID), "a nested UUID is left alone"
+    assert seen[4] is True
 
-    @pytest.mark.asyncio
-    async def test_token_validation_skip_non_prod(self, sdk_client):
-        """Test token validation is skipped in non-prod environments."""
-        with patch.dict("os.environ", {"BARNDOOR_ENV": "development"}):
-            await sdk_client.ensure_valid_token()
-            assert sdk_client._token_validated is True
 
-    @pytest.mark.asyncio
-    async def test_token_validation_prod_success(self, sdk_client):
-        """Test successful token validation in production."""
-        with patch.dict("os.environ", {"BARNDOOR_ENV": "prod"}):
-            with patch.object(
-                sdk_client, "validate_cached_token", new_callable=AsyncMock
-            ) as mock_validate:
-                mock_validate.return_value = True
+async def test_the_wrapper_keeps_the_method_identity():
+    """`functools.wraps`, so introspection and error messages still name the
+    real method rather than an anonymous closure."""
 
-                await sdk_client.ensure_valid_token()
+    async def get_policy(policy_id):
+        return policy_id
 
-                assert sdk_client._token_validated is True
-                mock_validate.assert_called_once()
-
-    @pytest.mark.asyncio
-    async def test_token_validation_prod_failure(self, sdk_client):
-        """Test failed token validation in production."""
-        with patch.dict("os.environ", {"BARNDOOR_ENV": "prod"}):
-            with patch.object(
-                sdk_client, "validate_cached_token", new_callable=AsyncMock
-            ) as mock_validate:
-                mock_validate.return_value = False
-
-                with pytest.raises(ValueError, match="Token validation failed"):
-                    await sdk_client.ensure_valid_token()
-
-    @pytest.mark.asyncio
-    async def test_use_after_close_raises(self, sdk_client):
-        """Using the SDK after aclose() should raise a clear error."""
-        await sdk_client.aclose()
-        with pytest.raises(RuntimeError, match="SDK has been closed"):
-            await sdk_client.list_servers()
+    assert _uuid_coercing(get_policy).__name__ == "get_policy"
