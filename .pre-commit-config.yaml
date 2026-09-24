@@ -2,18 +2,37 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
+      # 500 KB default. barndoor/api/llm_gateway_api.py is 692 KB of generated
+      # client for a service with 60-odd operations, and openapi.yaml is 461 KB.
+      # Both are legitimate content pushed from bdai-platform, so the guard is
+      # raised rather than bypassed — it still catches a stray binary.
       - id: check-added-large-files
+        args: ["--maxkb=1024"]
       - id: check-ast
       - id: check-case-conflict
       - id: check-merge-conflict
       - id: end-of-file-fixer
       - id: trailing-whitespace
+  # Python here is NOT linted, and the rule is not "generated code" — it is
+  # "anything the regeneration push writes". barndoor/, tests/ and examples/ all
+  # arrive from bdai-platform, so reformatting any of them here is reverted by
+  # the next push and the two configs fight forever. That includes the
+  # hand-written half, barndoor/lib: hand-written, but written THERE.
+  #
+  # Those files are linted where they are edited — the monorepo runs ruff over
+  # sdk/python on every change. What is left for this repo to lint is
+  # .github/ and the markdown, which the hooks above already cover.
+  #
+  # Concretely: 288 ruff errors and 294 files to reformat, none of them anyone's
+  # to fix in this repo.
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.13.3
     hooks:
       - id: ruff
         args: ["--fix"]
+        exclude: ^(barndoor|tests|examples)/
       - id: ruff-format
+        exclude: ^(barndoor|tests|examples)/
   - repo: local
     hooks:
       - id: uv-lock-check
