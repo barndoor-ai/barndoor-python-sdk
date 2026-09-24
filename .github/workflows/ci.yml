@@ -23,8 +23,13 @@ jobs:
       - name: Sync deps (dev)
         run: uv sync --frozen --all-extras --dev --python 3.13
 
+      # `uvx`, not `uv run`: pre-commit is a tool, not a library this package
+      # depends on. pyproject.toml is generated from a template in the monorepo,
+      # and putting pre-commit in its dev group would make every consumer of that
+      # template carry it so that THIS repo's CI can run. The hook versions that
+      # actually matter are pinned by `rev:` in .pre-commit-config.yaml.
       - name: Run pre-commit on all files
-        run: uv run --frozen --no-sync pre-commit run --all-files --verbose
+        run: uvx pre-commit run --all-files --verbose
         env:
           SKIP: no-commit-to-branch
 
