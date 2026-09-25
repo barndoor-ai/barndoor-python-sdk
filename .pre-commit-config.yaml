@@ -11,8 +11,15 @@ repos:
       - id: check-ast
       - id: check-case-conflict
       - id: check-merge-conflict
+      # These two REWRITE files, so the same rule as the ruff excludes below
+      # applies: every path they would touch arrives from bdai-platform. The
+      # generator emits its Python without a trailing newline, so a fix here is
+      # reverted by the next push and the two configs fight forever. The
+      # check-only hooks above stay on everything.
       - id: end-of-file-fixer
+        exclude: '^(barndoor|tests|examples)/|^(pyproject\.toml|uv\.lock|README\.md|openapi\.yaml)$'
       - id: trailing-whitespace
+        exclude: '^(barndoor|tests|examples)/|^(pyproject\.toml|uv\.lock|README\.md|openapi\.yaml)$'
   # Python here is NOT linted, and the rule is not "generated code" — it is
   # "anything the regeneration push writes". barndoor/, tests/ and examples/ all
   # arrive from bdai-platform, so reformatting any of them here is reverted by
