@@ -35,6 +35,12 @@ class ModelMappingWithProviderAndBudgetStatus(BaseModel):
     """
     Same wrapper but for the cross-provider listing endpoint that returns `ModelMappingWithProvider` (extra `provider_name` field).
     """ # noqa: E501
+    cooldown_429_default_secs: StrictInt = Field(description="Cooldown on a 429 with no usable `Retry-After`, seconds.")
+    cooldown_base_secs: StrictInt = Field(description="First cooldown window, doubled on each failed recovery probe up to `cooldown_max_secs`.")
+    cooldown_failure_threshold: StrictInt = Field(description="Gateway failures within `cooldown_window_secs` that cool the route. `0` disables every cooldown of the shared route.")
+    cooldown_max_secs: StrictInt = Field(description="Cap on every cooldown window.")
+    cooldown_overloaded_secs: StrictInt = Field(description="Flat cooldown on a 529 \"overloaded\" with no usable `Retry-After`, seconds. `0` counts a 529 as an ordinary gateway failure instead.")
+    cooldown_window_secs: StrictInt = Field(description="Width of the rolling failure window, seconds.")
     created_by_email: Optional[StrictStr] = None
     created_by_name: Optional[StrictStr] = None
     created_by_user_id: Optional[UUID] = None
@@ -63,7 +69,7 @@ class ModelMappingWithProviderAndBudgetStatus(BaseModel):
     effective_pricing: EffectivePricing
     route_health_status: Optional[RouteHealthStatus] = None
     stale_status: Optional[ModelStaleStatus] = Field(default=None, description="See [`ModelMappingWithBudgetStatus::stale_status`].")
-    __properties: ClassVar[List[str]] = ["created_by_email", "created_by_name", "created_by_user_id", "last_change_note", "last_modified_at", "last_modified_by_email", "last_modified_by_name", "last_modified_by_user_id", "auto_disabled_reason", "bare_alias", "created_at", "enabled", "id", "model_alias", "priority", "provider_auth_type", "provider_id", "provider_name", "request_timeout_secs", "retry_on_429_count", "retry_on_429_max_wait_secs", "source", "stream_idle_timeout_secs", "upstream_model", "budget_status", "effective_pricing", "route_health_status", "stale_status"]
+    __properties: ClassVar[List[str]] = ["cooldown_429_default_secs", "cooldown_base_secs", "cooldown_failure_threshold", "cooldown_max_secs", "cooldown_overloaded_secs", "cooldown_window_secs", "created_by_email", "created_by_name", "created_by_user_id", "last_change_note", "last_modified_at", "last_modified_by_email", "last_modified_by_name", "last_modified_by_user_id", "auto_disabled_reason", "bare_alias", "created_at", "enabled", "id", "model_alias", "priority", "provider_auth_type", "provider_id", "provider_name", "request_timeout_secs", "retry_on_429_count", "retry_on_429_max_wait_secs", "source", "stream_idle_timeout_secs", "upstream_model", "budget_status", "effective_pricing", "route_health_status", "stale_status"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -143,6 +149,12 @@ class ModelMappingWithProviderAndBudgetStatus(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "cooldown_429_default_secs": obj.get("cooldown_429_default_secs"),
+            "cooldown_base_secs": obj.get("cooldown_base_secs"),
+            "cooldown_failure_threshold": obj.get("cooldown_failure_threshold"),
+            "cooldown_max_secs": obj.get("cooldown_max_secs"),
+            "cooldown_overloaded_secs": obj.get("cooldown_overloaded_secs"),
+            "cooldown_window_secs": obj.get("cooldown_window_secs"),
             "created_by_email": obj.get("created_by_email"),
             "created_by_name": obj.get("created_by_name"),
             "created_by_user_id": obj.get("created_by_user_id"),

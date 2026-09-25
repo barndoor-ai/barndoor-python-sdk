@@ -69,6 +69,7 @@ from barndoor.models.connection import Connection
 from barndoor.models.connection_initiate_response import ConnectionInitiateResponse
 from barndoor.models.connection_read import ConnectionRead
 from barndoor.models.connection_status import ConnectionStatus
+from barndoor.models.cooldown_policy import CooldownPolicy
 from barndoor.models.create_allow_list_entry_request import CreateAllowListEntryRequest
 from barndoor.models.create_api_key_request import CreateApiKeyRequest
 from barndoor.models.create_api_key_response import CreateApiKeyResponse

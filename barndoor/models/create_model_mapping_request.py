@@ -31,6 +31,12 @@ class CreateModelMappingRequest(BaseModel):
     """ # noqa: E501
     bare_alias: Optional[StrictBool] = Field(default=None, description="Whether this row should participate in bare-name resolution. The admin handler treats `None` as \"infer from alias shape\" — custom aliases imply `true`, 1:1 enablement rows imply `false`. Pass `Some(true)` explicitly from the Model Routes tab to opt a 1:1 row into bare resolution.")
     change_note: Optional[StrictStr] = Field(default=None, description="Optional free-text note explaining why this route was added (BCP-3998). Surfaced on the row and mirrored into the audit event.")
+    cooldown_429_default_secs: Optional[StrictInt] = Field(default=None, description="Cooldown on an upstream 429 that carries no usable `Retry-After` (a `Retry-After` sets the window instead). Range 1-3600, and at most `cooldown_max_secs`; default 30.")
+    cooldown_base_secs: Optional[StrictInt] = Field(default=None, description="First cooldown window once the threshold trips, doubled on each failed recovery probe up to `cooldown_max_secs`. Range 1-3600, and at most `cooldown_max_secs`; default 30.")
+    cooldown_failure_threshold: Optional[StrictInt] = Field(default=None, description="Gateway failures (5xx, timeouts, connection errors, managed-key 401/403) within `cooldown_window_secs` that cool the route. `0` disables every cooldown of the shared route (rolling failures, 429 and 529); per-user credential cooldowns on passthrough routes still apply. Range 0-100; default 10.")
+    cooldown_max_secs: Optional[StrictInt] = Field(default=None, description="Cap on every cooldown window: doubling, 429 and 529. Range 1-86400; default 300.")
+    cooldown_overloaded_secs: Optional[StrictInt] = Field(default=None, description="Flat cooldown on an upstream 529 \"overloaded\" with no usable `Retry-After`; it does not spend the failure budget. `0` counts a 529 as an ordinary gateway failure instead. Range 0-3600, and at most `cooldown_max_secs` unless 0; default 10.")
+    cooldown_window_secs: Optional[StrictInt] = Field(default=None, description="Width of the rolling failure window, seconds. Range 1-3600; default 60.")
     enabled: Optional[StrictBool] = None
     model_alias: StrictStr
     priority: Optional[StrictInt] = None
@@ -41,7 +47,7 @@ class CreateModelMappingRequest(BaseModel):
     source: Optional[ModelSource] = Field(default=None, description="Where this model came from. The Add Models dialog sends `Custom` from its free-text branch and `Catalog` from the picker; those two paths already differ client-side, and this is what carries the difference through to storage.  `None` means \"infer\": the handler inherits the anchor's provenance when one exists (so a route created on Model Routes agrees with the enablement it points at), and otherwise falls back to `Catalog`. SDK and curl callers therefore land on `Catalog` by default — accepted, since the pill exists to catch a typo in the UI and an API caller is not its audience.")
     stream_idle_timeout_secs: Optional[StrictInt] = Field(default=None, description="Per-mapping stream-idle (per-chunk) timeout for streaming responses. `None` (the default) lets `model_mappings.create` write the platform default (`STREAM_IDLE_TIMEOUT_DEFAULT_SECS`) at the route tier. The range is fixed platform policy (`STREAM_IDLE_TIMEOUT_MIN_SECS..=STREAM_IDLE_TIMEOUT_MAX_SECS`); see [`crate::proxy::timeouts`].")
     upstream_model: StrictStr
-    __properties: ClassVar[List[str]] = ["bare_alias", "change_note", "enabled", "model_alias", "priority", "provider_id", "request_timeout_secs", "retry_on_429_count", "retry_on_429_max_wait_secs", "source", "stream_idle_timeout_secs", "upstream_model"]
+    __properties: ClassVar[List[str]] = ["bare_alias", "change_note", "cooldown_429_default_secs", "cooldown_base_secs", "cooldown_failure_threshold", "cooldown_max_secs", "cooldown_overloaded_secs", "cooldown_window_secs", "enabled", "model_alias", "priority", "provider_id", "request_timeout_secs", "retry_on_429_count", "retry_on_429_max_wait_secs", "source", "stream_idle_timeout_secs", "upstream_model"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -92,6 +98,36 @@ class CreateModelMappingRequest(BaseModel):
         if self.change_note is None and "change_note" in self.model_fields_set:
             _dict['change_note'] = None
 
+        # set to None if cooldown_429_default_secs (nullable) is None
+        # and model_fields_set contains the field
+        if self.cooldown_429_default_secs is None and "cooldown_429_default_secs" in self.model_fields_set:
+            _dict['cooldown_429_default_secs'] = None
+
+        # set to None if cooldown_base_secs (nullable) is None
+        # and model_fields_set contains the field
+        if self.cooldown_base_secs is None and "cooldown_base_secs" in self.model_fields_set:
+            _dict['cooldown_base_secs'] = None
+
+        # set to None if cooldown_failure_threshold (nullable) is None
+        # and model_fields_set contains the field
+        if self.cooldown_failure_threshold is None and "cooldown_failure_threshold" in self.model_fields_set:
+            _dict['cooldown_failure_threshold'] = None
+
+        # set to None if cooldown_max_secs (nullable) is None
+        # and model_fields_set contains the field
+        if self.cooldown_max_secs is None and "cooldown_max_secs" in self.model_fields_set:
+            _dict['cooldown_max_secs'] = None
+
+        # set to None if cooldown_overloaded_secs (nullable) is None
+        # and model_fields_set contains the field
+        if self.cooldown_overloaded_secs is None and "cooldown_overloaded_secs" in self.model_fields_set:
+            _dict['cooldown_overloaded_secs'] = None
+
+        # set to None if cooldown_window_secs (nullable) is None
+        # and model_fields_set contains the field
+        if self.cooldown_window_secs is None and "cooldown_window_secs" in self.model_fields_set:
+            _dict['cooldown_window_secs'] = None
+
         # set to None if request_timeout_secs (nullable) is None
         # and model_fields_set contains the field
         if self.request_timeout_secs is None and "request_timeout_secs" in self.model_fields_set:
@@ -121,6 +157,12 @@ class CreateModelMappingRequest(BaseModel):
         _obj = cls.model_validate({
             "bare_alias": obj.get("bare_alias"),
             "change_note": obj.get("change_note"),
+            "cooldown_429_default_secs": obj.get("cooldown_429_default_secs"),
+            "cooldown_base_secs": obj.get("cooldown_base_secs"),
+            "cooldown_failure_threshold": obj.get("cooldown_failure_threshold"),
+            "cooldown_max_secs": obj.get("cooldown_max_secs"),
+            "cooldown_overloaded_secs": obj.get("cooldown_overloaded_secs"),
+            "cooldown_window_secs": obj.get("cooldown_window_secs"),
             "enabled": obj.get("enabled"),
             "model_alias": obj.get("model_alias"),
             "priority": obj.get("priority"),

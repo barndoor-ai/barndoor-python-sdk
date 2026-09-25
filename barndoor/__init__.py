@@ -90,6 +90,7 @@ __all__ = [
     "ConnectionInitiateResponse",
     "ConnectionRead",
     "ConnectionStatus",
+    "CooldownPolicy",
     "CreateAllowListEntryRequest",
     "CreateApiKeyRequest",
     "CreateApiKeyResponse",
@@ -386,6 +387,7 @@ from barndoor.models.connection import Connection as Connection
 from barndoor.models.connection_initiate_response import ConnectionInitiateResponse as ConnectionInitiateResponse
 from barndoor.models.connection_read import ConnectionRead as ConnectionRead
 from barndoor.models.connection_status import ConnectionStatus as ConnectionStatus
+from barndoor.models.cooldown_policy import CooldownPolicy as CooldownPolicy
 from barndoor.models.create_allow_list_entry_request import CreateAllowListEntryRequest as CreateAllowListEntryRequest
 from barndoor.models.create_api_key_request import CreateApiKeyRequest as CreateApiKeyRequest
 from barndoor.models.create_api_key_response import CreateApiKeyResponse as CreateApiKeyResponse

@@ -35,6 +35,12 @@ class ModelMappingWithBudgetStatus(BaseModel):
     """
     Wraps a [`ModelMapping`] with the BCP-2813 `budget_status` annotation so the admin Model Mappings page can render a \"disabled by budget\" pill. The inner `ModelMapping` fields are flattened so the response is a drop-in superset of the legacy `Vec<ModelMapping>` shape — older clients that ignore `budget_status` keep working unchanged.
     """ # noqa: E501
+    cooldown_429_default_secs: StrictInt = Field(description="Cooldown on a 429 with no usable `Retry-After`, seconds.")
+    cooldown_base_secs: StrictInt = Field(description="First cooldown window, doubled on each failed recovery probe up to `cooldown_max_secs`.")
+    cooldown_failure_threshold: StrictInt = Field(description="Gateway failures within `cooldown_window_secs` that cool the route. `0` disables every cooldown of the shared route.")
+    cooldown_max_secs: StrictInt = Field(description="Cap on every cooldown window.")
+    cooldown_overloaded_secs: StrictInt = Field(description="Flat cooldown on a 529 \"overloaded\" with no usable `Retry-After`, seconds. `0` counts a 529 as an ordinary gateway failure instead.")
+    cooldown_window_secs: StrictInt = Field(description="Width of the rolling failure window, seconds.")
     created_by_email: Optional[StrictStr] = None
     created_by_name: Optional[StrictStr] = None
     created_by_user_id: Optional[UUID] = None
@@ -60,7 +66,7 @@ class ModelMappingWithBudgetStatus(BaseModel):
     effective_pricing: EffectivePricing = Field(description="The rate a request against this mapping would be billed at, resolved through the same tier chain the cost calculator uses (BCP-3564). Always present; `source == \"none\"` means unpriced. See [`crate::effective_pricing`].")
     route_health_status: Optional[RouteHealthStatus] = Field(default=None, description="Populated when the mapping's `(provider_id, upstream_model)` route is in a passive-health cooldown. The page renders a \"temporarily unavailable\" pill; the row stays in the listing.")
     stale_status: Optional[ModelStaleStatus] = Field(default=None, description="Populated when the model is enabled from a provider catalog that no longer lists it (BCP-3812). Advisory: nothing is disabled on the strength of it — retirement is BCP-3811's `full` mode, which the org opts into. See [`crate::catalog_status`].")
-    __properties: ClassVar[List[str]] = ["created_by_email", "created_by_name", "created_by_user_id", "last_change_note", "last_modified_at", "last_modified_by_email", "last_modified_by_name", "last_modified_by_user_id", "auto_disabled_reason", "bare_alias", "enabled", "id", "model_alias", "priority", "provider_id", "request_timeout_secs", "retry_on_429_count", "retry_on_429_max_wait_secs", "source", "stream_idle_timeout_secs", "upstream_model", "budget_status", "effective_pricing", "route_health_status", "stale_status"]
+    __properties: ClassVar[List[str]] = ["cooldown_429_default_secs", "cooldown_base_secs", "cooldown_failure_threshold", "cooldown_max_secs", "cooldown_overloaded_secs", "cooldown_window_secs", "created_by_email", "created_by_name", "created_by_user_id", "last_change_note", "last_modified_at", "last_modified_by_email", "last_modified_by_name", "last_modified_by_user_id", "auto_disabled_reason", "bare_alias", "enabled", "id", "model_alias", "priority", "provider_id", "request_timeout_secs", "retry_on_429_count", "retry_on_429_max_wait_secs", "source", "stream_idle_timeout_secs", "upstream_model", "budget_status", "effective_pricing", "route_health_status", "stale_status"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -140,6 +146,12 @@ class ModelMappingWithBudgetStatus(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "cooldown_429_default_secs": obj.get("cooldown_429_default_secs"),
+            "cooldown_base_secs": obj.get("cooldown_base_secs"),
+            "cooldown_failure_threshold": obj.get("cooldown_failure_threshold"),
+            "cooldown_max_secs": obj.get("cooldown_max_secs"),
+            "cooldown_overloaded_secs": obj.get("cooldown_overloaded_secs"),
+            "cooldown_window_secs": obj.get("cooldown_window_secs"),
             "created_by_email": obj.get("created_by_email"),
             "created_by_name": obj.get("created_by_name"),
             "created_by_user_id": obj.get("created_by_user_id"),

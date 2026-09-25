@@ -31,6 +31,12 @@ class ModelMapping(BaseModel):
     """
     ModelMapping
     """ # noqa: E501
+    cooldown_429_default_secs: StrictInt = Field(description="Cooldown on a 429 with no usable `Retry-After`, seconds.")
+    cooldown_base_secs: StrictInt = Field(description="First cooldown window, doubled on each failed recovery probe up to `cooldown_max_secs`.")
+    cooldown_failure_threshold: StrictInt = Field(description="Gateway failures within `cooldown_window_secs` that cool the route. `0` disables every cooldown of the shared route.")
+    cooldown_max_secs: StrictInt = Field(description="Cap on every cooldown window.")
+    cooldown_overloaded_secs: StrictInt = Field(description="Flat cooldown on a 529 \"overloaded\" with no usable `Retry-After`, seconds. `0` counts a 529 as an ordinary gateway failure instead.")
+    cooldown_window_secs: StrictInt = Field(description="Width of the rolling failure window, seconds.")
     created_by_email: Optional[StrictStr] = None
     created_by_name: Optional[StrictStr] = None
     created_by_user_id: Optional[UUID] = None
@@ -52,7 +58,7 @@ class ModelMapping(BaseModel):
     source: ModelSource = Field(description="Whether the model was picked from the provider catalog or typed in by an admin. Stamped once at create time and never recomputed — see [`ModelSource`] and migration V61.")
     stream_idle_timeout_secs: Optional[StrictInt] = Field(default=None, description="Per-mapping stream-idle (per-chunk) timeout for streaming responses. Defaults to `STREAM_IDLE_TIMEOUT_DEFAULT_SECS` at insert; enforced via `tokio::time::timeout` around each upstream SSE/eventstream chunk read. The range is fixed platform policy (`STREAM_IDLE_TIMEOUT_MIN_SECS..=STREAM_IDLE_TIMEOUT_MAX_SECS`), enforced by the column CHECK.")
     upstream_model: StrictStr
-    __properties: ClassVar[List[str]] = ["created_by_email", "created_by_name", "created_by_user_id", "last_change_note", "last_modified_at", "last_modified_by_email", "last_modified_by_name", "last_modified_by_user_id", "auto_disabled_reason", "bare_alias", "enabled", "id", "model_alias", "priority", "provider_id", "request_timeout_secs", "retry_on_429_count", "retry_on_429_max_wait_secs", "source", "stream_idle_timeout_secs", "upstream_model"]
+    __properties: ClassVar[List[str]] = ["cooldown_429_default_secs", "cooldown_base_secs", "cooldown_failure_threshold", "cooldown_max_secs", "cooldown_overloaded_secs", "cooldown_window_secs", "created_by_email", "created_by_name", "created_by_user_id", "last_change_note", "last_modified_at", "last_modified_by_email", "last_modified_by_name", "last_modified_by_user_id", "auto_disabled_reason", "bare_alias", "enabled", "id", "model_alias", "priority", "provider_id", "request_timeout_secs", "retry_on_429_count", "retry_on_429_max_wait_secs", "source", "stream_idle_timeout_secs", "upstream_model"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -160,6 +166,12 @@ class ModelMapping(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "cooldown_429_default_secs": obj.get("cooldown_429_default_secs"),
+            "cooldown_base_secs": obj.get("cooldown_base_secs"),
+            "cooldown_failure_threshold": obj.get("cooldown_failure_threshold"),
+            "cooldown_max_secs": obj.get("cooldown_max_secs"),
+            "cooldown_overloaded_secs": obj.get("cooldown_overloaded_secs"),
+            "cooldown_window_secs": obj.get("cooldown_window_secs"),
             "created_by_email": obj.get("created_by_email"),
             "created_by_name": obj.get("created_by_name"),
             "created_by_user_id": obj.get("created_by_user_id"),
