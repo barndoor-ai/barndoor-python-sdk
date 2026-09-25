@@ -19,18 +19,18 @@ from typing import Any
 # httpx2: the SDK's single http stack. See barndoor/lib/http.py.
 import httpx2 as httpx
 
-from barndoor.api.dlp_api import DlpApi
-from barndoor.api.identity_api import IdentityApi
-from barndoor.api.llm_gateway_api import LlmGatewayApi
-from barndoor.api.notification_api import NotificationApi
-from barndoor.api.policy_api import PolicyApi
-from barndoor.api.registry_api import RegistryApi
-from barndoor.api.system_management_api import SystemManagementApi
-from barndoor.api_client import ApiClient
-from barndoor.configuration import Configuration
-from barndoor.lib.auth import ClientCredentialsOptions, TokenProvider, client_credentials, static_token
-from barndoor.lib.config import Environment
-from barndoor.lib.http import RetryOptions, create_async_client
+from ..api.dlp_api import DlpApi
+from ..api.identity_api import IdentityApi
+from ..api.llm_gateway_api import LlmGatewayApi
+from ..api.notification_api import NotificationApi
+from ..api.policy_api import PolicyApi
+from ..api.registry_api import RegistryApi
+from ..api.system_management_api import SystemManagementApi
+from ..api_client import ApiClient
+from ..configuration import Configuration
+from .auth import ClientCredentialsOptions, TokenProvider, client_credentials, static_token
+from .config import Environment
+from .http import RetryOptions, create_async_client
 
 
 class _NoStaticToken(Configuration):

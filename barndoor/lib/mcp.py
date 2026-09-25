@@ -16,7 +16,7 @@ from urllib.parse import urlparse, urlunparse
 from mcp import ClientSession
 from mcp.client.streamable_http import create_mcp_http_client, streamable_http_client
 
-from barndoor.lib.client import BarndoorClient
+from .client import BarndoorClient
 
 
 @dataclass(frozen=True)

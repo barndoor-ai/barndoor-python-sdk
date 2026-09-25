@@ -126,7 +126,7 @@ async def _discover_token_endpoint(issuer: str, client: httpx.AsyncClient) -> st
 
 def client_credentials(options: ClientCredentialsOptions) -> TokenProvider:
     """Exchange client credentials for access tokens, refreshing as needed."""
-    from barndoor.lib.config import PRODUCTION_ISSUER
+    from .config import PRODUCTION_ISSUER
 
     issuer = options.issuer or PRODUCTION_ISSUER
     cache = _Cache()
@@ -170,7 +170,7 @@ def refresh_token(
     The counterpart to :func:`complete_authorization_code`: that returns a
     refresh token, this turns it into access tokens for as long as it lives.
     """
-    from barndoor.lib.config import PRODUCTION_ISSUER
+    from .config import PRODUCTION_ISSUER
 
     resolved_issuer = issuer or PRODUCTION_ISSUER
     cache = _Cache()
@@ -232,7 +232,7 @@ def start_authorization_code(
     """
     import secrets
 
-    from barndoor.lib.config import PRODUCTION_ISSUER
+    from .config import PRODUCTION_ISSUER
 
     resolved = (issuer or PRODUCTION_ISSUER).rstrip("/")
     state = secrets.token_urlsafe(24)
@@ -272,7 +272,7 @@ async def complete_authorization_code(
     nothing on disk: where a credential belongs is the application's decision,
     and the SDK this replaces made it for them.
     """
-    from barndoor.lib.config import PRODUCTION_ISSUER
+    from .config import PRODUCTION_ISSUER
 
     resolved_issuer = issuer or PRODUCTION_ISSUER
     async with httpx.AsyncClient(transport=transport) as discovery:

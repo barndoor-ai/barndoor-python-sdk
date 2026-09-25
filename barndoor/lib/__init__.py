@@ -9,7 +9,12 @@ client.
 Re-exported from the package root by ``templates/__init__package.mustache``.
 """
 
-from barndoor.lib.auth import (
+# Relative imports throughout this package, deliberately. ruff classifies
+# `barndoor` as first-party when it is installed in the environment and
+# third-party when it is not, and the two produce mutually exclusive import
+# orders — CI reformats what a developer's machine just formatted, forever. A
+# relative import is first-party by definition, so there is nothing to classify.
+from .auth import (
     AuthorizationCodeRequest,
     ClientCredentialsOptions,
     TokenProvider,
@@ -19,10 +24,10 @@ from barndoor.lib.auth import (
     start_authorization_code,
     static_token,
 )
-from barndoor.lib.client import BarndoorClient, create_client
-from barndoor.lib.config import DEV, LOCAL, PRODUCTION_ISSUER, Environment, environment_from_env
-from barndoor.lib.http import RetryOptions, create_async_client
-from barndoor.lib.mcp import McpOptions, mcp_client, mcp_connection_params
+from .client import BarndoorClient, create_client
+from .config import DEV, LOCAL, PRODUCTION_ISSUER, Environment, environment_from_env
+from .http import RetryOptions, create_async_client
+from .mcp import McpOptions, mcp_client, mcp_connection_params
 
 
 __all__ = [

@@ -15,8 +15,8 @@ import webbrowser
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs, urlparse
 
-from barndoor.lib.auth import complete_authorization_code, start_authorization_code
-from barndoor.lib.config import PRODUCTION_ISSUER, environment_from_env
+from .auth import complete_authorization_code, start_authorization_code
+from .config import PRODUCTION_ISSUER, environment_from_env
 
 
 #: Loopback only. A public redirect would hand the authorization code to
