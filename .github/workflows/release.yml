@@ -33,8 +33,10 @@ jobs:
   # A push that cannot change the distribution must not burn a version number.
   # Everything outside the package — CI, RELEASE.md, examples, the spec copy —
   # is real content that belongs here but never reaches a `pip install`.
-  # Fails open: an unusable payload publishes, because a version wasted is
-  # cheaper than a fix that silently never shipped.
+  # Fails open: an unusable base publishes, because a version wasted is
+  # cheaper than a fix that silently never shipped. The diff comes from git —
+  # the push payload omits its file lists on a large commit, which is how every
+  # regeneration since this gate landed reported "unchanged". See the script.
   changed:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
@@ -42,33 +44,16 @@ jobs:
       package: ${{ steps.check.outputs.package }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # package-changed.py diffs github.event.before against the head, so
+          # the base commit has to be in the clone. The default depth of 1 has
+          # neither, and the script would fail open on every push.
+          fetch-depth: 0
       - id: check
         env:
-          COMMITS: ${{ toJSON(github.event.commits) }}
-        run: |
-          set -euo pipefail
-          python3 - <<'EOF' >> "$GITHUB_OUTPUT"
-          import fnmatch, json, os
-          PATHS = ["barndoor/**", "pyproject.toml", "uv.lock", "README.md", "LICENSE"]
-          raw = os.environ.get("COMMITS", "")
-          try:
-              commits = json.loads(raw) if raw else []
-          except json.JSONDecodeError:
-              commits = None
-          if not commits:
-              print("package=true")
-          else:
-              files = set()
-              for c in commits:
-                  for k in ("added", "modified", "removed"):
-                      files.update(c.get(k) or [])
-              hit = any(
-                  fnmatch.fnmatch(f, p) or (p.endswith("/**") and f.startswith(p[:-2]))
-                  for f in files for p in PATHS
-              )
-              print(f"package={'true' if hit else 'false'}")
-          EOF
-          cat "$GITHUB_OUTPUT"
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+        run: .github/scripts/package-changed.py >> "$GITHUB_OUTPUT"
 
   build:
     runs-on: ubuntu-latest
