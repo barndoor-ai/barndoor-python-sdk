@@ -45,7 +45,8 @@ EMPTY_SHA = "0" * 40
 
 def affects_package(path: str) -> bool:
     return any(
-        fnmatch.fnmatch(path, pat) or (pat.endswith("/**") and path.startswith(pat[:-2]))
+        fnmatch.fnmatch(path, pat)
+        or (pat.endswith("/**") and path.startswith(pat[:-2]))
         for pat in PACKAGE_PATHS
     )
 
@@ -96,7 +97,9 @@ def main() -> int:
     hits = sorted(f for f in files if affects_package(f))
     for f in sorted(files):
         print(f"  {'PACKAGE' if f in hits else '       '}  {f}", file=sys.stderr)
-    print(f"{len(hits)} of {len(files)} changed files reach the package", file=sys.stderr)
+    print(
+        f"{len(hits)} of {len(files)} changed files reach the package", file=sys.stderr
+    )
 
     print(f"package={'true' if hits else 'false'}")
     return 0
