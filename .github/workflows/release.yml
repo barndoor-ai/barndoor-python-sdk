@@ -103,6 +103,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: release
+    # GitHub propagates a skip transitively through `needs`. On a release,
+    # `changed` is skipped; `build` survives that with always(), but this job's
+    # implicit success() still inspects the whole ancestor chain, sees the
+    # skipped `changed`, and skips too -- with no steps and no log to say why.
+    # That is why v2.2.0 built a wheel and published nothing. Naming build's
+    # result explicitly is the only thing that overrides the propagation.
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
