@@ -24,6 +24,14 @@ on:
       - main
   release:
     types: [published]
+  # A release event runs the workflow as it existed at the TAG's commit, so a
+  # release broken by a workflow bug cannot be fixed by fixing the workflow --
+  # the tag would have to move, and a tag that has been public is not ours to
+  # move. Dispatch runs from the default branch instead, which is the only way
+  # to re-drive a release whose publish never ran. Same filename on purpose:
+  # PyPI's trusted publisher is bound to it, so this channel inherits the
+  # binding rather than needing its own.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -58,11 +66,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: [changed]
-    # `always()` because `changed` is skipped on a release, and a skipped need
-    # fails this job's default success() guard too.
+    # `always()` because `changed` is skipped on anything but a push, and a
+    # skipped need fails this job's default success() guard too.
     if: >-
       always() &&
-      (github.event_name == 'release' || needs.changed.outputs.package == 'true')
+      (github.event_name == 'release' ||
+       github.event_name == 'workflow_dispatch' ||
+       needs.changed.outputs.package == 'true')
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
@@ -77,6 +87,8 @@ jobs:
       # The version committed to pyproject.toml is the CLEAN one, so a formal
       # release publishes exactly what is in the tree. The .devN segment is
       # applied here and never committed.
+      # Push only: a release and a dispatch both publish pyproject.toml's clean
+      # version, which is the whole point of a formal release.
       - name: Stamp a prerelease version
         if: github.event_name == 'push'
         run: |
