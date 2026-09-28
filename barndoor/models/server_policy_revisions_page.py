@@ -17,20 +17,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictBool, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from barndoor.models.policy_revision_summary import PolicyRevisionSummary
 from typing import Optional, Set
 from typing_extensions import Self
 from pydantic_core import to_jsonable_python
 
-class FilterOption(BaseModel):
+class ServerPolicyRevisionsPage(BaseModel):
     """
-    Individual filter option.
+    Cursor-paged page of policy revisions scoped to one MCP server (BCP-4458).  Backs ``GET /admin/v2/policy-revisions`` — one source instead of the per-policy fan-out the client used to do. No ``total``/``pages``: this is keyset, not offset, pagination, so there is deliberately no ``COUNT``.
     """ # noqa: E501
-    value: StrictStr
-    label: StrictStr
-    deleted: Optional[StrictBool] = False
-    __properties: ClassVar[List[str]] = ["value", "label", "deleted"]
+    data: List[PolicyRevisionSummary]
+    next_cursor: Optional[StrictStr] = Field(default=None, description="Opaque cursor for the next page; null when there are no more results.")
+    __properties: ClassVar[List[str]] = ["data", "next_cursor"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -50,7 +50,7 @@ class FilterOption(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of FilterOption from a JSON string"""
+        """Create an instance of ServerPolicyRevisionsPage from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -71,11 +71,22 @@ class FilterOption(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in data (list)
+        _items = []
+        if self.data:
+            for _item_data in self.data:
+                _items.append(_item_data.to_dict() if _item_data is not None else None)
+            _dict['data'] = _items
+        # set to None if next_cursor (nullable) is None
+        # and model_fields_set contains the field
+        if self.next_cursor is None and "next_cursor" in self.model_fields_set:
+            _dict['next_cursor'] = None
+
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of FilterOption from a dict"""
+        """Create an instance of ServerPolicyRevisionsPage from a dict"""
         if obj is None:
             return None
 
@@ -83,9 +94,8 @@ class FilterOption(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "value": obj.get("value"),
-            "label": obj.get("label"),
-            "deleted": obj.get("deleted") if obj.get("deleted") is not None else False
+            "data": [PolicyRevisionSummary.from_dict(_item) for _item in obj["data"]] if obj.get("data") is not None else None,
+            "next_cursor": obj.get("next_cursor")
         })
         return _obj
 
