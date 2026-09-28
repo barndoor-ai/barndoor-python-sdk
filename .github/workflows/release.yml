@@ -123,6 +123,10 @@ jobs:
     # result explicitly is the only thing that overrides the propagation.
     if: ${{ !cancelled() && needs.build.result == 'success' }}
     steps:
+      # Before the artifact download, not after: checkout cleans the workspace
+      # and would take dist/ with it. Only needed for the verify script.
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
       - name: Download build artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -136,21 +140,11 @@ jobs:
       - name: Publish to PyPI (trusted publishing)
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
 
-      # `pip install` returns success and PyPI serves asynchronously, so a green
-      # publish step is not evidence anything was published. This reads it back.
+      # A green publish step is not evidence anything was published: PyPI
+      # processes uploads asynchronously. The script reads it back from both the
+      # release object and the index a resolver actually uses.
       - name: Confirm the index serves it
         run: |
           set -euo pipefail
           version="$(ls dist/*.tar.gz | head -1 | sed -E 's/.*barndoor-(.*)\.tar\.gz/\1/')"
-          echo "checking barndoor==${version}"
-          for attempt in $(seq 1 20); do
-            if curl -fsS "https://pypi.org/pypi/barndoor/${version}/json" >/dev/null 2>&1; then
-              echo "served after ${attempt} attempt(s)"
-              echo "### Published \`barndoor==${version}\`" >> "$GITHUB_STEP_SUMMARY"
-              exit 0
-            fi
-            echo "attempt ${attempt}/20: not served yet"
-            sleep 15
-          done
-          echo "::error::publish reported success but PyPI does not serve barndoor==${version}"
-          exit 1
+          .github/scripts/verify-published.sh barndoor "$version"
