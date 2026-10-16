@@ -42,7 +42,8 @@ class AgentRuntimeCapabilities(BaseModel):
     shell: Optional[StrictStr] = 'native'
     skills: Optional[StrictBool] = True
     subagents: Optional[StrictBool] = True
-    __properties: ClassVar[List[str]] = ["additional_instructions", "allowed_commands", "allowed_tools", "blocked_commands", "blocked_tools", "browser", "environment", "filesystem", "network", "preset", "schema_version", "shell", "skills", "subagents"]
+    unreviewed_desktop_builds: Optional[StrictBool] = Field(default=False, description="Codex only. When true, Codex Desktop may launch a version newer than the installed Barndoor CLI has reviewed, under the newest reviewed version's rules and with a warning to the user, instead of being refused until Barndoor is updated. A managed-device setting can still turn it off. Default false; independent of `preset`.")
+    __properties: ClassVar[List[str]] = ["additional_instructions", "allowed_commands", "allowed_tools", "blocked_commands", "blocked_tools", "browser", "environment", "filesystem", "network", "preset", "schema_version", "shell", "skills", "subagents", "unreviewed_desktop_builds"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -108,7 +109,8 @@ class AgentRuntimeCapabilities(BaseModel):
             "schema_version": obj.get("schema_version") if obj.get("schema_version") is not None else 1,
             "shell": obj.get("shell") if obj.get("shell") is not None else 'native',
             "skills": obj.get("skills") if obj.get("skills") is not None else True,
-            "subagents": obj.get("subagents") if obj.get("subagents") is not None else True
+            "subagents": obj.get("subagents") if obj.get("subagents") is not None else True,
+            "unreviewed_desktop_builds": obj.get("unreviewed_desktop_builds") if obj.get("unreviewed_desktop_builds") is not None else False
         })
         return _obj
 
