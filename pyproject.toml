@@ -1,6 +1,6 @@
 [project]
 name = "barndoor"
-version = "2.13.0"
+version = "2.14.0"
 description = "Official Python SDK for the Barndoor AI platform."
 authors = [{ name = "Barndoor AI, Inc." }]
 readme = "README.md"
