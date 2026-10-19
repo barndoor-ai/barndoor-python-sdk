@@ -27,6 +27,7 @@ class StaleReason(str, Enum):
     allowed enum values
     """
     CATALOG_REMOVED = 'catalog_removed'
+    UPSTREAM_UNLISTED = 'upstream_unlisted'
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
