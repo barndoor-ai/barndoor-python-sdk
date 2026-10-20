@@ -10,13 +10,77 @@ from __future__ import annotations
 import secrets
 import uuid
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
+from typing import Any
 from urllib.parse import urlparse, urlunparse
+
+import httpx2
+import mcp.client.sse as _sdk_sse
+import mcp.client.streamable_http as _sdk_streamable_http
 
 from mcp import ClientSession
 from mcp.client.streamable_http import create_mcp_http_client, streamable_http_client
 
 from .client import BarndoorClient
+
+
+try:
+    # Private to the MCP SDK, which this package accepts across a whole major
+    # (`mcp >= 2.2, < 3`). If a release moves it, the GET-stream reader keeps the
+    # SDK's 1 MiB cap rather than this module failing to import.
+    from mcp.shared._httpx_utils import sse_within_origin as _sdk_sse_within_origin
+except ImportError:  # pragma: no cover - only on an mcp release this SDK has not been tested against
+    _sdk_sse_within_origin = None
+
+
+#: The largest single MCP answer this client reads. Barndoor answers each request
+#: as ONE server-sent event, so this bounds a whole tool result. Four times the
+#: platform's 64 MiB tool-result limit: that limit counts the result's characters,
+#: while the event is measured in UTF-8 bytes (up to 4 per character) and carries
+#: the result JSON-escaped inside an envelope.
+MAX_SSE_EVENT_BYTES = 256 * 1024 * 1024
+
+#: Carried by a reader `_lift_sse_event_cap` installed (its cap; ``None`` for
+#: unbounded). Barndoor's MCP probe library uses the same name and semantics,
+#: so two copies in one process never lower each other's cap.
+_LIFTED_CAP_ATTR = "_bd_max_sse_event_bytes"
+_NOT_LIFTED = object()
+
+
+def _lift_sse_event_cap(max_event_bytes: int) -> None:
+    """Let the MCP SDK read one server-sent event of up to ``max_event_bytes``.
+
+    mcp 2.x reads SSE with ``httpx2.EventSource``, whose ``max_event_size``
+    defaults to 1 MiB, and offers no setting for it. Every tool result over
+    1 MiB therefore failed as "SSE stream ended without a response" (the SDK
+    swallows the size error). This rebinds the SDK's readers -- POST answers,
+    the GET stream and the legacy SSE transport -- process-global, and it only
+    ever raises the cap. ``tests/test_mcp_large_result.py`` pins that the SDK
+    still has no knob.
+    """
+    current = getattr(_sdk_streamable_http.EventSource, _LIFTED_CAP_ATTR, _NOT_LIFTED)
+    if current is None or (current is not _NOT_LIFTED and current >= max_event_bytes):
+        return
+
+    def event_source(response: Any) -> Any:
+        return httpx2.EventSource(response, max_event_size=max_event_bytes)
+
+    setattr(event_source, _LIFTED_CAP_ATTR, max_event_bytes)
+    _sdk_streamable_http.EventSource = event_source
+
+    if _sdk_sse_within_origin is None:  # pragma: no cover - see the import above
+        return
+    original = _sdk_sse_within_origin
+
+    @asynccontextmanager
+    async def sse_within_origin(client: Any, url: Any, *, headers: dict[str, str] | None = None) -> AsyncIterator[Any]:
+        async with original(client, url, headers=headers) as source:
+            yield httpx2.EventSource(source.response, max_event_size=max_event_bytes)
+
+    _sdk_streamable_http.sse_within_origin = sse_within_origin
+    _sdk_sse.sse_within_origin = sse_within_origin
 
 
 @dataclass(frozen=True)
@@ -128,6 +192,7 @@ class _McpSession:
         # rides on the http client it is handed. `create_mcp_http_client` is the
         # package's own constructor, so timeouts and limits stay whatever the
         # MCP client expects rather than whatever this SDK would have guessed.
+        _lift_sse_event_cap(MAX_SSE_EVENT_BYTES)
         self._http = create_mcp_http_client(headers=headers)
         self._transport = streamable_http_client(url, http_client=self._http)
         read, write = await self._transport.__aenter__()
