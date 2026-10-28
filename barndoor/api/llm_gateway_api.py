@@ -9059,7 +9059,7 @@ class LlmGatewayApi:
     @validate_call
     async def get_client_settings(
         self,
-        client: Annotated[Optional[StrictStr], Field(description="`claude` (Claude Code) or `codex` (Codex)")],
+        client: Annotated[Optional[StrictStr], Field(description="`claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code)")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9076,7 +9076,7 @@ class LlmGatewayApi:
         """Fetch one client's settings
 
 
-        :param client: `claude` (Claude Code) or `codex` (Codex) (required)
+        :param client: `claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code) (required)
         :type client: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -9128,7 +9128,7 @@ class LlmGatewayApi:
     @validate_call
     async def get_client_settings_with_http_info(
         self,
-        client: Annotated[Optional[StrictStr], Field(description="`claude` (Claude Code) or `codex` (Codex)")],
+        client: Annotated[Optional[StrictStr], Field(description="`claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code)")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9145,7 +9145,7 @@ class LlmGatewayApi:
         """Fetch one client's settings
 
 
-        :param client: `claude` (Claude Code) or `codex` (Codex) (required)
+        :param client: `claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code) (required)
         :type client: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -9197,7 +9197,7 @@ class LlmGatewayApi:
     @validate_call
     async def get_client_settings_without_preload_content(
         self,
-        client: Annotated[Optional[StrictStr], Field(description="`claude` (Claude Code) or `codex` (Codex)")],
+        client: Annotated[Optional[StrictStr], Field(description="`claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code)")],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9214,7 +9214,7 @@ class LlmGatewayApi:
         """Fetch one client's settings
 
 
-        :param client: `claude` (Claude Code) or `codex` (Codex) (required)
+        :param client: `claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code) (required)
         :type client: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -11414,7 +11414,7 @@ class LlmGatewayApi:
     ) -> ListClientSettingsResponse:
         """List the organization's client settings
 
-        Returns the settings for both clients, Claude Code first. A client the organization has not configured is returned with `exists: false`, version 0 and the built-in defaults.
+        Returns the settings for every client, Claude Code first. A client the organization has not configured is returned with `exists: false`, version 0 and the built-in defaults.
 
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -11479,7 +11479,7 @@ class LlmGatewayApi:
     ) -> ApiResponse[ListClientSettingsResponse]:
         """List the organization's client settings
 
-        Returns the settings for both clients, Claude Code first. A client the organization has not configured is returned with `exists: false`, version 0 and the built-in defaults.
+        Returns the settings for every client, Claude Code first. A client the organization has not configured is returned with `exists: false`, version 0 and the built-in defaults.
 
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -11544,7 +11544,7 @@ class LlmGatewayApi:
     ) -> RESTResponseType:
         """List the organization's client settings
 
-        Returns the settings for both clients, Claude Code first. A client the organization has not configured is returned with `exists: false`, version 0 and the built-in defaults.
+        Returns the settings for every client, Claude Code first. A client the organization has not configured is returned with `exists: false`, version 0 and the built-in defaults.
 
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -15589,7 +15589,7 @@ class LlmGatewayApi:
     @validate_call
     async def put_client_settings(
         self,
-        client: Annotated[StrictStr, Field(description="`claude` (Claude Code) or `codex` (Codex)")],
+        client: Annotated[StrictStr, Field(description="`claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code)")],
         put_client_settings_request: PutClientSettingsRequest,
         _request_timeout: Union[
             None,
@@ -15608,7 +15608,7 @@ class LlmGatewayApi:
 
         Replaces the client's capabilities, appending a version; the first save creates the settings. `preferences` are stored but not read by a launch: Model Access decides which models each person can use, and every launch slot is derived from that (the newest allowed route of the slot's family).
 
-        :param client: `claude` (Claude Code) or `codex` (Codex) (required)
+        :param client: `claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code) (required)
         :type client: str
         :param put_client_settings_request: (required)
         :type put_client_settings_request: PutClientSettingsRequest
@@ -15665,7 +15665,7 @@ class LlmGatewayApi:
     @validate_call
     async def put_client_settings_with_http_info(
         self,
-        client: Annotated[StrictStr, Field(description="`claude` (Claude Code) or `codex` (Codex)")],
+        client: Annotated[StrictStr, Field(description="`claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code)")],
         put_client_settings_request: PutClientSettingsRequest,
         _request_timeout: Union[
             None,
@@ -15684,7 +15684,7 @@ class LlmGatewayApi:
 
         Replaces the client's capabilities, appending a version; the first save creates the settings. `preferences` are stored but not read by a launch: Model Access decides which models each person can use, and every launch slot is derived from that (the newest allowed route of the slot's family).
 
-        :param client: `claude` (Claude Code) or `codex` (Codex) (required)
+        :param client: `claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code) (required)
         :type client: str
         :param put_client_settings_request: (required)
         :type put_client_settings_request: PutClientSettingsRequest
@@ -15741,7 +15741,7 @@ class LlmGatewayApi:
     @validate_call
     async def put_client_settings_without_preload_content(
         self,
-        client: Annotated[StrictStr, Field(description="`claude` (Claude Code) or `codex` (Codex)")],
+        client: Annotated[StrictStr, Field(description="`claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code)")],
         put_client_settings_request: PutClientSettingsRequest,
         _request_timeout: Union[
             None,
@@ -15760,7 +15760,7 @@ class LlmGatewayApi:
 
         Replaces the client's capabilities, appending a version; the first save creates the settings. `preferences` are stored but not read by a launch: Model Access decides which models each person can use, and every launch slot is derived from that (the newest allowed route of the slot's family).
 
-        :param client: `claude` (Claude Code) or `codex` (Codex) (required)
+        :param client: `claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code) (required)
         :type client: str
         :param put_client_settings_request: (required)
         :type put_client_settings_request: PutClientSettingsRequest

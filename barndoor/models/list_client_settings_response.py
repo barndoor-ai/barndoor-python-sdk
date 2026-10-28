@@ -28,7 +28,7 @@ class ListClientSettingsResponse(BaseModel):
     """
     ListClientSettingsResponse
     """ # noqa: E501
-    settings: List[ClientSettings] = Field(description="Both clients, Claude Code first.")
+    settings: List[ClientSettings] = Field(description="Every client, Claude Code first.")
     __properties: ClassVar[List[str]] = ["settings"]
 
     model_config = ConfigDict(

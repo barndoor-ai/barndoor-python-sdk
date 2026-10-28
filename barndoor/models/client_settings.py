@@ -32,7 +32,7 @@ class ClientSettings(BaseModel):
     One client's settings, or the built-in defaults when the organization has not saved any.
     """ # noqa: E501
     capabilities: AgentRuntimeCapabilities
-    client: StrictStr = Field(description="`claude` (Claude Code) or `codex` (Codex).")
+    client: StrictStr = Field(description="`claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code).")
     exists: StrictBool = Field(description="False until the organization first saves settings for the client; the other fields then describe the built-in defaults.")
     id: UUID = Field(description="Stable settings id (deterministic per organization and client, so it is the same before and after the first save).")
     preferences: Dict[str, StrictStr] = Field(description="Stored per-slot model preferences. Accepted and kept, but not read by a launch: every slot is derived from the models Model Access allows the person (the newest allowed route of the slot's family).")
