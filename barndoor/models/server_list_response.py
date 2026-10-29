@@ -49,6 +49,7 @@ class ServerListResponse(BaseModel):
     client_secret: Optional[StrictStr]
     uses_managed_credentials: Optional[StrictBool]
     ema_enabled: StrictBool
+    local_availability: Annotated[str, Field(strict=True, max_length=16)]
     scopes: Optional[List[StrictStr]]
     organization_id: Optional[UUID]
     mcp_server_directory_id: UUID
@@ -73,7 +74,7 @@ class ServerListResponse(BaseModel):
     uses_cimd: StrictBool = Field(description="Deprecated: use `credential_mode`. Whether this live server identifies itself to the provider with Barndoor's OAuth Client ID Metadata Document.")
     tools_count: StrictInt
     resources_count: StrictInt
-    __properties: ClassVar[List[str]] = ["id", "created_at", "updated_at", "enabled", "configuration", "name", "slug", "oauth_base_url_override", "client_id", "client_secret", "uses_managed_credentials", "ema_enabled", "scopes", "organization_id", "mcp_server_directory_id", "status", "meta", "tools_fetch_status", "tools_fetch_error", "tools_fetched_at", "tools_fetch_requested_at", "published_at", "mcp_server_directory", "mcp_server_service_connection", "connection_status", "connection_error_reason", "url", "proxy_url", "can_manage_policies", "attention_tier", "publish_blockers", "deleted_at", "credential_mode", "uses_cimd", "tools_count", "resources_count"]
+    __properties: ClassVar[List[str]] = ["id", "created_at", "updated_at", "enabled", "configuration", "name", "slug", "oauth_base_url_override", "client_id", "client_secret", "uses_managed_credentials", "ema_enabled", "local_availability", "scopes", "organization_id", "mcp_server_directory_id", "status", "meta", "tools_fetch_status", "tools_fetch_error", "tools_fetched_at", "tools_fetch_requested_at", "published_at", "mcp_server_directory", "mcp_server_service_connection", "connection_status", "connection_error_reason", "url", "proxy_url", "can_manage_policies", "attention_tier", "publish_blockers", "deleted_at", "credential_mode", "uses_cimd", "tools_count", "resources_count"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -258,6 +259,7 @@ class ServerListResponse(BaseModel):
             "client_secret": obj.get("client_secret"),
             "uses_managed_credentials": obj.get("uses_managed_credentials"),
             "ema_enabled": obj.get("ema_enabled") if obj.get("ema_enabled") is not None else False,
+            "local_availability": obj.get("local_availability") if obj.get("local_availability") is not None else 'required',
             "scopes": obj.get("scopes"),
             "organization_id": obj.get("organization_id"),
             "mcp_server_directory_id": obj.get("mcp_server_directory_id"),
