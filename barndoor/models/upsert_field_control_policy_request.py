@@ -28,7 +28,7 @@ class UpsertFieldControlPolicyRequest(BaseModel):
     UpsertFieldControlPolicyRequest
     """ # noqa: E501
     catalog_unlisted_table_action: Optional[StrictStr] = Field(default=None, description="This server's override for tables no catalog-aware SQL rule covers: `allow`, `block` or `observe`; `null` clears it back to the org default. Omit to keep the stored value. Ignored unless the catalog SQL controls feature is enabled for the organization.")
-    directory_slug: Optional[StrictStr] = Field(default=None, description="Seeded directory slug (`slack`, `gdrive`). Required when `rules` contain `when`.")
+    directory_slug: Optional[StrictStr] = Field(default=None, description="Deprecated and ignored: the connector is taken from the MCP server (`mcp_server_id`). Still accepted so existing requests keep working.")
     enabled: Optional[StrictBool] = None
     mcp_server_id: StrictStr
     name: StrictStr

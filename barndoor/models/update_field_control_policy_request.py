@@ -27,7 +27,7 @@ class UpdateFieldControlPolicyRequest(BaseModel):
     """
     UpdateFieldControlPolicyRequest
     """ # noqa: E501
-    directory_slug: Optional[StrictStr] = Field(default=None, description="Seeded directory slug (`slack`, `gdrive`). Required when `rules` contain `when`.")
+    directory_slug: Optional[StrictStr] = Field(default=None, description="Deprecated and ignored: the connector is taken from the MCP server (`mcp_server_id`). Still accepted so existing requests keep working.")
     enabled: Optional[StrictBool] = None
     name: Optional[StrictStr] = None
     rules: Optional[Any] = None
