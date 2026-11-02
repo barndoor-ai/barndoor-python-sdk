@@ -33,7 +33,7 @@ class CreateModelAccessRequest(BaseModel):
     name: StrictStr
     policy_type: StrictStr
     scope_id: Optional[UUID] = Field(default=None, description="Single-entity form of `scope_ids`, kept for existing clients. Send one or the other; when both are sent `scope_id` must be the first element of `scope_ids`.")
-    scope_ids: Optional[List[UUID]] = Field(default=None, description="Every user / project / API key / agent the policy applies to (BCP-5001). The policy applies when any one of them matches the caller. Empty or omitted means not bound to a specific entity.")
+    scope_ids: Optional[List[UUID]] = Field(default=None, description="Every user / project / API key / agent the policy applies to (BCP-5001). The policy applies when any one of them matches the caller. Empty or omitted means not bound to a specific entity: for `agent` that is every agent. `user`, `project` and `api_key` must name at least one; use `org` to apply a policy to everyone.")
     scope_type: StrictStr
     scope_value: Optional[StrictStr] = Field(default=None, description="Single-entity form of `scope_values`; same rules as `scope_id`.")
     scope_values: Optional[List[StrictStr]] = Field(default=None, description="Every role / group name the policy applies to (BCP-5001). Same any-of semantics as `scope_ids`.")
