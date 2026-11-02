@@ -140,6 +140,7 @@ __all__ = [
     "DlpAwsTrustInfoResponse",
     "DlpErrorResponse",
     "EffectivePricing",
+    "EmbeddedRuntime",
     "EnforcementPoliciesResponse",
     "EnforcementPolicyMcpTargetRequest",
     "EnforcementPolicyMcpTargetResponse",
@@ -172,6 +173,9 @@ __all__ = [
     "IdpRoleMappingResponse",
     "IdpSettingsResponse",
     "IdpTestResult",
+    "InstallationCreate",
+    "InstallationRead",
+    "InstallationUpdate",
     "LabeledOption",
     "LifetimeLimitInput",
     "ListClientSettingsResponse",
@@ -179,6 +183,7 @@ __all__ = [
     "ListRoutingRulesResponse",
     "LlmGatewayAwsRoleConfigResponse",
     "LlmGatewayAwsTrustInfoResponse",
+    "LocalCliRuntime",
     "LocationInner",
     "LongContextTier",
     "LongContextTierEntry",
@@ -187,6 +192,7 @@ __all__ = [
     "MCPServerDirectoryBase",
     "MCPServerDirectoryRead",
     "MCPServerDirectoryReadWithServers",
+    "ManagedMcpRuntime",
     "MappingKind",
     "MaskFormat",
     "MaskKeep",
@@ -262,6 +268,7 @@ __all__ = [
     "ProviderConnectionResponseOneOf5",
     "PublishBlocker",
     "PutClientSettingsRequest",
+    "RemoteRuntime",
     "RenameModelRouteRequest",
     "RenameModelRouteResponse",
     "ReorderEntry",
@@ -282,6 +289,7 @@ __all__ = [
     "RoutingRuleWriteResponse",
     "RoutingSlot",
     "RuleConflict",
+    "Runtime",
     "ScopeJson",
     "ScopeType",
     "ServerConnectionResponse",
@@ -293,6 +301,7 @@ __all__ = [
     "SetApiKeyDisabledRequest",
     "SetApiKeyExpiryRequest",
     "SetCatalogUnlistedTableActionRequest",
+    "SignedArtifact",
     "StaleReason",
     "TestFindingResponse",
     "TestProcessTextRequest",
@@ -467,6 +476,7 @@ from barndoor.models.directory_credential_modes import DirectoryCredentialModes 
 from barndoor.models.dlp_aws_trust_info_response import DlpAwsTrustInfoResponse as DlpAwsTrustInfoResponse
 from barndoor.models.dlp_error_response import DlpErrorResponse as DlpErrorResponse
 from barndoor.models.effective_pricing import EffectivePricing as EffectivePricing
+from barndoor.models.embedded_runtime import EmbeddedRuntime as EmbeddedRuntime
 from barndoor.models.enforcement_policies_response import EnforcementPoliciesResponse as EnforcementPoliciesResponse
 from barndoor.models.enforcement_policy_mcp_target_request import EnforcementPolicyMcpTargetRequest as EnforcementPolicyMcpTargetRequest
 from barndoor.models.enforcement_policy_mcp_target_response import EnforcementPolicyMcpTargetResponse as EnforcementPolicyMcpTargetResponse
@@ -499,6 +509,9 @@ from barndoor.models.idp_role_mapping_config import IdpRoleMappingConfig as IdpR
 from barndoor.models.idp_role_mapping_response import IdpRoleMappingResponse as IdpRoleMappingResponse
 from barndoor.models.idp_settings_response import IdpSettingsResponse as IdpSettingsResponse
 from barndoor.models.idp_test_result import IdpTestResult as IdpTestResult
+from barndoor.models.installation_create import InstallationCreate as InstallationCreate
+from barndoor.models.installation_read import InstallationRead as InstallationRead
+from barndoor.models.installation_update import InstallationUpdate as InstallationUpdate
 from barndoor.models.labeled_option import LabeledOption as LabeledOption
 from barndoor.models.lifetime_limit_input import LifetimeLimitInput as LifetimeLimitInput
 from barndoor.models.list_client_settings_response import ListClientSettingsResponse as ListClientSettingsResponse
@@ -506,6 +519,7 @@ from barndoor.models.list_profiles_response import ListProfilesResponse as ListP
 from barndoor.models.list_routing_rules_response import ListRoutingRulesResponse as ListRoutingRulesResponse
 from barndoor.models.llm_gateway_aws_role_config_response import LlmGatewayAwsRoleConfigResponse as LlmGatewayAwsRoleConfigResponse
 from barndoor.models.llm_gateway_aws_trust_info_response import LlmGatewayAwsTrustInfoResponse as LlmGatewayAwsTrustInfoResponse
+from barndoor.models.local_cli_runtime import LocalCliRuntime as LocalCliRuntime
 from barndoor.models.location_inner import LocationInner as LocationInner
 from barndoor.models.long_context_tier import LongContextTier as LongContextTier
 from barndoor.models.long_context_tier_entry import LongContextTierEntry as LongContextTierEntry
@@ -514,6 +528,7 @@ from barndoor.models.mcp_server_category import MCPServerCategory as MCPServerCa
 from barndoor.models.mcp_server_directory_base import MCPServerDirectoryBase as MCPServerDirectoryBase
 from barndoor.models.mcp_server_directory_read import MCPServerDirectoryRead as MCPServerDirectoryRead
 from barndoor.models.mcp_server_directory_read_with_servers import MCPServerDirectoryReadWithServers as MCPServerDirectoryReadWithServers
+from barndoor.models.managed_mcp_runtime import ManagedMcpRuntime as ManagedMcpRuntime
 from barndoor.models.mapping_kind import MappingKind as MappingKind
 from barndoor.models.mask_format import MaskFormat as MaskFormat
 from barndoor.models.mask_keep import MaskKeep as MaskKeep
@@ -589,6 +604,7 @@ from barndoor.models.provider_connection_response_one_of4 import ProviderConnect
 from barndoor.models.provider_connection_response_one_of5 import ProviderConnectionResponseOneOf5 as ProviderConnectionResponseOneOf5
 from barndoor.models.publish_blocker import PublishBlocker as PublishBlocker
 from barndoor.models.put_client_settings_request import PutClientSettingsRequest as PutClientSettingsRequest
+from barndoor.models.remote_runtime import RemoteRuntime as RemoteRuntime
 from barndoor.models.rename_model_route_request import RenameModelRouteRequest as RenameModelRouteRequest
 from barndoor.models.rename_model_route_response import RenameModelRouteResponse as RenameModelRouteResponse
 from barndoor.models.reorder_entry import ReorderEntry as ReorderEntry
@@ -609,6 +625,7 @@ from barndoor.models.routing_rule_draft import RoutingRuleDraft as RoutingRuleDr
 from barndoor.models.routing_rule_write_response import RoutingRuleWriteResponse as RoutingRuleWriteResponse
 from barndoor.models.routing_slot import RoutingSlot as RoutingSlot
 from barndoor.models.rule_conflict import RuleConflict as RuleConflict
+from barndoor.models.runtime import Runtime as Runtime
 from barndoor.models.scope_json import ScopeJson as ScopeJson
 from barndoor.models.scope_type import ScopeType as ScopeType
 from barndoor.models.server_connection_response import ServerConnectionResponse as ServerConnectionResponse
@@ -620,6 +637,7 @@ from barndoor.models.server_source import ServerSource as ServerSource
 from barndoor.models.set_api_key_disabled_request import SetApiKeyDisabledRequest as SetApiKeyDisabledRequest
 from barndoor.models.set_api_key_expiry_request import SetApiKeyExpiryRequest as SetApiKeyExpiryRequest
 from barndoor.models.set_catalog_unlisted_table_action_request import SetCatalogUnlistedTableActionRequest as SetCatalogUnlistedTableActionRequest
+from barndoor.models.signed_artifact import SignedArtifact as SignedArtifact
 from barndoor.models.stale_reason import StaleReason as StaleReason
 from barndoor.models.test_finding_response import TestFindingResponse as TestFindingResponse
 from barndoor.models.test_process_text_request import TestProcessTextRequest as TestProcessTextRequest
