@@ -344,6 +344,7 @@ class SystemManagementApi:
     ) -> DestinationResponse:
         """Configure an export's delivery destination
 
+        The endpoint must be an https:// URL whose host is a public DNS name or address. A host that is, or resolves to, a private, loopback, link-local (including 169.254.169.254), CGNAT or unique-local IPv6 address is refused with 400, as is plain http. For s3, use_ssl is always treated as true. For azure_blob, the endpoint is the storage account's blob service root, e.g. https://myaccount.blob.core.windows.net.
 
         :param org_id: Organization ID (required)
         :type org_id: str
@@ -423,6 +424,7 @@ class SystemManagementApi:
     ) -> ApiResponse[DestinationResponse]:
         """Configure an export's delivery destination
 
+        The endpoint must be an https:// URL whose host is a public DNS name or address. A host that is, or resolves to, a private, loopback, link-local (including 169.254.169.254), CGNAT or unique-local IPv6 address is refused with 400, as is plain http. For s3, use_ssl is always treated as true. For azure_blob, the endpoint is the storage account's blob service root, e.g. https://myaccount.blob.core.windows.net.
 
         :param org_id: Organization ID (required)
         :type org_id: str
@@ -502,6 +504,7 @@ class SystemManagementApi:
     ) -> RESTResponseType:
         """Configure an export's delivery destination
 
+        The endpoint must be an https:// URL whose host is a public DNS name or address. A host that is, or resolves to, a private, loopback, link-local (including 169.254.169.254), CGNAT or unique-local IPv6 address is refused with 400, as is plain http. For s3, use_ssl is always treated as true. For azure_blob, the endpoint is the storage account's blob service root, e.g. https://myaccount.blob.core.windows.net.
 
         :param org_id: Organization ID (required)
         :type org_id: str
