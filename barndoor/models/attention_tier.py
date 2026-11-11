@@ -37,4 +37,19 @@ class AttentionTier(str, Enum):
         """Create an instance of AttentionTier from a JSON string"""
         return cls(json.loads(json_str))
 
+    @classmethod
+    def _missing_(cls, value):
+        """Keep a value this SDK does not know yet instead of refusing it.
+
+        Adding an enum value is a minor API change, so a newer value must not
+        fail the whole response. The result equals the raw value; its `name`
+        is None, which is how it differs from a listed member.
+        """
+        if not isinstance(value, str):
+            return None
+        member = str.__new__(cls, value)
+        member._name_ = None
+        member._value_ = value
+        return member
+
 

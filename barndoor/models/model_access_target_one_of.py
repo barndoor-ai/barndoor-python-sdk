@@ -33,8 +33,12 @@ class ModelAccessTargetOneOf(BaseModel):
 
     @field_validator('kind')
     def kind_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['model_alias']):
+        """Checks a single-value enum, which tags a oneOf variant; accepts any other value unchecked"""
+        allowed = set(['model_alias'])
+        if len(allowed) > 1:
+            return value
+
+        if value not in allowed:
             raise ValueError("must be one of enum values ('model_alias')")
         return value
 

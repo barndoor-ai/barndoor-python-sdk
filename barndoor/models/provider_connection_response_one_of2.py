@@ -41,8 +41,12 @@ class ProviderConnectionResponseOneOf2(BaseModel):
 
     @field_validator('provider')
     def provider_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['aws_comprehend_pii']):
+        """Checks a single-value enum, which tags a oneOf variant; accepts any other value unchecked"""
+        allowed = set(['aws_comprehend_pii'])
+        if len(allowed) > 1:
+            return value
+
+        if value not in allowed:
             raise ValueError("must be one of enum values ('aws_comprehend_pii')")
         return value
 

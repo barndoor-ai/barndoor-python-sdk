@@ -34,15 +34,23 @@ class DirectoryCredentialModes(BaseModel):
 
     @field_validator('automatic')
     def automatic_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['cimd', 'dcr', 'manual']):
+        """Checks a single-value enum, which tags a oneOf variant; accepts any other value unchecked"""
+        allowed = set(['cimd', 'dcr', 'manual'])
+        if len(allowed) > 1:
+            return value
+
+        if value not in allowed:
             raise ValueError("must be one of enum values ('cimd', 'dcr', 'manual')")
         return value
 
     @field_validator('default')
     def default_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['managed', 'cimd', 'dcr', 'manual']):
+        """Checks a single-value enum, which tags a oneOf variant; accepts any other value unchecked"""
+        allowed = set(['managed', 'cimd', 'dcr', 'manual'])
+        if len(allowed) > 1:
+            return value
+
+        if value not in allowed:
             raise ValueError("must be one of enum values ('managed', 'cimd', 'dcr', 'manual')")
         return value
 

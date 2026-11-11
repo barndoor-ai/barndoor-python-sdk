@@ -37,8 +37,12 @@ class ProviderConnectionResponseOneOf4(BaseModel):
 
     @field_validator('provider')
     def provider_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['azure_ai_language_pii']):
+        """Checks a single-value enum, which tags a oneOf variant; accepts any other value unchecked"""
+        allowed = set(['azure_ai_language_pii'])
+        if len(allowed) > 1:
+            return value
+
+        if value not in allowed:
             raise ValueError("must be one of enum values ('azure_ai_language_pii')")
         return value
 

@@ -33,8 +33,12 @@ class ResolvedRef(BaseModel):
 
     @field_validator('type')
     def type_validate_enum(cls, value):
-        """Validates the enum"""
-        if value not in set(['mcp_server', 'application']):
+        """Checks a single-value enum, which tags a oneOf variant; accepts any other value unchecked"""
+        allowed = set(['mcp_server', 'application'])
+        if len(allowed) > 1:
+            return value
+
+        if value not in allowed:
             raise ValueError("must be one of enum values ('mcp_server', 'application')")
         return value
 
