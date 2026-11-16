@@ -35,6 +35,7 @@ __all__ = [
     "ApiAttributeError",
     "ApiException",
     "AWSTrustInfoResponse",
+    "AddOrganizationDomainRequest",
     "AddRouteGroupMembersRequest",
     "AdminModelPricing",
     "AffectedPoliciesResponse",
@@ -233,6 +234,8 @@ __all__ = [
     "OperatorNoneInput",
     "OperatorNoneOutput",
     "OrgConfigResponse",
+    "OrganizationDomainListResponse",
+    "OrganizationDomainResponse",
     "OrganizationRolesGroupsResponse",
     "PaginatedResponseAllowListEntryResponse",
     "PaginatedResponseAllowListEntryResponseItemsInner",
@@ -389,6 +392,7 @@ from barndoor.exceptions import ApiException as ApiException
 
 # import models into sdk package
 from barndoor.models.aws_trust_info_response import AWSTrustInfoResponse as AWSTrustInfoResponse
+from barndoor.models.add_organization_domain_request import AddOrganizationDomainRequest as AddOrganizationDomainRequest
 from barndoor.models.add_route_group_members_request import AddRouteGroupMembersRequest as AddRouteGroupMembersRequest
 from barndoor.models.admin_model_pricing import AdminModelPricing as AdminModelPricing
 from barndoor.models.affected_policies_response import AffectedPoliciesResponse as AffectedPoliciesResponse
@@ -587,6 +591,8 @@ from barndoor.models.operator_any_output import OperatorAnyOutput as OperatorAny
 from barndoor.models.operator_none_input import OperatorNoneInput as OperatorNoneInput
 from barndoor.models.operator_none_output import OperatorNoneOutput as OperatorNoneOutput
 from barndoor.models.org_config_response import OrgConfigResponse as OrgConfigResponse
+from barndoor.models.organization_domain_list_response import OrganizationDomainListResponse as OrganizationDomainListResponse
+from barndoor.models.organization_domain_response import OrganizationDomainResponse as OrganizationDomainResponse
 from barndoor.models.organization_roles_groups_response import OrganizationRolesGroupsResponse as OrganizationRolesGroupsResponse
 from barndoor.models.paginated_response_allow_list_entry_response import PaginatedResponseAllowListEntryResponse as PaginatedResponseAllowListEntryResponse
 from barndoor.models.paginated_response_allow_list_entry_response_items_inner import PaginatedResponseAllowListEntryResponseItemsInner as PaginatedResponseAllowListEntryResponseItemsInner

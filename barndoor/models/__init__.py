@@ -14,6 +14,7 @@
 
 # import models into model package
 from barndoor.models.aws_trust_info_response import AWSTrustInfoResponse
+from barndoor.models.add_organization_domain_request import AddOrganizationDomainRequest
 from barndoor.models.add_route_group_members_request import AddRouteGroupMembersRequest
 from barndoor.models.admin_model_pricing import AdminModelPricing
 from barndoor.models.affected_policies_response import AffectedPoliciesResponse
@@ -212,6 +213,8 @@ from barndoor.models.operator_any_output import OperatorAnyOutput
 from barndoor.models.operator_none_input import OperatorNoneInput
 from barndoor.models.operator_none_output import OperatorNoneOutput
 from barndoor.models.org_config_response import OrgConfigResponse
+from barndoor.models.organization_domain_list_response import OrganizationDomainListResponse
+from barndoor.models.organization_domain_response import OrganizationDomainResponse
 from barndoor.models.organization_roles_groups_response import OrganizationRolesGroupsResponse
 from barndoor.models.paginated_response_allow_list_entry_response import PaginatedResponseAllowListEntryResponse
 from barndoor.models.paginated_response_allow_list_entry_response_items_inner import PaginatedResponseAllowListEntryResponseItemsInner
