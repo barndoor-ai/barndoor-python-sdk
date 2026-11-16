@@ -32,7 +32,7 @@ class UpdateFieldControlPolicyRequest(BaseModel):
     directory_slug: Optional[StrictStr] = Field(default=None, description="Deprecated and ignored: the connector is taken from the MCP server (`mcp_server_id`). Still accepted so existing requests keep working.")
     enabled: Optional[StrictBool] = None
     name: Optional[StrictStr] = None
-    rules: Optional[Any] = None
+    rules: Optional[Any] = Field(default=None, description="The server's whole new rule list, in order; omit to keep the stored rules. Where rule ids are enabled for the organization, each rule carries a server-made `rule_id`: send it back to keep the rule (one this policy does not hold is a 409; a malformed or repeated one a 422); a rule sent without one keeps the `rule_id` of an identical stored rule, else gets a new one. Elsewhere, `rule_id` is neither shown nor required, and any sent is ignored. A rule's own `id` key is ordinary content either way.")
     __properties: ClassVar[List[str]] = ["conditional_policy_name", "directory_slug", "enabled", "name", "rules"]
 
     model_config = ConfigDict(

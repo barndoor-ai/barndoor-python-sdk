@@ -34,7 +34,7 @@ class UpsertFieldControlPolicyRequest(BaseModel):
     enabled: Optional[StrictBool] = None
     mcp_server_id: StrictStr
     name: StrictStr
-    rules: Optional[Any] = None
+    rules: Optional[Any] = Field(default=None, description="The server's rules, in order. Where rule ids are enabled for the organization, each rule carries a server-made `rule_id`: send it back to keep the rule (one this policy does not hold is a 409; a malformed or repeated one a 422); a rule sent without one keeps the `rule_id` of an identical stored rule, else gets a new one. Elsewhere, `rule_id` is neither shown nor required, and any sent is ignored. A rule's own `id` key is ordinary content either way.")
     __properties: ClassVar[List[str]] = ["catalog_unlisted_table_action", "conditional_policy_name", "directory_slug", "enabled", "mcp_server_id", "name", "rules"]
 
     model_config = ConfigDict(

@@ -38,7 +38,7 @@ class FieldControlPolicyResponse(BaseModel):
     mcp_server_name: Optional[StrictStr] = Field(default=None, description="The MCP server's name. Set on list and get only, and absent when the server is unknown.")
     name: StrictStr
     org_id: StrictStr
-    rules: Optional[Any]
+    rules: Optional[Any] = Field(description="The server's rules, in order. Where rule ids are enabled for the organization, each carries its server-made `rule_id`; elsewhere, none does.")
     updated_at: StrictStr
     updated_by: StrictStr
     version: StrictInt
