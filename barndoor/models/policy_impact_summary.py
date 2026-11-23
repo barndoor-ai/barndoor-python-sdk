@@ -18,7 +18,7 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from uuid import UUID
 from typing import Optional, Set
@@ -33,14 +33,14 @@ class PolicyImpactSummary(BaseModel):
     policy_id: UUID
     mcp_server_id: StrictStr
     change_kind: StrictStr
-    tool_name: StrictStr
+    tool_name: StrictStr = Field(description="The affected tool. For a batch row (``change_kind`` ``added``, ``severity`` ``info``) this is the placeholder ``\"<added tools>\"``: the policy's informational set of added tools exceeded the per-tool cap, so one row stands for all of them; see ``detail.added_batch``.")
     severity: StrictStr
     status: StrictStr
     from_version: Optional[StrictInt] = None
     to_version: StrictInt
     snapshot_id: UUID
     policy_status_at_eval: StrictStr
-    detail: Optional[Dict[str, Any]] = None
+    detail: Optional[Dict[str, Any]] = Field(default=None, description="Provenance and context for the impact. ``origin`` is how the row was derived: ``diff`` (change summary), ``manifest_diff``, ``reconciliation`` / ``reconciliation_truncated``, or ``initial_capture`` (minted from a catalog's first snapshot: the tools existed from the start, ``from_version`` is null, and they are default-off until a policy allows them). Batch rows (``tool_name`` ``\"<added tools>\"``) also carry ``added_batch``: ``{\"count\": <exact number of tools>, \"names\": <sorted tool names, at most 200>, \"names_truncated\": <bool>}``. Batch ``count`` is exact; ``names`` may be shorter than ``count`` when ``names_truncated`` is true.")
     acknowledged_at: Optional[datetime] = None
     acknowledged_by: Optional[StrictStr] = None
     resolved_at: Optional[datetime] = None

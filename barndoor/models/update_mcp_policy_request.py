@@ -30,7 +30,7 @@ class UpdateMcpPolicyRequest(BaseModel):
     """ # noqa: E501
     mcp_server_ids: Optional[List[StrictStr]] = Field(default=None, description="Replaces the server list. Omitted = unchanged.")
     name: Optional[StrictStr] = None
-    rules: Optional[List[McpPolicyRuleRequest]] = Field(default=None, description="Replaces the rule list. Rules with an `id` are kept, the rest created, and stored rules left out are deleted. Omitted = unchanged.")
+    rules: Optional[List[McpPolicyRuleRequest]] = Field(default=None, description="Replaces the rule list. Rules with an `id` are kept; a rule without one keeps the id of an identical stored rule, else is created; stored rules left out are deleted. Omitted = unchanged.")
     __properties: ClassVar[List[str]] = ["mcp_server_ids", "name", "rules"]
 
     model_config = ConfigDict(

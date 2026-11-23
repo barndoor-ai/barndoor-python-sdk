@@ -35,7 +35,7 @@ class McpPolicyRuleRequest(BaseModel):
     agent_scope: Optional[AgentScopeJson] = Field(default=None, description="Omitted = all agents.")
     detection_engine_ids: List[UUID]
     dry_run: Optional[StrictBool] = None
-    id: Optional[UUID] = Field(default=None, description="An existing rule of this policy to keep. Omit to create a rule.")
+    id: Optional[UUID] = Field(default=None, description="An existing rule of this policy to keep. Omit it and the rule keeps the id of an identical stored rule, else it is created with a new id. Identical means the same label, runtime boundary, action, mask format, dry run, agent scope and agents, principal scope and principals, and protection profiles in the same order. The rule's position in the list does not matter; the order of its protection profiles does.")
     label: Optional[StrictStr] = None
     mask_format: Optional[MaskFormat] = Field(default=None, description="Partial-redaction shape; only valid with `POLICY_ACTION_MASK`.")
     principal_scope: Optional[PrincipalScopeJson] = Field(default=None, description="Omitted = all users.")
