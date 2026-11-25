@@ -12990,6 +12990,7 @@ class DlpApi:
     ) -> AwsRoleValidationResponse:
         """Probe an AWS role Barndoor is meant to assume
 
+        Assumes the role with this organization's Barndoor-issued external id (see `aws-role-config`). The request cannot supply an external id: a body containing `external_id` is rejected with 400.
 
         :param validate_aws_role_request: (required)
         :type validate_aws_role_request: ValidateAwsRoleRequest
@@ -13059,6 +13060,7 @@ class DlpApi:
     ) -> ApiResponse[AwsRoleValidationResponse]:
         """Probe an AWS role Barndoor is meant to assume
 
+        Assumes the role with this organization's Barndoor-issued external id (see `aws-role-config`). The request cannot supply an external id: a body containing `external_id` is rejected with 400.
 
         :param validate_aws_role_request: (required)
         :type validate_aws_role_request: ValidateAwsRoleRequest
@@ -13128,6 +13130,7 @@ class DlpApi:
     ) -> RESTResponseType:
         """Probe an AWS role Barndoor is meant to assume
 
+        Assumes the role with this organization's Barndoor-issued external id (see `aws-role-config`). The request cannot supply an external id: a body containing `external_id` is rejected with 400.
 
         :param validate_aws_role_request: (required)
         :type validate_aws_role_request: ValidateAwsRoleRequest

@@ -25,12 +25,11 @@ from pydantic_core import to_jsonable_python
 
 class ValidateAwsRoleRequest(BaseModel):
     """
-    ValidateAwsRoleRequest
+    Probe a role with the calling org's server-issued external ID.  There is no `external_id` field: Barndoor always uses the org's own value (from `aws-role-config`). A body that still sends `external_id` is refused with 400 rather than silently ignored, so a stale client cannot believe its value was the one tested.
     """ # noqa: E501
-    external_id: StrictStr
     iam_role_arn: StrictStr
     region: StrictStr
-    __properties: ClassVar[List[str]] = ["external_id", "iam_role_arn", "region"]
+    __properties: ClassVar[List[str]] = ["iam_role_arn", "region"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -83,7 +82,6 @@ class ValidateAwsRoleRequest(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "external_id": obj.get("external_id"),
             "iam_role_arn": obj.get("iam_role_arn"),
             "region": obj.get("region")
         })

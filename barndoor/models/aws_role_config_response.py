@@ -28,8 +28,9 @@ class AwsRoleConfigResponse(BaseModel):
     Whether Barndoor's own AWS principal is configured for `aws_role` trust.
     """ # noqa: E501
     configured: StrictBool = Field(description="True when Barndoor has a principal ARN to put in a customer trust policy.")
+    external_id: StrictStr = Field(description="This organization's `sts:ExternalId`, to require in the trust policy's condition. Issued by Barndoor on first read and stable after that; it cannot be chosen or changed through the API.")
     principal_arn: Optional[StrictStr] = Field(default=None, description="The ARN customers name as the trusted principal; null when unconfigured.")
-    __properties: ClassVar[List[str]] = ["configured", "principal_arn"]
+    __properties: ClassVar[List[str]] = ["configured", "external_id", "principal_arn"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -88,6 +89,7 @@ class AwsRoleConfigResponse(BaseModel):
 
         _obj = cls.model_validate({
             "configured": obj.get("configured"),
+            "external_id": obj.get("external_id"),
             "principal_arn": obj.get("principal_arn")
         })
         return _obj

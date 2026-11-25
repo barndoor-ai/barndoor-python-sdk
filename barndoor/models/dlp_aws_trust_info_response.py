@@ -27,7 +27,7 @@ class DlpAwsTrustInfoResponse(BaseModel):
     """
     The pair a customer needs to write an `aws_role` trust policy.
     """ # noqa: E501
-    external_id: StrictStr = Field(description="The per-connection external id, to require in the trust condition.")
+    external_id: StrictStr = Field(description="The external id this connection assumes its role with, to require in the trust condition. Barndoor-issued for connections saved since 2.44.0; a connection saved earlier keeps the value stored with it for as long as it assumes the same role.")
     principal_arn: StrictStr = Field(description="Barndoor's principal ARN, to trust in the customer's role.")
     __properties: ClassVar[List[str]] = ["external_id", "principal_arn"]
 
